@@ -5,7 +5,7 @@
       "x": 2.0,
       "y": 7.0
     },
-    "rotation": -1.1017061152062897
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "The thingymajigger"
+            "pathName": "blue auto shoot"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "end to auto"
+            "pathName": "blue auto leave"
           }
         }
       ]
