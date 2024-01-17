@@ -13,7 +13,7 @@ public class UpdateLimelightCommand extends Command {
     @Override
     public void initialize() {
         double tx = table.getEntry("tx").getDouble(0.0);
-         System.out.println(tx*1000);
+         System.out.println(tx);
     }
 
     @Override
