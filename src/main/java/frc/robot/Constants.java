@@ -154,14 +154,15 @@ public final class Constants {
     }
 
     public static final class ArmConstants{
-        public static final int k_ARM_DRIVE_LEADER_ID = 1;
-        public static final int k_ARM_DRIVE_FOLLOW_ID = 2;
-        public static final boolean k_MOTORS_REVERSED = true;
-        public class ControlType{
-            public static final int k_PERCENT = 0;
-            public static final int k_POSITION = 1;
-        } 
-        public static final double k_SOFT_LIMIT = 125;
+        public static final int armMotorID = 0; //TODO: Change the port! Jan 16, 2024
+        // public static final int k_ARM_DRIVE_LEADER_ID = 1;
+        // public static final int k_ARM_DRIVE_FOLLOW_ID = 2;
+        // public static final boolean k_MOTORS_REVERSED = true;
+        // public class ControlType{
+        //     public static final int k_PERCENT = 0;
+        //     public static final int k_POSITION = 1;
+        // } 
+        // public static final double k_SOFT_LIMIT = 125;
 
     }
 

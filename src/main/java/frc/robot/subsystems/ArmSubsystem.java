@@ -2,11 +2,27 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkPIDController;
+
+
 public class ArmSubsystem extends SubsystemBase{
-    private static final ArmSubsystem INSTANCE = null;
+    private static final ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
+    // created at all time. Think of it as a "static" call to the subsystem where you can get static variables
 
+    private final CANSparkMax armMotor;
+    
     private ArmSubsystem() {
+        this.armMotor = new CANSparkMax(Constants.ArmConstants.armMotorID, MotorType.kBrushless);
+    }
 
+    @Override
+    public void periodic() {
+         // This method will be called once per scheduler run
     }
 
     public static ArmSubsystem getInstance() {
