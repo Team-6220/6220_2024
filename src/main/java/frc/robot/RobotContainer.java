@@ -33,8 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 // import frc.robot.subsystems.ATWSubsystem;
 // import frc.robot.subsystems.DrivetrainSubsystem;
 // import frc.robot.subsystems.IntakeSubsystem;
-
-import frc.robot.subsystems.UpdateLimelightCommand;
+import frc.robot.commands.UpdateLimelightCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
