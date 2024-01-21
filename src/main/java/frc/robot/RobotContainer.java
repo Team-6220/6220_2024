@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.UpdateLimelightCommand;
 import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
@@ -26,6 +25,8 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve();
 
   public RobotContainer() {
+    Constants.VisionConstants.setTagHeights();
+
     s_Swerve.setDefaultCommand(
         new TeleopSwerve(
             s_Swerve, 
@@ -41,7 +42,6 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    new Trigger(driver::getBackButtonPressed).onTrue(new UpdateLimelightCommand());
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
   }
 
