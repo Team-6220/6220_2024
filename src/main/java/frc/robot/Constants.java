@@ -248,4 +248,20 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+
+    public static final class ClimberConstants{
+        //FIXME: set motor IDs
+        public static final int climberDriverLeftID = 0;
+        public static final int climberDriverRightID = 0;
+
+        //FIXME: set setpoints
+        public static final double topSetpoint = 0;
+        public static final double bottomSetpoint = 0;
+        public static final double climbedSetpoint = 0;
+
+        //FIXME: set PID constants
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+    }
 }
