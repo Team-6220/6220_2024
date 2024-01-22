@@ -4,36 +4,20 @@
 
 package frc.robot;
 
-// import edu.wpi.first.cameraserver.CameraServer;
-// import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.GenericHID;
 // import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-// import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-// import frc.robot.commands.ATPositionCmd;
-// import frc.robot.commands.ATWAutoCmd;
-// import frc.robot.commands.ATWJoystickCmd;
-// import frc.robot.commands.ATWPositionCmd;
-// import frc.robot.commands.AutoBalanceCommand;
-// import frc.robot.commands.ChargingStationAuto;
-// import frc.robot.commands.CloseSolenoidCmd;
-// import frc.robot.commands.DefaultDriveCommand;
-// import frc.robot.commands.DisableCompCmd;
-// import frc.robot.commands.DriveXCommand;
-// import frc.robot.commands.IntakeDefaultCommand;
-// import frc.robot.commands.LockWheelsCmd;
-// // import frc.robot.commands.ShootCubeCmd;
-// // import frc.robot.commands.PathPlannerCmd;
-// import frc.robot.commands.ZeroGyroscope;
-// import frc.robot.subsystems.ATWSubsystem;
-// import frc.robot.subsystems.DrivetrainSubsystem;
-// import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.commands.UpdateLimelightCommand;
+import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Swerve;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.*;
+
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -42,36 +26,19 @@ import frc.robot.commands.UpdateLimelightCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  // private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  // private final ATWSubsystem atwSubsystem = new ATWSubsystem();
-  // private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final XboxController m_controller = new XboxController(0);
-  // private final Joystick m_js = new Joystick(1);
-  // private final Joystick m_js2 = new Joystick(2);
-  // private final double[] zeron = {0, 1, -30};//zero
-  // private final double[] flatn = {-40, 0.5, -1600};//flat
-  // private final double[] zerop = {0, 1, -1800};
-  // private final double[] vert = {0, .5, -950};
-  //private final double[] forty5 = {-45, .5, -500};//notc
-  // private final double[] pickupn = {-117, 7.7, -1300};
-  // private final double[] pickupp = {118, 7.7, -700};//pickup
-  // private final double[] midn = {-55, 22.7, -725};//mid cone
-  // private final double[] midp = {55, 22.7, -1275};
-  // private final double[] highn = {-54, 50, -1000};//high cone
-  // private final double[] highp = {54, 50, -1000};
-  // private final double[] stationp = {44, 11, -1450};
-  // private final double[] stationn = {-45, 11, -550};
-  // private final double[] hovern = {-90, .5, -160};
-  // private final double[] hoverp = {90, .5, -1840};
-  // private final double[] siden = {-103, .5, -160};
-  // private final double[] sidep = {103, .5, -1840};
-  // private final double[] autocubehigh = {-55, 33, -639};
-  // private final double[] telecubehigh = {55, 33, -1000};
-  // private final SendableChooser<String> autoChooser = new SendableChooser<>();
-  // private String m_autoselected = "New Path";
-  // private final double pos = -3;
-  // private final double pos2 = -2;
+
+  /* Drive Controls */
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+    /* Driver Buttons */
+    private final JoystickButton zeroGyro = new JoystickButton(m_controller, XboxController.Button.kY.value);
+    private final JoystickButton robotCentric = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
+
+    /* Subsystems */
+    private final Swerve s_Swerve = new Swerve();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -113,10 +80,17 @@ public class RobotContainer {
 //   m_js2::getTrigger,
 //   () -> m_js2.getRawButton(2)
 // ));
+        s_Swerve.setDefaultCommand(
+            new TeleopSwerve(
+                s_Swerve, 
+                () -> -m_controller.getRawAxis(translationAxis), 
+                () -> -m_controller.getRawAxis(strafeAxis), 
+                () -> -m_controller.getRawAxis(rotationAxis), 
+                () -> robotCentric.getAsBoolean()
+            )
+        );
     // Configure the button bindings
     configureButtonBindings();
-    // usbCamera = new UsbCamera("cam", 1);
-    // CameraServer.startAutomaticCapture();
    
     
   }
@@ -128,13 +102,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     //new Trigger(m_controller::getAButtonPressed).onTrue(new LockWheelsCmd(m_drivetrainSubsystem));
     // Back button zeros the gyroscope
     // new Trigger(m_controller::getXButtonPressed).onTrue(new AutoBalanceCommand(
     //     m_drivetrainSubsystem, m_controller::getXButton
     // ) 
     // );
-    new Trigger(m_controller::getBackButtonPressed).onTrue(new UpdateLimelightCommand());
         //new Trigger(m_controller::getAButtonPressed).onTrue(new LockWheels(swerveSubsystem));
         //new Trigger(m_controller::getBButtonPressed).onTrue(new UnlockWheels(swerveSubsystem));
         //zero that bih!
