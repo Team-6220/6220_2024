@@ -55,20 +55,16 @@ public class SwerveModule {
         mAngleMotor = new CANSparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
         mAngleMotor.setInverted(Constants.SwerveConstants.angleMotorInvert);
         mAngleMotor.setSmartCurrentLimit(Constants.SwerveConstants.angleCurrentThreshold);
-        mAngleMotor.burnFlash();
 
         /* Angle Motor PID Config */
         mAngleController = mAngleMotor.getPIDController();
-        // mAngleController.setP(Constants.Swerve.angleKP);
-        // mAngleController.setI(Constants.Swerve.angleKI);
-        // mAngleController.setD(Constants.Swerve.angleKD);
-        mAngleController.setP(0.5);
-        mAngleController.setI(0);
-        mAngleController.setD(0.15);
+        mAngleController.setP(Constants.SwerveConstants.angleKP);
+        mAngleController.setI(Constants.SwerveConstants.angleKI);
+        mAngleController.setD(Constants.SwerveConstants.angleKD);
 
         mAngleController.setPositionPIDWrappingEnabled(true);
         mAngleController.setPositionPIDWrappingMinInput(0);
-        mAngleController.setPositionPIDWrappingMaxInput(1);// was 2*pi, Sean said to change it
+        mAngleController.setPositionPIDWrappingMaxInput(RevConfigs.CANCoderAngleToNeoEncoder(1));
 
         /* Angle Motor Encoder Config */
         mNeoAngleEncoder = mAngleMotor.getEncoder(Type.kHallSensor, 42);
