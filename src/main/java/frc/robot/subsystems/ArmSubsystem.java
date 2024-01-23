@@ -14,10 +14,11 @@ public class ArmSubsystem extends SubsystemBase{
     private static final ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
     // created at all time. Think of it as a "static" call to the subsystem where you can get static variables
 
-    private final CANSparkMax armMotor;
+    private final CANSparkMax armMotorA, armMotorB;
     
     private ArmSubsystem() {
-        this.armMotor = new CANSparkMax(Constants.ArmConstants.armMotorID, MotorType.kBrushless);
+        this.armMotorA = new CANSparkMax(Constants.ArmConstants.armMotorAID, MotorType.kBrushless);
+        this.armMotorB = new CANSparkMax(Constants.ArmConstants.armMotorBID, MotorType.kBrushless);
     }
 
     @Override

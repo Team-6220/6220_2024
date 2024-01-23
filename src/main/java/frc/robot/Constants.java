@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -16,14 +18,6 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
 
     public static final class OIConstants {
@@ -35,53 +29,95 @@ public final class Constants {
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
         public static final double kDeadband = 0.1;
+
+        private static double modifyAxis(double value) {
+            // Deadband
+            value = (Math.abs(value) < kDeadband) ? 0 : value;
+        
+            // Square the axis
+            value = Math.copySign(value * value, value);
+        
+            return value;
+          }
     }
 
     public static final class ArmConstants{
-        public static final int armMotorID = 0; //TODO: Change the port! Jan 16, 2024
-        // public static final int k_ARM_DRIVE_LEADER_ID = 1;
-        // public static final int k_ARM_DRIVE_FOLLOW_ID = 2;
-        // public static final boolean k_MOTORS_REVERSED = true;
-        // public class ControlType{
-        //     public static final int k_PERCENT = 0;
-        //     public static final int k_POSITION = 1;
-        // } 
-        // public static final double k_SOFT_LIMIT = 125;
+        //FIXME: set ids
+        public static final int armMotorAID = 0;
+        public static final int armMotorBID = 0;
 
-    }
+        //FIXME: set pid values
+        public static final int kP = 0;
+        public static final int kI = 0;
+        public static final int kD = 0;
 
-    public static final class TelescopeConstants{
-        public static final int k_TELESCOPE_DRIVE_LEADER_ID = 8;
-        public static final int k_TELESCOPE_DRIVE_FOLLOW_ID = 9;
-        public static final boolean k_MOTORS_REVERSED = false;
-        public static final double k_FULL_EXTENSION = 45;
-        public static final double k_FULL_RETRACTION = 0;
-    }
+        //FIXME: create lookup table
+        public static final double [][] armLookupTable = {
+            {/* distance to target, arm angle */}
+        };
 
-    public static final class VisionConstants{
-        //FIXME set limelight angle DEGREES
-        public static final double k_LIMELIGHT_ANGLE_RADIANS = 0;
-        //FIXME set limelight height from ground inches
-        public static final double k_LIMELIGHT_HEIGHT_INCHES = 0;
-        //FIXME set height of goal
-        public static final double k_GOAL_HEIGHT_INCHES = 0;
+        //FIXME: set setpoints
+        public static final double intakeSetpoint = 0;
+        public static final double restingSetpoint = 0;
     }
 
     public static final class IntakeConstants{
-        public static final int SOLENOID_PORT = 7;
-        public static final double k_CUBE_INTAKE_SPEED = 0.4;
-        public static final double k_CUBE_OUTTAKE_SPEED = -0.25;
-        public static final double k_CONE_INTAKE_SPEED = 0.75;
-        public static final double k_CONE_OUTTAKE_SPEED = -0.75;
-        public static final int k_INTAKE_MOTOR_ID = 10;
+        //FIXME: set id
+        public static final int intakeMotorID = 0;
+
+        //FIXME: set break beam port
+        public static final int breakBeamPort = 0;
+
+        //FIXME: set intake speed
+        public static final double intakeSpeed = 0;
     }
 
-    public static final class WristConstants{
-        public static final int k_WRIST_MOTOR_ID = 12;
-        public static final int k_WRIST_BOTTOM_LIMIT = 100;
-        public static final int k_WRIST_TOP_LIMIT = 1850;
-        public static final int k_ENC_PORT_A = 0;
-        public static final boolean k_ENC_REV = false;
+    public static final class ShooterConstants{
+        //FIXME: set motor IDs
+        public static final int shooterMotorAID = 0;
+        public static final int shooterMotorBID = 0;
+
+        //FIXME: set break beam port
+        public static final int breakBeamPort = 0;
+
+        //FIXME: set shooter velocity pid
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kFF = 0;
+
+        //FIXME: create lookup table
+        public static final double [][] shooterLookupTable = {
+            {/* distance to target, shooter speed */}
+        };
+
+    }
+
+    public static final class VisionConstants{
+        //FIXME: set limelight values
+        public static final double limelightHeightInches = 0;
+        public static final double limelightAngleDegrees = 0;
+
+        public static HashMap<Integer, Double> tagHeights = new HashMap<Integer, Double>();
+        
+        public static void setTagHeights(){
+            tagHeights.put(1, 48.125);
+            tagHeights.put(2, 48.125);
+            tagHeights.put(9, 48.125);
+            tagHeights.put(10, 48.125);
+            tagHeights.put(3, 53.875);
+            tagHeights.put(4, 53.875);
+            tagHeights.put(7, 53.875);
+            tagHeights.put(8, 53.875);
+            tagHeights.put(5, 53.125);
+            tagHeights.put(6, 53.125);
+            tagHeights.put(11, 47.5);
+            tagHeights.put(12, 47.5);
+            tagHeights.put(13, 47.5);
+            tagHeights.put(14, 47.5);
+            tagHeights.put(15, 47.5);
+            tagHeights.put(16, 47.5);
+        }
     }
 
     public static final class SwerveConstants {
@@ -130,9 +166,9 @@ public final class Constants {
         public static final double closedLoopRamp = 0.0;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = chosenModule.angleKP;
-        public static final double angleKI = chosenModule.angleKI;
-        public static final double angleKD = chosenModule.angleKD;
+        public static final double angleKP = 0.5;
+        public static final double angleKI = 0;
+        public static final double angleKD = 0.15;
 
         /* Drive Motor PID Values */
         public static final double driveKP = 0.12; //TODO: This must be tuned to specific robot
@@ -159,7 +195,7 @@ public final class Constants {
         /* Front Left Module - Module 0 */
         public static final class Mod0 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 8;
-            public static final int angleMotorID =10;
+            public static final int angleMotorID = 10;
             public static final int canCoderID = 4;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(103.71);
             public static final SwerveModuleConstants constants = 
@@ -211,5 +247,21 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class ClimberConstants{
+        //FIXME: set motor IDs
+        public static final int climberDriverLeftID = 0;
+        public static final int climberDriverRightID = 0;
+
+        //FIXME: set setpoints
+        public static final double topSetpoint = 0;
+        public static final double bottomSetpoint = 0;
+        public static final double climbedSetpoint = 0;
+
+        //FIXME: set PID constants
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
     }
 }
