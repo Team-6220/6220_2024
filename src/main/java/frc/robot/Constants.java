@@ -196,7 +196,7 @@ public final class Constants {
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
         /* Module Specific Constants */
-        /* Front Left Module - Module 0 */
+        // Back Right Module 0
         public static final class Mod0 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 10;
@@ -206,7 +206,7 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Front Right Module - Module 1 */
+        // Back Left Module 1
         public static final class Mod1 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 12;
@@ -217,6 +217,7 @@ public final class Constants {
         }
         
         /* Back Left Module - Module 2 */
+        //Front Right - Module 2
         public static final class Mod2 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 11;
@@ -226,7 +227,7 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Back Right Module - Module 3 */
+        //Front left Module 3
         public static final class Mod3 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 9;
