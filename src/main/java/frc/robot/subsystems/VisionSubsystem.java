@@ -5,22 +5,29 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
   private static final VisionSubsystem INSTANCE = null;
   private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  ShuffleboardTab tab = Shuffleboard.getTab("Limelight");
+  // NetworkTableEntry tx = table.getEntry("tx");
+  NetworkTableEntry tx = table.getEntry("tx"); //horizontal offset
+  NetworkTableEntry ty = table.getEntry("ty"); //vertical offset
+  NetworkTableEntry ta = table.getEntry("ta"); //Target area (0% of image to 100% of image)
+  NetworkTableEntry tl = table.getEntry("tl"); //The pipeline's latency contribution (ms). Add to "cl" to get total latency.
+  NetworkTableEntry tv = table.getEntry("tv"); //check whetehr the limelight have any valid target
+
+  double x = tx.getDouble(0.0);
+  double y = ty.getDouble(0.0);
+  boolean v = tv.getBoolean(false);
+
+  // ShuffleboardTab tab = Shuffleboard.getTab("Limelight");
   // Check https://docs.limelightvision.io/docs/docs-limelight/apis/complete-networktables-api for details
-  private double tx = table.getEntry("tx").getDouble(0.0); //horizontal offset
-  private double ty = table.getEntry("ty").getDouble(0.0); //vertical offset
-  private double ta = table.getEntry("ta").getDouble(0.0); //Target area (0% of image to 100% of image)
-  private double tl = table.getEntry("tl").getDouble(0.0); //The pipeline's latency contribution (ms). Add to "cl" to get total latency.
-  private boolean tv = table.getEntry("tv").getBoolean(false); //check whetehr the limelight have any valid target
 
   private double distanceFromLimelightToGoalInches;
 
@@ -34,17 +41,15 @@ public class VisionSubsystem extends SubsystemBase {
 
   /** Creates a new VisionSubsystem. */
   private VisionSubsystem() {
-   tx = table.getEntry("tx").getDouble(0.0);
-   ty = table.getEntry("ty").getDouble(0.0);
-   ta = table.getEntry("ta").getDouble(0.0);
-   tl = table.getEntry("tl").getDouble(0.0);
-   tv = table.getEntry("tv").getBoolean(false);
+    tx = table.getEntry("tx");
+    ty = table.getEntry("ty");
+    tv = table.getEntry("tv");
 
-   tab.add("tx", tx);
-   tab.add("ty", ty);
-   tab.add("ta- area", ta);
-   tab.add("tl latency", tl);
-   tab.add("tv- boolean target", tv);
+  //  tab.add("tx", tx);
+  //  tab.add("ty", ty);
+  //  tab.add("ta- area", ta);
+  //  tab.add("tl latency", tl);
+  //  tab.add("tv- boolean target", tv);
 
   }
 
@@ -59,8 +64,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getdistanceFromLimelightToGoalInches()
   {
-    ty = table.getEntry("ty").getDouble(0.0);
-      double verticalOffset = ty; //add anything if needed
+    y = ty.getDouble(0.0);
+      double verticalOffset = y; //add anything if needed
       double angle = (verticalOffset+limelightMountAngleDegrees)*(3.14159/180);
       distanceFromLimelightToGoalInches = (targetHeight-heightOfCamAboveFloor)/Math.tan(angle);
     return distanceFromLimelightToGoalInches;
@@ -68,15 +73,37 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getSteeringOffset()
   {
-    tx = table.getEntry("tx").getDouble(0.0) + 0; //add any offsets if needed
-    return tx;
+    x = tx.getDouble(0.0) + 0; //add any offsets if needed
+    return x;
   }
 
+  public boolean getTarget()
+  {
+    v = tv.getBoolean(false);
+    return v;
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("testtx ", NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
+      x = tx.getDouble(0.0);
+      v = tv.getBoolean(false);
+
+       SmartDashboard.putNumber("x", x);
+       SmartDashboard.putBoolean("v", v);
+      //  tab.add("tx", tx);
+      //  tab.add("ty", ty);
+      //  tab.add("ta- area", ta);
+      //  tab.add("tl latency", tl);
+      //  tab.add("tv- boolean target", tv);
+    }
+  
   public static VisionSubsystem getInstance()
   {
     if (INSTANCE == null) {
       return new VisionSubsystem();
-  }
-  return INSTANCE;
+    }
+    return INSTANCE;
+  
   }
 }
