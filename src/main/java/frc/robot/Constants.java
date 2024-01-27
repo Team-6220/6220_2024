@@ -46,6 +46,10 @@ public final class Constants {
         public static final int armMotorAID = 0;
         public static final int armMotorBID = 0;
 
+        //FIXME: set inverted
+        public static final boolean motorAInverted = false;
+        public static final boolean motorBInverted = false;
+
         //FIXME: set pid values
         public static final int kP = 0;
         public static final int kI = 0;
