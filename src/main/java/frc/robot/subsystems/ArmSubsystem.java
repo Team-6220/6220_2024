@@ -14,7 +14,7 @@ import com.revrobotics.SparkRelativeEncoder.Type;
 
 
 public class ArmSubsystem extends SubsystemBase{
-    private static final ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
+    private static ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
     // created at all time. Think of it as a "static" call to the subsystem where you can get static variables
 
     private final CANSparkMax armMotorA, armMotorB;
@@ -96,7 +96,7 @@ public class ArmSubsystem extends SubsystemBase{
      */
     public static ArmSubsystem getInstance() {
         if (INSTANCE == null) {
-            return new ArmSubsystem();
+            INSTANCE = new ArmSubsystem();
         }
         return INSTANCE;
     }

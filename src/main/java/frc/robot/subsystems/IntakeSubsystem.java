@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase{
-    private static final IntakeSubsystem INSTANCE = null;
+    private static IntakeSubsystem INSTANCE = null;
 
     private IntakeSubsystem() {
 
@@ -11,7 +11,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public static IntakeSubsystem getInstance() {
         if (INSTANCE == null) {
-            return new IntakeSubsystem();
+            INSTANCE = new IntakeSubsystem();
         }
         return INSTANCE;
     }
