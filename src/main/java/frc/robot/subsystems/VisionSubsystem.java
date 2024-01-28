@@ -4,53 +4,25 @@
 
 package frc.robot.subsystems;
 
-import java.util.List;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
-  private final PhotonCamera camera;
-  private PhotonPipelineResult currResult;
-  private boolean hasTargets;
-  private List<PhotonTrackedTarget> targets;
-  private PhotonTrackedTarget bestTarget;
-  private double pitch, yaw, skew, area;
-
-  private static VisionSubsystem INSTANCE = null;
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  ShuffleboardTab tab = Shuffleboard.getTab("Limelight");
 
   /** Creates a new VisionSubsystem. */
-  private VisionSubsystem() {
-    this.camera = new PhotonCamera("photonvision");
-    currResult = camera.getLatestResult();
-    hasTargets = currResult.hasTargets();
-  }
-
-  public static VisionSubsystem getInstance(){
-    if(INSTANCE == null)
-      INSTANCE = new VisionSubsystem();
-    return INSTANCE;
-  }
-
-  private void updateValues(){
-    currResult = camera.getLatestResult();
-    hasTargets = currResult.hasTargets();
-    targets = currResult.getTargets();
-    bestTarget = currResult.getBestTarget();
-    yaw = bestTarget.getYaw();
-    pitch = bestTarget.getPitch();
-    skew = bestTarget.getSkew();
-    area = bestTarget.getArea();
+  public VisionSubsystem() {
+    double tx = table.getEntry("tx").getDouble(0.0);
+         System.out.println(tx);
   }
 
   @Override
   public void periodic() {
-    updateValues();
-    SmartDashboard.putNumber("pitch", pitch);
-    SmartDashboard.putNumber("yaw", yaw);
+    // This method will be called once per scheduler run
   }
 }
