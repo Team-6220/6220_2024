@@ -216,7 +216,6 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         
-        /* Back Left Module - Module 2 */
         //Front Right - Module 2
         public static final class Mod2 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 7;
