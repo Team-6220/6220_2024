@@ -2,14 +2,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 import frc.robot.Constants.ArmConstants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkBase.ControlType;
 
 
 public class ArmSubsystem extends SubsystemBase{
@@ -17,7 +16,8 @@ public class ArmSubsystem extends SubsystemBase{
     // created at all time. Think of it as a "static" call to the subsystem where you can get static variables
 
     private final CANSparkMax armMotorA, armMotorB;
-    private final Encoder armEncoder;
+    private final DutyCycleEncoder armEncoder;
+    private final PIDController pid;
     
     /**
      * Initializes the ArmSubsystem
@@ -34,10 +34,15 @@ public class ArmSubsystem extends SubsystemBase{
 
         this.armMotorB.follow(armMotorA);
 
-        this.armEncoder = new Encoder(ArmConstants.k_ENC_PORT_A, ArmConstants.k_ENC_PORT_B, ArmConstants.k_ENC_REV, EncodingType.k4X);
+        this.armEncoder = new DutyCycleEncoder(ArmConstants.k_ENC_PORT);
 
         this.armMotorA.burnFlash();
         this.armMotorB.burnFlash();
+
+        this.pid = new PIDController(
+            ArmConstants.kP,
+            ArmConstants.kI,
+            ArmConstants.kD);
     }
 
     /**
@@ -46,7 +51,7 @@ public class ArmSubsystem extends SubsystemBase{
      * @return the corresponding Encoder Value in rotations
      */
     public double convertArmDegreesToEncoderValue(double armPosition){
-        return armPosition / 360 * (361 / 3);
+        return armPosition / 360;
     }
 
     /**
@@ -55,7 +60,7 @@ public class ArmSubsystem extends SubsystemBase{
      * @return the corresponding arm position to the given Encoder Value
      */
     public double convertEncoderValueToArmDegrees(double encoderValue){
-        return encoderValue / (361 / 3) * 360;
+        return encoderValue * 360;
     }
 
     /**
@@ -63,15 +68,29 @@ public class ArmSubsystem extends SubsystemBase{
      * @param  speed  a value from -1 to 1 (sets current of motor)
      */
     public void drive(double speed){
-        this.armMotorA.set(speed);
+        if(speed > 1){
+            speed = 1;
+        }
+        else if (speed < -1){
+            speed = -1;
+        }
+        this.armMotorA.set(speed * .75);
     }
 
+    /**
+     * Calculates the output of the arm PID for a given setpoint
+     * @param  setpoint desired arm position in degrees
+     * @return
+     */
+    public double calculate(double setpoint){
+        return pid.calculate(convertEncoderValueToArmDegrees(armEncoder.get()), setpoint);
+    }
     /**
      * Gives the position of the arm in degrees
      * @returns the value in degrees of the arm    
      */
     public double getArmPosition(){
-        return convertArmDegreesToEncoderValue(this.armEncoder.getDistance());
+        return convertArmDegreesToEncoderValue(this.armEncoder.get());
     }
 
     @Override
