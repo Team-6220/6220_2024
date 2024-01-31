@@ -63,6 +63,11 @@ public final class Constants {
         //FIXME: set setpoints
         public static final double intakeSetpoint = 0;
         public static final double restingSetpoint = 0;
+
+        //FIXME: set actual port values and reversed for arm encoder
+        public static final int k_ENC_PORT_A = 0;
+        public static final int k_ENC_PORT_B = 1;
+        public static final boolean k_ENC_REV = false;
     }
 
     public static final class IntakeConstants{
