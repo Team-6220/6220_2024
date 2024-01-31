@@ -41,12 +41,14 @@ public class LimelightAssistedSwerveCmd extends Command {
     // double steerOutput = limelightPidController.calculate(s_Swerve.getHeadingDegrees(),m_VisionSubsystem.getSteeringOffset()) * SwerveConstants.maxAngularVelocity;
     // SmartDashboard.putNumber("BEFORE steeroutput", steerOutput);
     // steerOutput = (steerOutput > SwerveConstants.maxAngularVelocity) ? SwerveConstants.maxAngularVelocity : (steerOutput < -SwerveConstants.maxAngularVelocity) ? -SwerveConstants.maxAngularVelocity : steerOutput;
-    double steerOutput = Normalization(m_VisionSubsystem.getSteeringOffset(), -180, 180, -1, 1) * SwerveConstants.maxAngularVelocity;
+    // double steerOutput = Normalization(m_VisionSubsystem.getSteeringOffset(), -180, 180, -1, 1) * SwerveConstants.maxAngularVelocity;
+    double steeroutput = limelightPidController.calculate(m_VisionSubsystem.getSteeringOffset());
+    steeroutput = (steeroutput > 1)?1:(steeroutput< -1)?-1:steeroutput;
     SmartDashboard.putNumber("AFTER steeroutput ", Normalization(m_VisionSubsystem.getSteeringOffset(), -180, 180, -1, 1));
     s_Swerve.drive(
             new Translation2d(0d, 0d), 
             // MathUtil.applyDeadband(limelightPidController.calculate(s_Swerve.getHeadingDegrees(),m_VisionSubsystem.getSteeringOffset()), 0), //NOT USABLE UPGRADED
-            steerOutput,
+            steeroutput,
             // (s_Swerve.getHeadingDegrees() - m_VisionSubsystem.getSteeringOffset()) * SwerveConstants.maxAngula15/rVelocity, //Original code from TeleopSwerve, NOT USABLE
             true, 
             false
