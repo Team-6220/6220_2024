@@ -66,6 +66,7 @@ public final class Constants {
 
         //FIXME: set actual port values and reversed for arm encoder
         public static final int k_ENC_PORT = 0;
+    }
 
     public static final class IntakeConstants{
         //FIXME: set id
