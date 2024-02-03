@@ -8,11 +8,12 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.ArmConstants;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 
 public class ArmSubsystem extends SubsystemBase{
-    private static final ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
+    private static ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
     // created at all time. Think of it as a "static" call to the subsystem where you can get static variables
 
     private final CANSparkMax armMotorA, armMotorB;
@@ -29,10 +30,10 @@ public class ArmSubsystem extends SubsystemBase{
         this.armMotorA.setInverted(ArmConstants.motorAInverted);
         this.armMotorB.setInverted(ArmConstants.motorBInverted);
 
-        this.armMotorA.setIdleMode(null);
-        this.armMotorB.setIdleMode(null);
+        this.armMotorA.setIdleMode(IdleMode.kBrake);
+        this.armMotorB.setIdleMode(IdleMode.kBrake);
 
-        this.armMotorB.follow(armMotorA);
+        this.armMotorB.follow(armMotorA, true);
 
         this.armEncoder = new DutyCycleEncoder(ArmConstants.k_ENC_PORT);
 
@@ -74,7 +75,8 @@ public class ArmSubsystem extends SubsystemBase{
         else if (speed < -1){
             speed = -1;
         }
-        this.armMotorA.set(speed * .75);
+        this.armMotorA.set(speed * .1);
+        SmartDashboard.putNumber("testt", speed * .1);
     }
 
     /**
@@ -97,15 +99,16 @@ public class ArmSubsystem extends SubsystemBase{
     public void periodic() {
          // This method will be called once per scheduler run
          SmartDashboard.putNumber("Arm Angle", getInstance().getArmPosition());
+
     }
 
     /**
      * Accesses the static instance of the ArmSubsystem singleton
      * @return ArmSubsystem Singleton Instance
      */
-    public static ArmSubsystem getInstance() {
+    public static synchronized ArmSubsystem getInstance() {
         if (INSTANCE == null) {
-            return new ArmSubsystem();
+            INSTANCE = new ArmSubsystem();
         }
         return INSTANCE;
     }

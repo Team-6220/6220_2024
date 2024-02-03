@@ -5,10 +5,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ArmTestCommand;
-import frc.robot.commands.TeleopSwerve;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.Swerve;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+
 
 public class RobotContainer {
   /* Controllers */
@@ -51,12 +50,17 @@ public class RobotContainer {
       )
     );
 
+    // armSubsystem.setDefaultCommand(
+    //   new ArmManuelCmd(
+    //     () -> js1.getY()
+    //   )
+    // );
     configureButtonBindings();
    
   }
 
   private void configureButtonBindings() {
-    zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+    // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
   }
 
   public Command getAutonomousCommand() {

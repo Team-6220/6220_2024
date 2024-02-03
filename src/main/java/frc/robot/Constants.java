@@ -43,17 +43,17 @@ public final class Constants {
 
     public static final class ArmConstants{
         //FIXME: set ids
-        public static final int armMotorAID = 0;
-        public static final int armMotorBID = 0;
+        public static final int armMotorAID = 13;
+        public static final int armMotorBID = 14;
 
         //FIXME: set inverted
         public static final boolean motorAInverted = false;
-        public static final boolean motorBInverted = false;
+        public static final boolean motorBInverted = true;
 
         //FIXME: set pid values
-        public static final int kP = 0;
-        public static final int kI = 0;
-        public static final int kD = 0;
+        public static final double kP = 0.0005;
+        public static final double kI = 0;
+        public static final double kD = 0;
 
         //FIXME: create lookup table
         public static final double [][] armLookupTable = {
@@ -219,7 +219,6 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         
-        /* Back Left Module - Module 2 */
         //Front Right - Module 2
         public static final class Mod2 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 7;
