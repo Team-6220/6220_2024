@@ -51,14 +51,16 @@ public final class Constants {
         public static final boolean motorBInverted = true;
 
         //FIXME: set pid values
-        public static final double kP = 0.0005;
-        public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kP = 0.009;
+        public static final double kI = 0.0005;
+        public static final double kD = 0.001;
 
         //FIXME: create lookup table
         public static final double [][] armLookupTable = {
             {/* distance to target, arm angle */}
         };
+
+        public static final double armOffset = -265; // arm up
 
         //FIXME: set setpoints
         public static final double intakeSetpoint = 0;

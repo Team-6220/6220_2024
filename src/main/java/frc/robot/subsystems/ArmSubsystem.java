@@ -4,13 +4,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-
-import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.*;
+// import frc.robot.Constants.ArmConstants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 
 public class ArmSubsystem extends SubsystemBase{
     private static ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
@@ -69,14 +68,14 @@ public class ArmSubsystem extends SubsystemBase{
      * @param  speed  a value from -1 to 1 (sets current of motor)
      */
     public void drive(double speed){
-        if(speed > 1){
-            speed = 1;
+        if(speed > 0.5){
+            speed = 0.5;
         }
-        else if (speed < -1){
-            speed = -1;
+        else if (speed < -0.5){
+            speed = -0.5;
         }
-        this.armMotorA.set(speed * .1);
-        SmartDashboard.putNumber("testt", speed * .1);
+        this.armMotorA.set(speed);
+        SmartDashboard.putNumber("testt", speed);
     }
 
     /**
@@ -85,21 +84,20 @@ public class ArmSubsystem extends SubsystemBase{
      * @return
      */
     public double calculate(double setpoint){
-        return pid.calculate(convertEncoderValueToArmDegrees(armEncoder.get()), setpoint);
+        return -1 * pid.calculate(getArmPosition(), setpoint);
     }
     /**
      * Gives the position of the arm in degrees
      * @returns the value in degrees of the arm    
      */
     public double getArmPosition(){
-        return convertArmDegreesToEncoderValue(this.armEncoder.get());
+        return convertEncoderValueToArmDegrees(this.armEncoder.get()) + ArmConstants.armOffset;
     }
 
     @Override
     public void periodic() {
          // This method will be called once per scheduler run
-         SmartDashboard.putNumber("Arm Angle", getInstance().getArmPosition());
-
+         SmartDashboard.putNumber("Arm Angle", getArmPosition());
     }
 
     /**

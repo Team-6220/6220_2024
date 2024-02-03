@@ -37,21 +37,22 @@ public class ArmTestCommand extends Command{
             setpoint = 0;
         }else if(this.yButton.get()){
             pid = true;
-            setpoint = 30;
+            setpoint = 85;
         }else if(this.rBumper.get()){
             pid = true;
             setpoint = 60;
         }else if(this.lBumper.get()){
             pid = true;
-            setpoint = 90;
+            setpoint = 40;
         }else if(Math.abs(this.joystick.get()) > .05){
-            pid = false;
+            // pid = false;
             raw_value = this.joystick.get() / 2;
         }
         if(pid){
             raw_value = armSubsystem.calculate(setpoint);
+            System.out.println("succcesss!!!!");
         }
-
+        
         armSubsystem.drive(raw_value);
     }
 
