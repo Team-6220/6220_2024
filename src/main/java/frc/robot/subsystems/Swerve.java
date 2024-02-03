@@ -27,10 +27,10 @@ public class Swerve extends SubsystemBase {
         gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
 
         mSwerveMods = new SwerveModule[] {
-            new SwerveModule(0, SwerveConstants.Mod0.constants),
-            new SwerveModule(1, SwerveConstants.Mod1.constants),
-            new SwerveModule(2, SwerveConstants.Mod2.constants),
-            new SwerveModule(3, SwerveConstants.Mod3.constants)
+            new SwerveModule(0, SwerveConstants.Mod3.constants),
+            new SwerveModule(1, SwerveConstants.Mod2.constants),
+            new SwerveModule(2, SwerveConstants.Mod1.constants),
+            new SwerveModule(3, SwerveConstants.Mod0.constants)
         };
 
         swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());

@@ -28,16 +28,41 @@ public final class Constants {
         public static final int kDriverRotAxis = 4;
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
-        public static final double kDeadband = 0.1;
+        public static final double kDeadband = 0.05;
 
-        private static double modifyAxis(double value) {
+        public static double modifyMoveAxis(double value) {
             // Deadband
-            value = (Math.abs(value) < kDeadband) ? 0 : value;
+            if(Math.abs(value) < kDeadband) {
+                return 0;
+            }
         
-            // Square the axis
-            value = Math.copySign(value * value, value);
+            // Change the axis
+            double b = .1;
+            double a = .5;
+            double x = value;
+            if(value >=0) {
+                return b + (1-b)*(a*Math.pow(x, 3) + (1-a)*x);
+            } else{
+                return -b + (1-b)*(a*Math.pow(x, 3) + (1-a)*x);
+            }
+            //value = Math.copySign(value * value, value);
         
-            return value;
+            //return value;
+          }
+        public static double modifyRotAxis(double value) {
+            // Deadband
+            if(Math.abs(value) < kDeadband) {
+                return 0;
+            }
+        
+            // Change the axis
+            double b = .05;
+            double a = .2;
+            if(value >=0) {
+                return b + (1-b)*(a*Math.pow(value, 3) + (1-a)*value);
+            } else{
+                return -b + (1-b)*(a*Math.pow(value, 3) + (1-a)*value);
+            }
           }
     }
 
@@ -216,7 +241,6 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         
-        /* Back Left Module - Module 2 */
         //Front Right - Module 2
         public static final class Mod2 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 7;

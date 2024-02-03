@@ -10,12 +10,19 @@ import frc.robot.subsystems.*;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import frc.robot.Constants.OIConstants;
+import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
   /* Controllers */
     private final XboxController driver = new XboxController(0);
 
     /* Drive Controls */
+
+    //Trying to add driver control curves
+    
+
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
@@ -36,9 +43,9 @@ public class RobotContainer {
     s_Swerve.setDefaultCommand(
         new TeleopSwerve(
             s_Swerve, 
-            () -> -driver.getRawAxis(translationAxis), 
-            () -> -driver.getRawAxis(strafeAxis), 
-            () -> -driver.getRawAxis(rotationAxis), 
+            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
+            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)), 
+            () -> OIConstants.modifyRotAxis(-driver.getRawAxis(rotationAxis)), 
             () -> robotCentric.getAsBoolean()
         )
     );
