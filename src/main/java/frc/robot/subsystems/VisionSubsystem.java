@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
-  private static final VisionSubsystem INSTANCE = null;
+  private static VisionSubsystem INSTANCE = null;
   private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   // NetworkTableEntry tx = table.getEntry("tx");
   NetworkTableEntry tx = table.getEntry("tx"); //horizontal offset
@@ -28,17 +28,17 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTableEntry tl = table.getEntry("tl"); //The pipeline's latency contribution (ms). Add to "cl" to get total latency.
   NetworkTableEntry tv = table.getEntry("tv"); //check whetehr the limelight have any valid target
   
-  private final PhotonCamera camera;
-  private PhotonPipelineResult currResult;
-  private boolean hasTargets;
-  private List<PhotonTrackedTarget> targets;
-  private PhotonTrackedTarget bestTarget;
-  private double pitch, yaw, skew, area;
+  // private final PhotonCamera camera;
+  // private PhotonPipelineResult currResult;
+  // private boolean hasTargets;
+  // private List<PhotonTrackedTarget> targets;
+  // private PhotonTrackedTarget bestTarget;
+  // private double pitch, yaw, skew, area;
 
   
   double x = tx.getDouble(0.0);
   double y = ty.getDouble(0.0);
-  boolean v = tv.getBoolean(false);
+  double v = tv.getDouble(0.0);
   
   // ShuffleboardTab tab = Shuffleboard.getTab("Limelight");
   // Check https://docs.limelightvision.io/docs/docs-limelight/apis/complete-networktables-api for details
@@ -55,9 +55,9 @@ public class VisionSubsystem extends SubsystemBase {
   
   /** Creates a new VisionSubsystem. */
   private VisionSubsystem() {
-    this.camera = new PhotonCamera("photonvision");
-      currResult = camera.getLatestResult();
-      hasTargets = currResult.hasTargets();
+    // this.camera = new PhotonCamera("photonvision");
+    //   currResult = camera.getLatestResult();
+    //   hasTargets = currResult.hasTargets();
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     tv = table.getEntry("tv");
@@ -94,32 +94,32 @@ public class VisionSubsystem extends SubsystemBase {
     return x;
   }
 
-  public boolean getTarget()
+  public double getTarget()
   {
-    v = tv.getBoolean(false);
+    v = tv.getDouble(0.0);
     return v;
   }
 
 
   private void updateValues(){
-    currResult = camera.getLatestResult();
-    hasTargets = currResult.hasTargets();
-    targets = currResult.getTargets();
-    bestTarget = currResult.getBestTarget();
-    yaw = bestTarget.getYaw();
-    pitch = bestTarget.getPitch();
-    skew = bestTarget.getSkew();
-    area = bestTarget.getArea();
+    // currResult = camera.getLatestResult();
+    // hasTargets = currResult.hasTargets();
+    // targets = currResult.getTargets();
+    // bestTarget = currResult.getBestTarget();
+    // yaw = bestTarget.getYaw();
+    // pitch = bestTarget.getPitch();
+    // skew = bestTarget.getSkew();
+    // area = bestTarget.getArea();
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("testtx ", NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
       x = tx.getDouble(0.0);
-      v = tv.getBoolean(false);
+      v = tv.getDouble(0.0);
 
        SmartDashboard.putNumber("x", x);
-       SmartDashboard.putBoolean("v", v);
+       SmartDashboard.putNumber("v", v);
       //  tab.add("tx", tx);
       //  tab.add("ty", ty);
       //  tab.add("ta- area", ta);
@@ -127,7 +127,13 @@ public class VisionSubsystem extends SubsystemBase {
       //  tab.add("tv- boolean target", tv);
         
     updateValues();
-    SmartDashboard.putNumber("pitch", pitch);
-    SmartDashboard.putNumber("yaw", yaw);
+    // SmartDashboard.putNumber("pitch", pitch);
+    // SmartDashboard.putNumber("yaw", yaw);
+  }
+
+  public static synchronized VisionSubsystem getInstance(){
+    if(INSTANCE == null)
+      INSTANCE = new VisionSubsystem();
+    return INSTANCE;
   }
 }

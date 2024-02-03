@@ -47,10 +47,11 @@ public class LimelightAssistedSwerveCmd extends Command {
     // steerOutput = (steerOutput > SwerveConstants.maxAngularVelocity) ? SwerveConstants.maxAngularVelocity : (steerOutput < -SwerveConstants.maxAngularVelocity) ? -SwerveConstants.maxAngularVelocity : steerOutput;
     // double steerOutput = Normalization(m_VisionSubsystem.getSteeringOffset(), -180, 180, -1, 1) * SwerveConstants.maxAngularVelocity;
     double steeroutput = 0;
-    if(m_VisionSubsystem.getTarget())
+    if(m_VisionSubsystem.getTarget() == 1.0)
     {
       steeroutput = limelightPidController.calculate(m_VisionSubsystem.getSteeringOffset());
       steeroutput = (steeroutput > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(steeroutput< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:steeroutput;
+      System.out.println("success!");
     }
     else
     {
