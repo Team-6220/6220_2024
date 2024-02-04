@@ -30,35 +30,39 @@ public class ArmTestCommand extends Command{
 
     @Override
     public void execute() {
-        boolean pid = false;
-        double setpoint = 0, raw_value = 0;
-        if(this.aButton.get()){
-            pid = true;
-            setpoint = 0;
-        }else if(this.yButton.get()){
-            pid = true;
-            setpoint = 85;
-        }else if(this.rBumper.get()){
-            pid = true;
-            setpoint = 60;
-        }else if(this.lBumper.get()){
-            pid = true;
-            setpoint = 40;
-        }else if(Math.abs(this.joystick.get()) > .05){
+        double goal = 0, raw_value = 0;
+
+        if(Math.abs(this.joystick.get()) > .05){
             // pid = false;
             raw_value = this.joystick.get() / 2;
+            armSubsystem.simpleDrive(raw_value);
+            return;
         }
-        if(pid){
-            raw_value = armSubsystem.calculate(setpoint);
-            System.out.println("succcesss!!!!");
+
+        boolean moveArm = false;
+
+        if(this.aButton.get()){
+            moveArm = true;
+            goal = 0;
+        }else if(this.yButton.get()){
+            moveArm = true;
+            goal = 85;
+        }else if(this.rBumper.get()){
+            moveArm = true;
+            goal = 60;
+        }else if(this.lBumper.get()){
+            moveArm = true;
+            goal = 40;
         }
         
-        armSubsystem.drive(raw_value);
+        if(moveArm) {
+            armSubsystem.driveToGoal(goal);
+        }
     }
 
     @Override
     public void end(boolean interrupted){
-        armSubsystem.drive(0);
+        armSubsystem.simpleDrive(0);
     }
 
 }
