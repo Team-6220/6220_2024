@@ -26,10 +26,10 @@ public class LimelightAssistedSwerveCmd extends Command {
   public LimelightAssistedSwerveCmd(Swerve s_Swerve, Supplier<Boolean> aButton) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_VisionSubsystem = VisionSubsystem.getInstance();
-    limelightPidController = new PIDController(0.05,0.01,0.01);
+    limelightPidController = new PIDController(0.15,0,0.325);
     this.s_Swerve = s_Swerve;
     this.aButton = aButton;
-    addRequirements(s_Swerve);
+    addRequirements(s_Swerve); 
     addRequirements(m_VisionSubsystem);
   }
 
@@ -50,8 +50,13 @@ public class LimelightAssistedSwerveCmd extends Command {
     if(m_VisionSubsystem.getTarget() == 1.0)
     {
       steeroutput = limelightPidController.calculate(m_VisionSubsystem.getSteeringOffset());
+      
+      if(Math.abs(m_VisionSubsystem.getSteeringOffset()) < 1.5) {
+       steeroutput = 0;
+     }
+
       steeroutput = (steeroutput > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(steeroutput< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:steeroutput;
-      System.out.println("success!");
+      // System.out.println("success!");
     }
     else
     {
@@ -78,6 +83,7 @@ public class LimelightAssistedSwerveCmd extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
+
 
   // Returns true when the command should end.
   @Override
