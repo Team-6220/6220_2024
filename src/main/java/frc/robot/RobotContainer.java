@@ -24,21 +24,21 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    //private final Swerve s_Swerve = new Swerve();
     private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
 
   public RobotContainer() {
     Constants.VisionConstants.setTagHeights();
-
-    s_Swerve.setDefaultCommand(
-        new TeleopSwerve(
-          s_Swerve, 
-          () -> -driver.getRawAxis(translationAxis), 
-          () -> -driver.getRawAxis(strafeAxis), 
-          () -> -driver.getRawAxis(rotationAxis), 
-          () -> robotCentric.getAsBoolean()
-        )
-    );
+    
+    //s_Swerve.setDefaultCommand(
+    //    new TeleopSwerve(
+    //      s_Swerve, 
+    //      () -> -driver.getRawAxis(translationAxis), 
+    //      () -> -driver.getRawAxis(strafeAxis), 
+    //      () -> -driver.getRawAxis(rotationAxis), 
+    //      () -> robotCentric.getAsBoolean()
+    //    )
+    //);
 
     armSubsystem.setDefaultCommand(
       new ArmTestCommand(
@@ -50,11 +50,6 @@ public class RobotContainer {
       )
     );
 
-    // armSubsystem.setDefaultCommand(
-    //   new ArmManuelCmd(
-    //     () -> js1.getY()
-    //   )
-    // );
     configureButtonBindings();
    
   }
