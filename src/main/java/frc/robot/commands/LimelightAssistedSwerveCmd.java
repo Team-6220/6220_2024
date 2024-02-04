@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.VisionSubsystem;
+import frc.lib.util.TunableNumber;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
@@ -23,14 +24,21 @@ public class LimelightAssistedSwerveCmd extends Command {
   private final PIDController limelightPidController;
   private final Supplier<Boolean> aButton;
 
+  private final TunableNumber turnkP = new TunableNumber("turnkP", 0);
+  private final TunableNumber turnkD = new TunableNumber("turnkD", 0);
+  private final TunableNumber turnkI = new TunableNumber("turnkI", 0);
+  private final TunableNumber turnTolerance = new TunableNumber("turnTolerance", 3);
+
   public LimelightAssistedSwerveCmd(Swerve s_Swerve, Supplier<Boolean> aButton) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_VisionSubsystem = VisionSubsystem.getInstance();
-    limelightPidController = new PIDController(0.15,0,0.325);
+    limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
     this.s_Swerve = s_Swerve;
     this.aButton = aButton;
     addRequirements(s_Swerve); 
     addRequirements(m_VisionSubsystem);
+    limelightPidController.setTolerance(turnTolerance.get());
+    limelightPidController.setIZone(4);
   }
 
   // Called when the command is initially scheduled.
@@ -50,21 +58,20 @@ public class LimelightAssistedSwerveCmd extends Command {
     if(m_VisionSubsystem.getTarget() == 1.0)
     {
       steeroutput = limelightPidController.calculate(m_VisionSubsystem.getSteeringOffset());
-      
-      if(Math.abs(m_VisionSubsystem.getSteeringOffset()) < 1.5) {
-       steeroutput = 0;
-     }
 
       steeroutput = (steeroutput > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(steeroutput< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:steeroutput;
       // System.out.println("success!");
+      if(Math.abs(m_VisionSubsystem.getSteeringOffset()) < turnTolerance.get()) {
+        steeroutput = 0;
+      }
     }
     else
     {
       steeroutput = 0;
     }
-    SmartDashboard.putNumber("AFTER steeroutput ",steeroutput);
-    SmartDashboard.putNumber("pid output", limelightPidController.calculate(m_VisionSubsystem.getSteeringOffset()));
-    SmartDashboard.putNumber("steer off set", m_VisionSubsystem.getSteeringOffset());
+    SmartDashboard.putNumber("Steeroutput ",steeroutput);
+    SmartDashboard.putNumber("Raw Pid output", limelightPidController.calculate(m_VisionSubsystem.getSteeringOffset()));
+    SmartDashboard.putNumber("Steer_Offset", m_VisionSubsystem.getSteeringOffset());
     s_Swerve.drive(
             new Translation2d(0d, 0d), 
             // MathUtil.applyDeadband(limelightPidController.calculate(s_Swerve.getHeadingDegrees(),m_VisionSubsystem.getSteeringOffset()), 0), //NOT USABLE UPGRADED
@@ -73,6 +80,15 @@ public class LimelightAssistedSwerveCmd extends Command {
             true, 
             false
         );
+
+    if(turnkP.hasChanged()
+    ||turnkD.hasChanged()
+    ||turnkI.hasChanged()) {
+      limelightPidController.setPID(turnkP.get(),turnkI.get(),turnkD.get());
+    }
+    if(turnTolerance.hasChanged()) {
+      limelightPidController.setTolerance(turnTolerance.get());
+    }
   }
 
   public double Normalization(double v, double Min, double Max, double newMin, double newMax)
