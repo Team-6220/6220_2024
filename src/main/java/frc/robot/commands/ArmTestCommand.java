@@ -25,16 +25,16 @@ public class ArmTestCommand extends Command{
 
     @Override
     public void initialize(){
-
+        
     }
 
     @Override
     public void execute() {
         double goal = 0, raw_value = 0;
 
-        if(Math.abs(this.joystick.get()) > .05){
+        if(Math.abs(this.joystick.get()) > .1){
             // pid = false;
-            raw_value = this.joystick.get() / 2;
+            raw_value = this.joystick.get() / 4;
             armSubsystem.simpleDrive(raw_value);
             return;
         }
@@ -51,12 +51,15 @@ public class ArmTestCommand extends Command{
             moveArm = true;
             goal = 60;
         }else if(this.lBumper.get()){
-            moveArm = true;
-            goal = 40;
+            armSubsystem.resetPid();
+        } else {
+            moveArm = false;
         }
         
         if(moveArm) {
             armSubsystem.driveToGoal(goal);
+        } else {
+            armSubsystem.simpleDrive(0);
         }
     }
 

@@ -24,11 +24,11 @@ public class ArmSubsystem extends SubsystemBase{
     private final TunableNumber armKp = new TunableNumber("Arm kP", 0);
     private final TunableNumber armKi = new TunableNumber("Arm kI", 0);
     private final TunableNumber armKd = new TunableNumber("Arm kD", 0);
-    private final TunableNumber armMaxVel = new TunableNumber("ArmMaxVel", 0);
-    private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", 0);
+    private final TunableNumber armMaxVel = new TunableNumber("ArmMaxVel", 50);
+    private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", 10);
 
     private final TunableNumber armKs = new TunableNumber("Arm kS", 0);
-    private final TunableNumber armKg = new TunableNumber("Arm kG", 0.48);
+    private final TunableNumber armKg = new TunableNumber("Arm kG", 0.05);
     private final TunableNumber armKv = new TunableNumber("Arm kV", 2.34);
 
     private final CANSparkMax armMotorA, armMotorB;
@@ -70,10 +70,12 @@ public class ArmSubsystem extends SubsystemBase{
             );
 
         //Using I only withing 3 degrees of error
-        m_Controller.setIZone(3);
+        m_Controller.setIZone(5);
 
         //Setting Tolerance
-        m_Controller.setTolerance(.2);
+        m_Controller.setTolerance(1.5);
+
+        m_Controller.reset(getArmPosition(), 0);
     }
 
     /**
@@ -106,6 +108,7 @@ public class ArmSubsystem extends SubsystemBase{
             speed = -0.5;
         }
         armMotorA.set(speed);
+        System.out.println(speed);
     }
 
     /**
@@ -113,13 +116,14 @@ public class ArmSubsystem extends SubsystemBase{
      * @param  goal  a position in degrees for the arm
      */
     public void driveToGoal(double goal) {
-        System.out.println("Driving To Goal");
+        
+        System.out.println("Driving To Goal: " + goal);
 
         m_Controller.setGoal(goal);
-        
+        m_Controller.setConstraints(m_Constraints);
         double calculatedSpeed = m_Controller.calculate(getArmPosition())
         + m_Feedforward.calculate(getArmPosition()+90,m_Controller.getSetpoint().velocity);
-
+        //+90 because feed forward want the angle to be 0 at horizontal for gravity calculations
         if(calculatedSpeed > 0.5){
             calculatedSpeed = 0.5;
         }
@@ -128,16 +132,8 @@ public class ArmSubsystem extends SubsystemBase{
         }
 
         armMotorA.set(calculatedSpeed);
-        //+90 because feed forward want the angle to be 0 at horizontal for gravity calculations
     }
-    /**
-     * Calculates the output of the arm PID for a given setpoint
-     * @param  setpoint desired arm position in degrees
-     * @return
-     */
-    public double calculate(double setpoint){
-        return -1 * m_Controller.calculate(getArmPosition(), setpoint);
-    }
+    
     /**
      * Gives the position of the arm in degrees
      * @returns the value in degrees of the arm    
@@ -158,21 +154,29 @@ public class ArmSubsystem extends SubsystemBase{
         if(armKs.hasChanged()
         || armKv.hasChanged()
         || armKg.hasChanged()) {
+            System.out.println("New Feed Forward" + armKv.get());
             m_Feedforward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
         }
 
         if(armMaxVel.hasChanged()
         || armMaxAccel.hasChanged()) {
             m_Constraints = new TrapezoidProfile.Constraints(armMaxVel.get(), armMaxAccel.get());
+            m_Controller.setConstraints(m_Constraints);
+            m_Controller.reset(getArmPosition());
+            System.out.println("New Constraints");
         }
         SmartDashboard.putNumber("Arm Angle", getArmPosition());
         SmartDashboard.putNumber("Controller Goal", m_Controller.getGoal().position);
         SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
-        SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition())
-            + m_Feedforward.calculate(getArmPosition()+90,m_Controller.getSetpoint().velocity));
+        SmartDashboard.putNumber("FeedForward Output", m_Feedforward.calculate(getArmPosition()+90,m_Controller.getSetpoint().velocity));
+        SmartDashboard.putNumber("Arm PID Out", m_Controller.calculate(getArmPosition()));
+        SmartDashboard.putNumber("Arm PID SETPOINT", m_Controller.getSetpoint().position);
+        SmartDashboard.putBoolean("At Goal", m_Controller.atGoal());
         
     }
-
+    public void resetPid() {
+        m_Controller.reset(getArmPosition());
+    }
     /**
      * Accesses the static instance of the ArmSubsystem singleton
      * @return ArmSubsystem Singleton Instance
