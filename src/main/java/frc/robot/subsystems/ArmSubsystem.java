@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.*;
+import frc.lib.util.TunableNumber;
 // import frc.robot.Constants.ArmConstants;
 
 import com.revrobotics.CANSparkMax;
@@ -14,6 +15,10 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 public class ArmSubsystem extends SubsystemBase{
     private static ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
     // created at all time. Think of it as a "static" call to the subsystem where you can get static variables
+
+    private final TunableNumber armKp = new TunableNumber("Arm kP", 0);
+    private final TunableNumber armKi = new TunableNumber("Arm kI", 0);
+    private final TunableNumber armKd = new TunableNumber("Arm kD", 0);
 
     private final CANSparkMax armMotorA, armMotorB;
     private final DutyCycleEncoder armEncoder;
@@ -40,9 +45,10 @@ public class ArmSubsystem extends SubsystemBase{
         this.armMotorB.burnFlash();
 
         this.pid = new PIDController(
-            ArmConstants.kP,
-            ArmConstants.kI,
-            ArmConstants.kD);
+            armKp.get(),
+            armKi.get(),
+            armKd.get()
+            );
     }
 
     /**
@@ -97,6 +103,12 @@ public class ArmSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
          // This method will be called once per scheduler run
+        if(armKp.hasChanged()
+        || armKi.hasChanged()
+        || armKd.hasChanged())
+        {
+            pid.setPID(armKp.get(),armKi.get(),armKd.get());
+        }
          SmartDashboard.putNumber("Arm Angle", getArmPosition());
     }
 

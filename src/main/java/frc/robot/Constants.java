@@ -19,6 +19,8 @@ import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
+    
+    public static boolean TUNING_MODE = true;
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
@@ -51,9 +53,9 @@ public final class Constants {
         public static final boolean motorBInverted = true;
 
         //FIXME: set pid values
-        public static final double kP = 0.009;
-        public static final double kI = 0.0005;
-        public static final double kD = 0.001;
+        public static final double kP = 0; //0.009
+        public static final double kI = 0;//0.0005
+        public static final double kD = 0;//0.001
 
         //FIXME: create lookup table
         public static final double [][] armLookupTable = {
