@@ -22,8 +22,6 @@ public final class Constants {
     
     public static boolean TUNING_MODE = true;
 
-    public static boolean TUNING_MODE = true;
-
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
 
