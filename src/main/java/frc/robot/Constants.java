@@ -20,6 +20,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
 
+    public static final boolean TUNING_MODE = true;
+
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
 
@@ -126,6 +128,13 @@ public final class Constants {
 
     public static final class SwerveConstants {
         public static final int pigeonID = 1;
+
+        public static final double translation_kP = 0.0;
+        public static final double translation_kI = 0.0;
+        public static final double translation_kD = 0.0;
+        public static final double rotation_kP = 0.0;
+        public static final double rotation_kI = 0.0;
+        public static final double rotation_kD = 0.0;
 
         public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
