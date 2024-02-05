@@ -36,20 +36,8 @@ public class VisionSubsystem extends SubsystemBase {
     return INSTANCE;
   }
 
-  private void updateValues(){
-    currResult = camera.getLatestResult();
-    hasTargets = currResult.hasTargets();
-    targets = currResult.getTargets();
-    bestTarget = currResult.getBestTarget();
-    yaw = bestTarget.getYaw();
-    pitch = bestTarget.getPitch();
-    skew = bestTarget.getSkew();
-    area = bestTarget.getArea();
-  }
-
   @Override
   public void periodic() {
-    updateValues();
     SmartDashboard.putNumber("pitch", pitch);
     SmartDashboard.putNumber("yaw", yaw);
   }
