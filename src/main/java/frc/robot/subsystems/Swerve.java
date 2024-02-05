@@ -54,6 +54,7 @@ public class Swerve extends SubsystemBase {
         turnPidController = new ProfiledPIDController(turnKP.get(), turnKI.get(), turnKD.get(), new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
         turnPidController.setIZone(Constants.SwerveConstants.turnIZone);
         turnPidController.setTolerance(Constants.SwerveConstants.turnTolerance);
+        turnPidController.enableContinuousInput(0, 360);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -129,6 +130,10 @@ public class Swerve extends SubsystemBase {
 
     public boolean isAutoTurning() {
         return isAutoTurning;
+    }
+
+    public boolean isFacingTurnTarget() {
+        return turnPidController.atGoal();
     }
 
     public void setIsAutoTurning(boolean state) {

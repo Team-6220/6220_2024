@@ -28,6 +28,17 @@ public class TurnToHeading extends Command {
         s_Swerve.setAutoTurnHeading(heading);
     }
 
+    public void setHeading(double heading) {
+        this.heading = heading;
+    }
+
+    public boolean isFacingHeading() {
+        if(s_Swerve.isFacingTurnTarget()) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void end(boolean interrupted) {
         s_Swerve.setIsAutoTurning(false);
