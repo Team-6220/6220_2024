@@ -37,12 +37,22 @@ public class TeleopSwerve extends Command {
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), OIConstants.kDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), OIConstants.kDeadband);
 
-        /* Drive */
-        s_Swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
-            rotationVal * SwerveConstants.maxAngularVelocity, 
-            !robotCentricSup.getAsBoolean(), 
-            true
-        );
+        if(!s_Swerve.isAutoTurning()) {
+            /* Drive */
+            s_Swerve.drive(
+                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
+                rotationVal * SwerveConstants.maxAngularVelocity, 
+                !robotCentricSup.getAsBoolean(), 
+                true
+            );
+        } else {
+            s_Swerve.drive(
+                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
+                s_Swerve.getTurnPidSpeed(), 
+                !robotCentricSup.getAsBoolean(), 
+                true
+            );
+        }
+        
     }
 }

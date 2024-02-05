@@ -20,6 +20,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
 
+    public static boolean TUNING_MODE = true;
+
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
 
@@ -209,6 +211,16 @@ public final class Constants {
         public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
         public static final double driveKV = 1.51;
         public static final double driveKA = 0.27;
+
+
+        //Turning Pid Constants
+        public static final double turnKP = 0;
+        public static final double turnKD = 0;
+        public static final double turnKI = 0;
+        public static final double turnMaxVel = 0;
+        public static final double turnMaxAccel = 0;
+        public static final double turnTolerance = 2;
+        public static final double turnIZone = 1;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
