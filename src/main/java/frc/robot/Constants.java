@@ -115,6 +115,9 @@ public final class Constants {
         public static final int shooterMotorAID = 0;
         public static final int shooterMotorBID = 0;
 
+        public static final boolean motorAInverted = false;
+        public static final boolean motorBInverted = true;
+
         //FIXME: set break beam port
         public static final int breakBeamPort = 0;
 
@@ -122,7 +125,9 @@ public final class Constants {
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kFF = 0;
+        public static final double kFFkS = 0;
+        public static final double kFFkV = 0;
+        public static final double kFFkA = 0;
 
         //FIXME: create lookup table
         public static final double [][] shooterLookupTable = {
