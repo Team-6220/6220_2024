@@ -21,23 +21,20 @@ public class ArmSubsystem extends SubsystemBase{
     private static ArmSubsystem INSTANCE = null; //Created so that only 1 instance of arm subsystem is 
     // created at all time. Think of it as a "static" call to the subsystem where you can get static variables
 
-    private final TunableNumber armKp = new TunableNumber("Arm kP", 0);
-    private final TunableNumber armKi = new TunableNumber("Arm kI", 0);
-    private final TunableNumber armKd = new TunableNumber("Arm kD", 0);
-    private final TunableNumber armMaxVel = new TunableNumber("ArmMaxVel", 0);
-    private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", 0);
+    private final TunableNumber armKp = new TunableNumber("Arm kP", ArmConstants.kP);
+    private final TunableNumber armKi = new TunableNumber("Arm kI", ArmConstants.kI);
+    private final TunableNumber armKd = new TunableNumber("Arm kD", ArmConstants.kD);
+    private final TunableNumber armMaxVel = new TunableNumber("ArmMaxVel", ArmConstants.armMaxVel);
+    private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", ArmConstants.armMaxAccel);
 
-    private final TunableNumber armKs = new TunableNumber("Arm kS", 0);
-    private final TunableNumber armKg = new TunableNumber("Arm kG", 0.48);
-    private final TunableNumber armKv = new TunableNumber("Arm kV", 2.34);
+    TunableNumber armTestSetpoint = new TunableNumber("Arm Degree Goal Set", 0);
 
     private final CANSparkMax armMotorA, armMotorB;
     private final DutyCycleEncoder armEncoder;
-
+    private double armTestGoal = 0;
     
     private final ProfiledPIDController m_Controller;
     private TrapezoidProfile.Constraints m_Constraints;
-    private ArmFeedforward m_Feedforward;
 
     /**
      * Initializes the ArmSubsystem
@@ -60,7 +57,6 @@ public class ArmSubsystem extends SubsystemBase{
         armMotorB.burnFlash();
 
         m_Constraints = new TrapezoidProfile.Constraints(armMaxVel.get(), armMaxAccel.get());
-        m_Feedforward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
 
         m_Controller = new ProfiledPIDController(
             armKp.get(),
@@ -108,6 +104,11 @@ public class ArmSubsystem extends SubsystemBase{
         armMotorA.set(speed);
     }
 
+    //For testing
+    public void driveToGoal() {
+        driveToGoal(armTestGoal);
+    }
+
     /**
      * Sets the goal for the controller and drives motors
      * @param  goal  a position in degrees for the arm
@@ -117,8 +118,7 @@ public class ArmSubsystem extends SubsystemBase{
 
         m_Controller.setGoal(goal);
         
-        double calculatedSpeed = m_Controller.calculate(getArmPosition())
-        + m_Feedforward.calculate(getArmPosition()+90,m_Controller.getSetpoint().velocity);
+        double calculatedSpeed = m_Controller.calculate(getArmPosition());
 
         if(calculatedSpeed > 0.5){
             calculatedSpeed = 0.5;
@@ -155,11 +155,6 @@ public class ArmSubsystem extends SubsystemBase{
         {
             m_Controller.setPID(armKp.get(),armKi.get(),armKd.get());
         }
-        if(armKs.hasChanged()
-        || armKv.hasChanged()
-        || armKg.hasChanged()) {
-            m_Feedforward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
-        }
 
         if(armMaxVel.hasChanged()
         || armMaxAccel.hasChanged()) {
@@ -168,9 +163,11 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Arm Angle", getArmPosition());
         SmartDashboard.putNumber("Controller Goal", m_Controller.getGoal().position);
         SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
-        SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition())
-            + m_Feedforward.calculate(getArmPosition()+90,m_Controller.getSetpoint().velocity));
+        SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition()));
         
+        if(armTestSetpoint.hasChanged()) {
+            armTestGoal = armTestSetpoint.get();
+        }
     }
 
     /**

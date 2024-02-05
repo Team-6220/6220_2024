@@ -53,9 +53,11 @@ public final class Constants {
         public static final boolean motorBInverted = true;
 
         //FIXME: set pid values
-        public static final double kP = 0; //0.009
-        public static final double kI = 0;//0.0005
+        public static final double kP = .035; //0.009
+        public static final double kI = 0.01;//0.0005
         public static final double kD = 0;//0.001
+        public static final double armMaxVel = 65;
+        public static final double armMaxAccel = 85;
 
         //FIXME: create lookup table
         public static final double [][] armLookupTable = {
@@ -192,6 +194,15 @@ public final class Constants {
         public static final double driveKV = 1.51;
         public static final double driveKA = 0.27;
 
+        //Turning Pid Constants
+        public static final double turnKP = 0;
+        public static final double turnKD = 0;
+        public static final double turnKI = 0;
+        public static final double turnMaxVel = 0;
+        public static final double turnMaxAccel = 0;
+        public static final double turnTolerance = 2;
+        public static final double turnIZone = 1;
+        
         /* Swerve Profiling Values */
         /** Meters per Second */
         public static final double maxSpeed = 6380.0 / 60.0 * wheelCircumference * driveGearRatio;
@@ -201,7 +212,7 @@ public final class Constants {
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-
+        
         /* Module Specific Constants */
         // Back Right Module 0
         public static final class Mod0 { //FIXME: This must be tuned to specific robot

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.util.TunableNumber;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmTestCommand extends Command{
@@ -11,6 +12,8 @@ public class ArmTestCommand extends Command{
     private final Supplier<Boolean> aButton, yButton, rBumper, lBumper;
 
     private final Supplier<Double> joystick;
+
+    
 
     public ArmTestCommand(Supplier<Boolean> aB, Supplier<Boolean> yB, Supplier<Boolean> lBump,Supplier<Boolean> rBump, Supplier<Double> js){
         this.armSubsystem = ArmSubsystem.getInstance();
