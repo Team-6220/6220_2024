@@ -27,8 +27,8 @@ public class ArmCommand extends Command {
   private final Supplier<Boolean> rJB, lJB;
   
   //Creates a new ArmCommand
-  public ArmCommand(ArmSubsystem armSub, Supplier<Boolean> aB, Supplier<Boolean> yB, Supplier<Boolean> lBump,Supplier<Boolean> rBump, Supplier<Boolean> lJB, Supplier<Boolean> rJB) {
-    this.armSubsystem = armSub;
+  public ArmCommand(Supplier<Boolean> aB, Supplier<Boolean> yB, Supplier<Boolean> lBump,Supplier<Boolean> rBump, Supplier<Boolean> lJB, Supplier<Boolean> rJB) {
+    this.armSubsystem = ArmSubsystem.getInstance();
     this.aButton = aB;
     this.yButton = yB;
     this.rBumper = rBump;
