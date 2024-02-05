@@ -13,12 +13,17 @@ public class AimToSpeaker extends Command {
   private TurnToHeading turnToHeading;
   private VisionSubsystem s_VisionSubsystem;
 
+  private double targetHeading;
+  private boolean hasSeenTarget;
+
   private Swerve s_Swerve;    
     
     public AimToSpeaker(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
         s_VisionSubsystem = VisionSubsystem.getInstance();
+        hasSeenTarget = false;
+        targetHeading = 180;
     }
 
   // Called when the command is initially scheduled.
@@ -33,9 +38,8 @@ public class AimToSpeaker extends Command {
   @Override
   public void execute() {
     double newHeading;
-    if(s_VisionSubsystem.hasTarget()) {
+    if(!hasSeenTarget && s_VisionSubsystem.hasTarget()) {
       newHeading = s_Swerve.getHeading().getDegrees() - s_VisionSubsystem.getSteeringOffset();
-      
     } else {
       //Add a more sophisticated system
       newHeading = 180;
@@ -62,6 +66,6 @@ public class AimToSpeaker extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFacingSpeaker();
   }
 }

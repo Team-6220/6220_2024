@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import java.sql.Driver;
 import java.util.HashMap;
+import java.util.Optional;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,12 +17,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
 
     public static boolean TUNING_MODE = true;
+
+    public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
@@ -149,6 +154,17 @@ public final class Constants {
             tagHeights.put(15, 47.5);
             tagHeights.put(16, 47.5);
         }
+
+        public static final double speakerTagID = ALLIANCE_COLOR.isPresent()
+                                            ?
+                                                ALLIANCE_COLOR.get() == DriverStation.Alliance.Red
+                                                ?
+                                                    4d
+                                                :
+                                                    7d
+                                            :
+                                                -1d;
+                                                     
     }
 
     public static final class SwerveConstants {

@@ -82,9 +82,9 @@ public class VisionSubsystem extends SubsystemBase {
   public double getdistanceFromLimelightToGoalInches()
   {
     yOffset = ty.getDouble(0.0);
-      double verticalOffset = yOffset; //add anything if needed
-      double angle = (verticalOffset+limelightMountAngleDegrees)*(3.14159/180);
-      distanceFromLimelightToGoalInches = (targetHeight-heightOfCamAboveFloor)/Math.tan(angle);
+    double verticalOffset = yOffset; //add anything if needed
+    double angle = (verticalOffset+limelightMountAngleDegrees)*(3.14159/180);
+    distanceFromLimelightToGoalInches = (targetHeight-heightOfCamAboveFloor)/Math.tan(angle);
     return distanceFromLimelightToGoalInches;
   }
 
@@ -103,6 +103,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  public double getTargetID(){
+    return table.getEntry("tid").getDouble(-1);
+  }
+
 
   private void updateValues(){
     // currResult = camera.getLatestResult();
@@ -118,20 +122,13 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("testtx ", NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
-      xOffset = tx.getDouble(0.0);
-      validTarget = tv.getDouble(0.0);
+    xOffset = tx.getDouble(0.0);
+    validTarget = tv.getDouble(0.0);
 
-       SmartDashboard.putNumber("xOffset", xOffset);
-       SmartDashboard.putNumber("validTarget", validTarget);
-      //  tab.add("tx", tx);
-      //  tab.add("ty", ty);
-      //  tab.add("ta- area", ta);
-      //  tab.add("tl latency", tl);
-      //  tab.add("tv- boolean target", tv);
+    SmartDashboard.putNumber("xOffset", xOffset);
+    SmartDashboard.putNumber("validTarget", validTarget);
         
     updateValues();
-    // SmartDashboard.putNumber("pitch", pitch);
-    // SmartDashboard.putNumber("yaw", yaw);
   }
 
   public static synchronized VisionSubsystem getInstance(){

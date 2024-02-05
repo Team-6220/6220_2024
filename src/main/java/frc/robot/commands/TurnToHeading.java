@@ -43,4 +43,9 @@ public class TurnToHeading extends Command {
     public void end(boolean interrupted) {
         s_Swerve.setIsAutoTurning(false);
     }
+
+    @Override
+    public boolean isFinished(){
+        return isFacingHeading();
+    }
 }
