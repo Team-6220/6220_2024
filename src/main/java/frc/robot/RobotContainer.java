@@ -2,7 +2,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +27,7 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -56,6 +59,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+    zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(new Translation2d(0,0), s_Swerve.getGyroYaw()))));
   }
 
   public Command getAutonomousCommand() {
