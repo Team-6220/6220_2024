@@ -5,14 +5,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 public class ShooterSubsystem extends SubsystemBase{
-<<<<<<< HEAD
 
     private static ShooterSubsystem INSTANCE = null;
     private TalonFX shooterMotorA;
     private TalonFX shooterMotorB;
-=======
-    private static ShooterSubsystem INSTANCE = null;
->>>>>>> main
 
     private ShooterSubsystem() {
       shooterMotorA = new TalonFX(ShooterConstants.shooterMotorAID);
