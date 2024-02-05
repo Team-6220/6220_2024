@@ -214,11 +214,11 @@ public final class Constants {
 
 
         //Turning Pid Constants
-        public static final double turnKP = 0;
+        public static final double turnKP = 6;
         public static final double turnKD = 0;
-        public static final double turnKI = 0;
-        public static final double turnMaxVel = 0;
-        public static final double turnMaxAccel = 0;
+        public static final double turnKI = 1;
+        public static final double turnMaxVel = 400;
+        public static final double turnMaxAccel = 800;
         public static final double turnTolerance = 2;
         public static final double turnIZone = 1;
 

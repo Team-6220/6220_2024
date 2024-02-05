@@ -17,7 +17,7 @@ public class AimToSpeaker extends Command {
     
     public AimToSpeaker(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
-        addRequirements(s_Swerve);
+        //addRequirements(s_Swerve);
         s_VisionSubsystem = VisionSubsystem.getInstance();
     }
 
@@ -38,10 +38,10 @@ public class AimToSpeaker extends Command {
       
     } else {
       //Add a more sophisticated system
-      newHeading = 180;
+      newHeading = 90;
     }
     turnToHeading.setHeading(newHeading);
-
+    turnToHeading.execute();
     SmartDashboard.putBoolean("Is Facing Speaker", isFacingSpeaker());
   }
 
