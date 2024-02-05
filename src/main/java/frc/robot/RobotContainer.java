@@ -5,9 +5,15 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+<<<<<<< HEAD
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
+=======
+import frc.robot.Constants.OIConstants;
+import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Swerve;
+>>>>>>> main
 
 public class RobotContainer {
   /* Controllers */
@@ -15,6 +21,10 @@ public class RobotContainer {
     private final Joystick js1 = new Joystick(1);
 
     /* Drive Controls */
+
+    //Trying to add driver control curves
+    
+
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
@@ -41,6 +51,7 @@ public class RobotContainer {
     //    )
     //);
 
+<<<<<<< HEAD
     armSubsystem.setDefaultCommand(
       new ArmTestCommand(
         () -> driver.getAButton(),
@@ -49,6 +60,16 @@ public class RobotContainer {
         () -> driver.getRightBumper(),
         () -> js1.getY()
       )
+=======
+    s_Swerve.setDefaultCommand(
+        new TeleopSwerve(
+            s_Swerve, 
+            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
+            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)), 
+            () -> OIConstants.modifyRotAxis(-driver.getRawAxis(rotationAxis)), 
+            () -> robotCentric.getAsBoolean()
+        )
+>>>>>>> main
     );
     
 
