@@ -101,7 +101,7 @@ public final class Constants {
 
     public static final class IntakeConstants{
         //FIXME: set id
-        public static final int intakeMotorID = 0;
+        public static final int intakeMotorID = 15;
 
         //FIXME: set break beam port
         public static final int breakBeamPort = 0;
@@ -112,11 +112,11 @@ public final class Constants {
 
     public static final class ShooterConstants{
         //FIXME: set motor IDs
-        public static final int shooterMotorAID = 0;
-        public static final int shooterMotorBID = 0;
+        public static final int shooterMotorAID = 16;
+        public static final int shooterMotorBID = 17;
 
-        public static final boolean motorAInverted = false;
-        public static final boolean motorBInverted = true;
+        public static final boolean motorAInverted = true;
+        public static final boolean motorBInverted = false;
 
         //FIXME: set break beam port
         public static final int breakBeamPort = 0;
