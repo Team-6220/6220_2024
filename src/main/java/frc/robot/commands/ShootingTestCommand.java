@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.util.TunableNumber;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -12,6 +13,10 @@ public class ShootingTestCommand extends Command {
 
   ArmSubsystem armSubsystem;
   ShooterSubsystem shooterSubsystem;
+
+  TunableNumber armAngle = new TunableNumber("Shooter Test Arm Setpoint", 0);
+  TunableNumber shooterVelocity = new TunableNumber("Shooter Test Velocity", 0);
+
   /** Creates a new ShootingTest. */
 
   public ShootingTestCommand() {
@@ -22,8 +27,8 @@ public class ShootingTestCommand extends Command {
 
   @Override
   public void execute() {
-    armSubsystem.driveToGoal(65);
-    shooterSubsystem.spinToVelocity(180);
+    armSubsystem.driveToGoal(armAngle.get());
+    shooterSubsystem.spinToVelocity(shooterVelocity.get());
   }
 
   @Override
