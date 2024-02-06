@@ -24,11 +24,10 @@ public class ArmSubsystem extends SubsystemBase{
     private final TunableNumber armMaxVel = new TunableNumber("ArmMaxVel", ArmConstants.armMaxVel);
     private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", ArmConstants.armMaxAccel);
 
-    TunableNumber armTestSetpoint = new TunableNumber("Arm Degree Goal Set", 0);
+    public final TunableNumber armTestAngle = new TunableNumber("Arm Degree Goal Set", 0);
 
     private final CANSparkMax armMotorA, armMotorB;
     private final DutyCycleEncoder armEncoder;
-    private double armTestGoal = 0;
     
     private final ProfiledPIDController m_Controller;
     private TrapezoidProfile.Constraints m_Constraints;
@@ -101,11 +100,6 @@ public class ArmSubsystem extends SubsystemBase{
         armMotorA.set(speed);
     }
 
-    //For testing
-    public void driveToGoal() {
-        driveToGoal(armTestGoal);
-    }
-
     /**
      * Sets the goal for the controller and drives motors
      * @param  goal  a position in degrees for the arm
@@ -166,10 +160,6 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Controller Goal", m_Controller.getGoal().position);
         SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
         SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition()));
-        
-        if(armTestSetpoint.hasChanged()) {
-            armTestGoal = armTestSetpoint.get();
-        }
     }
 
     /**

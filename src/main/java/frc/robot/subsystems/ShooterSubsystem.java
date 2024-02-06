@@ -20,6 +20,8 @@ public class ShooterSubsystem extends SubsystemBase{
     private final TunableNumber Ks = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkS);
     private final TunableNumber Kv = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkV);
     private final TunableNumber Ka = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkA);
+    
+    public final TunableNumber shooterTestVelocity = new TunableNumber("Shooter Test Velocity Target", 0);
 
     private PIDController m_controllerA, m_controllerB;
 
