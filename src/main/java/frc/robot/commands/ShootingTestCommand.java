@@ -4,37 +4,31 @@
 
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
-
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ShootingTest extends Command {
-
-  private final Supplier<Boolean> bButton;
+public class ShootingTestCommand extends Command {
 
   ArmSubsystem armSubsystem;
   ShooterSubsystem shooterSubsystem;
   /** Creates a new ShootingTest. */
 
-  public ShootingTest(Supplier<Boolean> bB) {
-    
+  public ShootingTestCommand() {
     armSubsystem = ArmSubsystem.getInstance();
     shooterSubsystem = ShooterSubsystem.getInstance();
     addRequirements(armSubsystem, shooterSubsystem);
-
-    bButton = bB;
   }
 
   @Override
-    public void execute() {
-      armSubsystem.driveToGoal();
-      
-    }
+  public void execute() {
+    armSubsystem.driveToGoal(65);
+    shooterSubsystem.spinToVelocity(180);
+  }
+
+  @Override
+  public void end(boolean interrupted){
+    armSubsystem.stop();
+    shooterSubsystem.stop();
+  }
 }

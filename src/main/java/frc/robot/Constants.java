@@ -128,6 +128,7 @@ public final class Constants {
         public static final double kFFkS = 0;
         public static final double kFFkV = 0;
         public static final double kFFkA = 0;
+        public static final double kFFdt = 3;
 
         //FIXME: create lookup table
         public static final double [][] shooterLookupTable = {

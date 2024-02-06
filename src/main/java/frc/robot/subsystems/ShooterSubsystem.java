@@ -4,9 +4,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.TunableNumber;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ShooterConstants;
 public class ShooterSubsystem extends SubsystemBase{
 
@@ -20,10 +20,11 @@ public class ShooterSubsystem extends SubsystemBase{
     private final TunableNumber Ks = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkS);
     private final TunableNumber Kv = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkV);
     private final TunableNumber Ka = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkA);
+    private final TunableNumber Kdtseconds = new TunableNumber("Shooter FF dt", ShooterConstants.kFFdt);
 
-    private PIDController m_controller;
+    private PIDController m_controllerA, m_controllerB;
 
-    private SimpleMotorFeedforward feedforward;
+    private SimpleMotorFeedforward feedforwardA, feedforwardB;
 
     private ShooterSubsystem() {
         shooterMotorA = new TalonFX(ShooterConstants.shooterMotorAID);
@@ -32,21 +33,40 @@ public class ShooterSubsystem extends SubsystemBase{
         shooterMotorA.setInverted(ShooterConstants.motorAInverted);
         shooterMotorB.setInverted(ShooterConstants.motorBInverted);
 
-        m_controller = new PIDController(Kp.get(), Ki.get(), Kd.get());
+        m_controllerA = new PIDController(Kp.get(), Ki.get(), Kd.get());
+        m_controllerB = new PIDController(Kp.get(), Ki.get(), Kd.get());
 
-        feedforward = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
+        feedforwardA = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
+        feedforwardB = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
     }
 
     public double getVelocity(){
-        return 0;
+        return shooterMotorA.getVelocity().getValueAsDouble() * 60;
     }
 
-    public double calculate(double setpoint){
-        return m_controller.calculate(getVelocity(), setpoint) + feedforward.calculate(getVelocity(), setpoint, 1);
+    public double[] calculate(double setpoint){
+        double[] outs = {
+            m_controllerA.calculate(getVelocity(), setpoint) + feedforwardA.calculate(getVelocity(), setpoint, Kdtseconds.get()),
+            m_controllerB.calculate(getVelocity(), setpoint) + feedforwardB.calculate(getVelocity(), setpoint, Kdtseconds.get())
+        };
+        return outs;
     }
 
     public void spinToVelocity(double velocity){
-        
+        double[] calculatedOutputs = calculate(velocity);
+        shooterMotorA.set(calculatedOutputs[0]);
+        shooterMotorB.set(calculatedOutputs[1]);
+        SmartDashboard.putNumber("Target Velocity", velocity);
+    }
+
+    public void spinManually(double output){
+        shooterMotorA.set(output);
+        shooterMotorB.set(output);
+    }
+
+    public void stop(){
+        shooterMotorA.set(0);
+        shooterMotorB.set(0);
     }
 
     @Override
@@ -55,14 +75,19 @@ public class ShooterSubsystem extends SubsystemBase{
             || Ki.hasChanged()
             || Kd.hasChanged()
         ){
-            m_controller.setPID(Kp.get(),Ki.get(),Kd.get());
+            m_controllerA.setPID(Kp.get(),Ki.get(),Kd.get());
+            m_controllerB.setPID(Kp.get(),Ki.get(),Kd.get());
         }
         if(Ks.hasChanged()
             || Kv.hasChanged()
             || Ka.hasChanged()
         ){
-            feedforward = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
+            feedforwardA = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
+            feedforwardB = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
         }
+
+        SmartDashboard.putNumber("Flywheel A Velocity", shooterMotorA.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Flywheel B Velocity", shooterMotorB.getVelocity().getValueAsDouble());
     }
 
     public static ShooterSubsystem getInstance() {
