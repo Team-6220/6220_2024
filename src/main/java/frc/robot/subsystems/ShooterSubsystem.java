@@ -20,7 +20,6 @@ public class ShooterSubsystem extends SubsystemBase{
     private final TunableNumber Ks = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkS);
     private final TunableNumber Kv = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkV);
     private final TunableNumber Ka = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkA);
-    private final TunableNumber Kdtseconds = new TunableNumber("Shooter FF dt", ShooterConstants.kFFdt);
 
     private PIDController m_controllerA, m_controllerB;
 
@@ -46,8 +45,8 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public double[] calculate(double setpoint){
         double[] outs = {
-            m_controllerA.calculate(getVelocity(), setpoint) + feedforwardA.calculate(getVelocity(), setpoint, Kdtseconds.get()),
-            m_controllerB.calculate(getVelocity(), setpoint) + feedforwardB.calculate(getVelocity(), setpoint, Kdtseconds.get())
+            m_controllerA.calculate(getVelocity(), setpoint) + feedforwardA.calculate(setpoint),
+            m_controllerB.calculate(getVelocity(), setpoint) + feedforwardB.calculate(setpoint)
         };
         return outs;
     }
