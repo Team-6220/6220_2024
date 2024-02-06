@@ -124,6 +124,34 @@ public final class Constants {
 
     }
 
+    public static final class PhotonVisionConstants{
+        // Constants such as camera and target height stored. Change per robot and goal!
+        public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24); //TODO: DELTE AFTER DONE -- Change this accoridngly
+        public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5); //TODO: DELTE AFTER DONE -- Change this accoridngly
+        // Angle between horizontal and the camera.
+        public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0); //TODO: DELTE AFTER DONE -- Change this accoridngly
+
+        // How far from the target we want to be
+        
+        // PID constants should be tuned per robot
+        // public static final double LINEAR_P = 0.1;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double LINEAR_I = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double LINEAR_D = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double LINEAR_IZONE = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double LINEAR_MAXIMUMACCEL = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double LINEAR_MAXVEL = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double LINEAR_Tolerance = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+
+        // public static final double ANGULAR_P = 0.1;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double ANGULAR_I = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double ANGULAR_D = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double ANGULAR_IZONE = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double ANGULAR_MAXIMUMACCEL = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double ANGULAR_MAXVEL = 0.0; //TODO: DELTE AFTER DONE -- Change this accoridngly
+        // public static final double ANGULAR_Tolerance = 0.0;//TODO: DELTE AFTER DONE -- Change this accoridngly
+
+    }
+
     public static final class VisionConstants{
         //FIXME: set limelight values
         public static final double limelightHeightInches = 0;

@@ -40,7 +40,8 @@ public class VisionSubsystem extends SubsystemBase {
   double yOffset = ty.getDouble(0.0);
   double validTarget = tv.getDouble(0.0);
   
-  // ShuffleboardTab tab = Shuffleboard.getTab("Limelight");
+  ShuffleboardTab tab = Shuffleboard.getTab("Limelight");
+
   // Check https://docs.limelightvision.io/docs/docs-limelight/apis/complete-networktables-api for details
   
   private double distanceFromLimelightToGoalInches;
@@ -56,17 +57,18 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   private VisionSubsystem() {
     // this.camera = new PhotonCamera("photonvision");
-    //   currResult = camera.getLatestResult();
-    //   hasTargets = currResult.hasTargets();
+    // currResult = camera.getLatestResult();
+    // hasTargets = currResult.hasTargets();
+
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     tv = table.getEntry("tv");
 
-  //  tab.add("tx", tx);
-  //  tab.add("ty", ty);
-  //  tab.add("ta- area", ta);
-  //  tab.add("tl latency", tl);
-  //  tab.add("tv- boolean target", tv);
+   tab.add("tx", tx);
+   tab.add("ty", ty);
+   tab.add("ta- area", ta);
+   tab.add("tl latency", tl);
+   tab.add("tv- boolean target", tv);
 
   }
 
@@ -104,16 +106,16 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
 
-  private void updateValues(){
-    // currResult = camera.getLatestResult();
-    // hasTargets = currResult.hasTargets();
-    // targets = currResult.getTargets();
-    // bestTarget = currResult.getBestTarget();
-    // yaw = bestTarget.getYaw();
-    // pitch = bestTarget.getPitch();
-    // skew = bestTarget.getSkew();
-    // area = bestTarget.getArea();
-  }
+  // private void updateValues(){
+  //   currResult = camera.getLatestResult();
+  //   hasTargets = currResult.hasTargets();
+  //   targets = currResult.getTargets();
+  //   bestTarget = currResult.getBestTarget();
+  //   yaw = bestTarget.getYaw();
+  //   pitch = bestTarget.getPitch();
+  //   skew = bestTarget.getSkew();
+  //   area = bestTarget.getArea();
+  // }
 
   @Override
   public void periodic() {
@@ -129,7 +131,7 @@ public class VisionSubsystem extends SubsystemBase {
       //  tab.add("tl latency", tl);
       //  tab.add("tv- boolean target", tv);
         
-    updateValues();
+    // updateValues();
     // SmartDashboard.putNumber("pitch", pitch);
     // SmartDashboard.putNumber("yaw", yaw);
   }

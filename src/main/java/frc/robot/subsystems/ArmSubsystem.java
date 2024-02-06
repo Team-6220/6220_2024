@@ -95,7 +95,7 @@ public class ArmSubsystem extends SubsystemBase{
      * @return ArmSubsystem Singleton Instance
      */
     public static ArmSubsystem getInstance() {
-        if (INSTANCE == null) {
+            if (INSTANCE == null) {
             INSTANCE = new ArmSubsystem();
         }
         return INSTANCE;
