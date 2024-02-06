@@ -142,6 +142,10 @@ public class ArmSubsystem extends SubsystemBase{
         return convertEncoderValueToArmDegrees(this.armEncoder.get()) + ArmConstants.armOffset;
     }
 
+    public boolean isAtGoal() {
+        return m_Controller.atGoal();
+    }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run

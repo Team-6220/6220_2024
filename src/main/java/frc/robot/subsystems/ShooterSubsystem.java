@@ -39,6 +39,9 @@ public class ShooterSubsystem extends SubsystemBase{
 
         feedforwardA = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
         feedforwardB = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
+
+        m_controllerA.setTolerance(10); //TODO: Add constants
+        m_controllerB.setTolerance(10);
     }
 
     public double getVelocity(){
@@ -70,6 +73,9 @@ public class ShooterSubsystem extends SubsystemBase{
         shooterMotorB.set(0);
     }
 
+    public boolean isAtSetpoint() {
+      return (m_controllerA.atSetpoint() && m_controllerB.atSetpoint());
+    }
     @Override
     public  void periodic(){
         if(Kp.hasChanged()

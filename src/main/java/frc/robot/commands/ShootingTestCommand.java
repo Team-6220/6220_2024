@@ -29,7 +29,7 @@ public class ShootingTestCommand extends Command {
   public void execute() {
     armSubsystem.driveToGoal(armSubsystem.armTestAngle.get());
     shooterSubsystem.spinToVelocity(shooterSubsystem.shooterTestVelocity.get());
-    if(Math.abs(armSubsystem.getArmPosition() - armSubsystem.armTestAngle.get()) <= 2 && Math.abs(shooterSubsystem.getVelocity() - shooterSubsystem.shooterTestVelocity.get()) <= 10){
+    if(armSubsystem.isAtGoal() && shooterSubsystem.isAtSetpoint()){
       intakeSubsystem.simpleDrive(false);
     }
   }
