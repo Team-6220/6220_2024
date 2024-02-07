@@ -2,14 +2,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.*;
 import frc.lib.util.TunableNumber;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 // import frc.robot.Constants.ArmConstants;
 
@@ -27,11 +24,10 @@ public class ArmSubsystem extends SubsystemBase{
     private final TunableNumber armMaxVel = new TunableNumber("ArmMaxVel", ArmConstants.armMaxVel);
     private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", ArmConstants.armMaxAccel);
 
-    TunableNumber armTestSetpoint = new TunableNumber("Arm Degree Goal Set", 0);
+    public final TunableNumber armTestAngle = new TunableNumber("Arm Degree Goal Set", 0);
 
     private final CANSparkMax armMotorA, armMotorB;
     private final DutyCycleEncoder armEncoder;
-    private double armTestGoal = 0;
     
     private final ProfiledPIDController m_Controller;
     private TrapezoidProfile.Constraints m_Constraints;
@@ -104,11 +100,6 @@ public class ArmSubsystem extends SubsystemBase{
         armMotorA.set(speed);
     }
 
-    //For testing
-    public void driveToGoal() {
-        driveToGoal(armTestGoal);
-    }
-
     /**
      * Sets the goal for the controller and drives motors
      * @param  goal  a position in degrees for the arm
@@ -130,6 +121,11 @@ public class ArmSubsystem extends SubsystemBase{
         armMotorA.set(calculatedSpeed);
         //+90 because feed forward want the angle to be 0 at horizontal for gravity calculations
     }
+
+    public void stop(){
+        armMotorA.set(0);
+    }
+
     /**
      * Calculates the output of the arm PID for a given setpoint
      * @param  setpoint desired arm position in degrees
@@ -144,6 +140,10 @@ public class ArmSubsystem extends SubsystemBase{
      */
     public double getArmPosition(){
         return convertEncoderValueToArmDegrees(this.armEncoder.get()) + ArmConstants.armOffset;
+    }
+
+    public boolean isAtGoal() {
+        return m_Controller.atGoal();
     }
 
     @Override
@@ -164,10 +164,6 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Controller Goal", m_Controller.getGoal().position);
         SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
         SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition()));
-        
-        if(armTestSetpoint.hasChanged()) {
-            armTestGoal = armTestSetpoint.get();
-        }
     }
 
     /**

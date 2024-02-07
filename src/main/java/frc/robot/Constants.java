@@ -103,6 +103,9 @@ public final class Constants {
         //FIXME: set id
         public static final int intakeMotorID = 15;
 
+        //FIXME: set inverted
+        public static final boolean intakeMotorInverted = false;
+
         //FIXME: set break beam port
         public static final int breakBeamPort = 0;
 

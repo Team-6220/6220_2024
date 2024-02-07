@@ -60,6 +60,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
      zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+     shootingTest.whileTrue(new ShootingTestCommand());
   }
 
   public Command getAutonomousCommand() {
