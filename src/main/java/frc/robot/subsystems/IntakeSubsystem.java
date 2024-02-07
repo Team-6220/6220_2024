@@ -10,12 +10,14 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem INSTANCE = null;
 
-    private final TalonFX intakeMotor = new TalonFX(IntakeConstants.intakeMotorID);
+    private final TalonFX intakeMotor;
 
-    private final DigitalInput intakeBreakBeam = new DigitalInput(IntakeConstants.breakBeamPort);
+    // private final DigitalInput intakeBreakBeam;
 
     private IntakeSubsystem() {
+        intakeMotor  = new TalonFX(IntakeConstants.intakeMotorID);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
+        // intakeBreakBeam = new DigitalInput(IntakeConstants.breakBeamPort);
     }
 
     public void simpleDrive(boolean reversed){
@@ -24,34 +26,34 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void driveToIntake(){
-        if(!hasNote()){
+        // if(!hasNote()){
             intakeMotor.set(IntakeConstants.intakeSpeed);
-        }
-        else{
-            stop();
-        }
+        // }
+        // else{
+            // stop();
+        // }
     }
 
     public void hopperToShooter(){
-        if(hasNote()){
+        // if(hasNote()){
             intakeMotor.set(IntakeConstants.intakeSpeed);
-        }
-        else{
-            stop();
-        }
+        // }
+        // else{
+            // stop();
+        // }
     }
 
     public void stop(){
         intakeMotor.set(0);
     }
 
-    public boolean hasNote(){
-        return intakeBreakBeam.get();
-    }
+    // public boolean hasNote(){
+        // return intakeBreakBeam.get();
+    // }
 
     @Override
     public void periodic(){
-        SmartDashboard.putBoolean("Intake Has Note", hasNote());
+        // SmartDashboard.putBoolean("Intake Has Note", hasNote());
     }
 
     public static IntakeSubsystem getInstance() {

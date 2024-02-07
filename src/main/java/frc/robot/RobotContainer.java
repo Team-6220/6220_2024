@@ -26,14 +26,16 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton shootingTest = new JoystickButton(driver, XboxController.Axis.kRightTrigger.value);
+    private final JoystickButton shootingTest = new JoystickButton(driver, XboxController.Button.kX.value);
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    //private final Swerve s_Swerve = new Swerve();
     private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
 
   public RobotContainer() {
     Constants.VisionConstants.setTagHeights();
+    /*
+     
     
     s_Swerve.setDefaultCommand(
        new TeleopSwerve(
@@ -44,6 +46,7 @@ public class RobotContainer {
          () -> robotCentric.getAsBoolean()
        )
     );
+    */
     armSubsystem.setDefaultCommand(
       new ArmTestCommand(
         () -> driver.getAButton(),
@@ -59,7 +62,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+     //zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
      shootingTest.whileTrue(new ShootingTestCommand());
   }
 
