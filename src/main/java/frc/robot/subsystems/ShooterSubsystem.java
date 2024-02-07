@@ -18,10 +18,10 @@ public class ShooterSubsystem extends SubsystemBase{
     private final TunableNumber Ki = new TunableNumber("Shooter kI", ShooterConstants.kI);
     private final TunableNumber Kd = new TunableNumber("Shooter kD", ShooterConstants.kD);
     private final TunableNumber Ks = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkS);
-    private final TunableNumber Kv = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkV);
-    private final TunableNumber Ka = new TunableNumber("Shooter FF Ks", ShooterConstants.kFFkA);
+    private final TunableNumber Kv = new TunableNumber("Shooter FF Kv", ShooterConstants.kFFkV);
+    private final TunableNumber Ka = new TunableNumber("Shooter FF Ka", ShooterConstants.kFFkA);
     
-    public final TunableNumber shooterTestVelocity = new TunableNumber("Shooter Test Velocity Target", 0);
+    public final TunableNumber shooterTestVelocity = new TunableNumber("Shooter Test Velocity Target", 200);
 
     private PIDController m_controllerA, m_controllerB;
 
@@ -40,32 +40,28 @@ public class ShooterSubsystem extends SubsystemBase{
         feedforwardA = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
         feedforwardB = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
 
-        m_controllerA.setTolerance(10); //TODO: Add constants
-        m_controllerB.setTolerance(10);
+        m_controllerA.setTolerance(200); //TODO: Add constants
+        m_controllerB.setTolerance(200);
     }
 
-    public double getVelocity(){
-        return shooterMotorA.getVelocity().getValueAsDouble() * 60;
-    }
-
-    public double[] calculate(double setpoint){
-        double[] outs = {
-            m_controllerA.calculate(getVelocity(), setpoint) + feedforwardA.calculate(setpoint),
-            m_controllerB.calculate(getVelocity(), setpoint) + feedforwardB.calculate(setpoint)
-        };
-        return outs;
+    public double getVelocity(TalonFX motor){
+        return motor.getVelocity().getValueAsDouble() * 60;
     }
 
     public void spinToVelocity(double velocity){
-        double[] calculatedOutputs = calculate(velocity);
-        shooterMotorA.set(calculatedOutputs[0]);
-        shooterMotorB.set(calculatedOutputs[1]);
+        
+        double motorASpeed = m_controllerA.calculate(getVelocity(shooterMotorA), velocity) + feedforwardA.calculate(velocity);
+        double motorBSpeed = m_controllerB.calculate(getVelocity(shooterMotorB), velocity) + feedforwardB.calculate(velocity);
+        shooterMotorA.set(motorASpeed);
+        shooterMotorB.set(motorBSpeed);
+        System.out.println("Motor 1: " + motorASpeed + " Velocity: " + getVelocity(shooterMotorA));
         SmartDashboard.putNumber("Target Velocity", velocity);
     }
 
     public void spinManually(double output){
         shooterMotorA.set(output);
         shooterMotorB.set(output);
+        
     }
 
     public void stop(){
@@ -93,8 +89,9 @@ public class ShooterSubsystem extends SubsystemBase{
             feedforwardB = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
         }
 
-        SmartDashboard.putNumber("Flywheel A Velocity", shooterMotorA.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Flywheel B Velocity", shooterMotorB.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Flywheel A Velocity", getVelocity(shooterMotorA));
+        SmartDashboard.putNumber("Flywheel B Velocity", getVelocity(shooterMotorB));
+
     }
 
     public static ShooterSubsystem getInstance() {

@@ -74,8 +74,8 @@ public final class Constants {
         public static final int armMotorBID = 14;
 
         //FIXME: set inverted
-        public static final boolean motorAInverted = false;
-        public static final boolean motorBInverted = true;
+        public static final boolean motorAInverted = true;
+        public static final boolean motorBInverted = false;
 
         //FIXME: set pid values
         public static final double kP = .035; //0.009
@@ -110,7 +110,7 @@ public final class Constants {
         public static final int breakBeamPort = 0;
 
         //FIXME: set intake speed
-        public static final double intakeSpeed = 0;
+        public static final double intakeSpeed = .5;
     }
 
     public static final class ShooterConstants{
@@ -118,11 +118,11 @@ public final class Constants {
         public static final int shooterMotorAID = 16;
         public static final int shooterMotorBID = 17;
 
-        public static final boolean motorAInverted = true;
+        public static final boolean motorAInverted = false;
         public static final boolean motorBInverted = false;
 
         //FIXME: set break beam port
-        public static final int breakBeamPort = 0;
+        // public static final int breakBeamPort = 0;
 
         //FIXME: set shooter velocity pid
         public static final double kP = 0;

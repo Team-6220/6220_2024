@@ -98,7 +98,7 @@ public class ArmSubsystem extends SubsystemBase{
             speed = -0.5;
         }
         armMotorA.set(speed);
-        System.out.println(speed);
+        // System.out.println(speed);
     }
 
     /**
@@ -106,7 +106,7 @@ public class ArmSubsystem extends SubsystemBase{
      * @param  goal  a position in degrees for the arm
      */
     public void driveToGoal(double goal) {
-        System.out.println("Driving To Goal");
+        //System.out.println("Driving To Goal");
 
         m_Controller.setGoal(goal);
         
@@ -165,6 +165,7 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Controller Goal", m_Controller.getGoal().position);
         SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
         SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition()));
+        //System.out.println(getArmPosition());
     }
 
     /**

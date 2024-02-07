@@ -25,7 +25,7 @@ public class RobotContainer {
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton shootingTest = new JoystickButton(driver, XboxController.Button.kX.value);
 
     /* Subsystems */

@@ -30,8 +30,10 @@ public class ShootingTestCommand extends Command {
   public void execute() {
     armSubsystem.driveToGoal(armSubsystem.armTestAngle.get());
     shooterSubsystem.spinToVelocity(shooterSubsystem.shooterTestVelocity.get());
+    System.out.println("Shooter Test NUm: " + shooterSubsystem.shooterTestVelocity.get());
     if(armSubsystem.isAtGoal() && shooterSubsystem.isAtSetpoint()){
-      intakeSubsystem.simpleDrive(false);
+      System.out.println("Fire");
+      intakeSubsystem.simpleDrive(true);
     }
   }
 
