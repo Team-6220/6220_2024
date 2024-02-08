@@ -23,7 +23,7 @@ public class AimToSpeaker extends Command {
         //addRequirements(s_Swerve);
         s_VisionSubsystem = VisionSubsystem.getInstance();
         hasSeenTarget = false;
-        targetHeading = 180;
+        targetHeading = s_Swerve.getHeadingToSpeaker();
     }
 
   // Called when the command is initially scheduled.
