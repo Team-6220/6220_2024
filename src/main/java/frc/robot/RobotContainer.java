@@ -47,6 +47,7 @@ public class RobotContainer {
        )
     );
     */
+    /* 
     armSubsystem.setDefaultCommand(
       new ArmTestCommand(
         () -> driver.getAButton(),
@@ -56,7 +57,7 @@ public class RobotContainer {
         () -> js1.getY()
       )
     );
-
+    */
     configureButtonBindings();
    
   }
@@ -64,6 +65,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
      //zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
      shootingTest.whileTrue(new ShootingTestCommand());
+     intake.whileTrue(new IntakeTest());
   }
 
   public Command getAutonomousCommand() {

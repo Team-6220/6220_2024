@@ -12,48 +12,58 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private final TalonFX intakeMotor;
 
-    // private final DigitalInput intakeBreakBeam;
+    private final DigitalInput intakeBreakBeam;
+    private boolean hasNote = false;
+    private boolean noteInTransit = false;
+    private double startOfNoteTransitPos;
 
     private IntakeSubsystem() {
         intakeMotor  = new TalonFX(IntakeConstants.intakeMotorID);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
-        // intakeBreakBeam = new DigitalInput(IntakeConstants.breakBeamPort);
+        intakeBreakBeam = new DigitalInput(IntakeConstants.breakBeamPort);
     }
 
-    public void simpleDrive(boolean reversed){
-        double speed = reversed ? IntakeConstants.intakeSpeed * -1 : IntakeConstants.intakeSpeed;
+    public void simpleDrive(boolean reversed, double speed){
+        speed = reversed ? speed * -1 : speed;
         intakeMotor.set(speed);
     }
 
     public void driveToIntake(){
-        // if(!hasNote()){
-            intakeMotor.set(IntakeConstants.intakeSpeed);
-        // }
-        // else{
-            // stop();
-        // }
+        if(!noteInBeam() && !hasNote && !noteInTransit){
+            intakeMotor.set(-IntakeConstants.intakeSpeed);
+        } else if (noteInBeam() && !hasNote && !noteInTransit) {
+            noteInTransit = true;
+            
+        } else if(noteInTransit) {
+            System.out.println("Falcon Position: note in transit" );
+            intakeMotor.set(-.2);
+        }
+    }
+
+    public void feedShooter() {
+        simpleDrive(true, IntakeConstants.ejectSpeedSpeaker);
     }
 
     public void hopperToShooter(){
-        // if(hasNote()){
+        if(noteInBeam()){
             intakeMotor.set(IntakeConstants.intakeSpeed);
-        // }
-        // else{
-            // stop();
-        // }
+        }
+        else{
+            stop();
+        }
     }
 
     public void stop(){
         intakeMotor.set(0);
     }
 
-    // public boolean hasNote(){
-        // return intakeBreakBeam.get();
-    // }
+    public boolean noteInBeam(){
+        return !intakeBreakBeam.get();
+    }
 
     @Override
     public void periodic(){
-        // SmartDashboard.putBoolean("Intake Has Note", hasNote());
+        SmartDashboard.putBoolean("Beam In Note", noteInBeam());
     }
 
     public static IntakeSubsystem getInstance() {

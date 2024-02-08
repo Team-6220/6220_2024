@@ -21,7 +21,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private final TunableNumber Kv = new TunableNumber("Shooter FF Kv", ShooterConstants.kFFkV);
     private final TunableNumber Ka = new TunableNumber("Shooter FF Ka", ShooterConstants.kFFkA);
     
-    public final TunableNumber shooterTestVelocity = new TunableNumber("Shooter Test Velocity Target", 200);
+    public final TunableNumber shooterTestVelocity = new TunableNumber("Shooter Test Velocity Target", 3000);
 
     private PIDController m_controllerA, m_controllerB;
 
@@ -40,8 +40,8 @@ public class ShooterSubsystem extends SubsystemBase{
         feedforwardA = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
         feedforwardB = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
 
-        m_controllerA.setTolerance(200); //TODO: Add constants
-        m_controllerB.setTolerance(200);
+        m_controllerA.setTolerance(100); //TODO: Add constants
+        m_controllerB.setTolerance(100);
     }
 
     public double getVelocity(TalonFX motor){
@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase{
         double motorBSpeed = m_controllerB.calculate(getVelocity(shooterMotorB), velocity) + feedforwardB.calculate(velocity);
         shooterMotorA.set(motorASpeed);
         shooterMotorB.set(motorBSpeed);
-        System.out.println("Motor 1: " + motorASpeed + " Velocity: " + getVelocity(shooterMotorA));
+        //System.out.println("Motor 1: " + motorASpeed + " Velocity: " + getVelocity(shooterMotorA));
         SmartDashboard.putNumber("Target Velocity", velocity);
     }
 
@@ -89,9 +89,9 @@ public class ShooterSubsystem extends SubsystemBase{
             feedforwardB = new SimpleMotorFeedforward(Ks.get(), Kv.get(), Ka.get());
         }
 
+        
         SmartDashboard.putNumber("Flywheel A Velocity", getVelocity(shooterMotorA));
         SmartDashboard.putNumber("Flywheel B Velocity", getVelocity(shooterMotorB));
-
     }
 
     public static ShooterSubsystem getInstance() {

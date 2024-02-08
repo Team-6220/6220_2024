@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.*;
 import frc.lib.util.TunableNumber;
 
@@ -31,7 +32,7 @@ public class ArmSubsystem extends SubsystemBase{
     
     private final ProfiledPIDController m_Controller;
     private TrapezoidProfile.Constraints m_Constraints;
-
+    private double lastTurnUpdate = 0;
     /**
      * Initializes the ArmSubsystem
      */
@@ -108,6 +109,11 @@ public class ArmSubsystem extends SubsystemBase{
     public void driveToGoal(double goal) {
         //System.out.println("Driving To Goal");
 
+        if (Timer.getFPGATimestamp() - 0.2 > lastTurnUpdate) {
+            resetPid();
+        }
+        lastTurnUpdate = Timer.getFPGATimestamp();
+
         m_Controller.setGoal(goal);
         
         double calculatedSpeed = m_Controller.calculate(getArmPosition());
@@ -125,6 +131,11 @@ public class ArmSubsystem extends SubsystemBase{
 
     public void stop(){
         armMotorA.set(0);
+        m_Controller.reset(getArmPosition());
+    }
+
+    public void resetPid() {
+        m_Controller.reset(getArmPosition());
     }
 
     /**
