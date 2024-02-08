@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import frc.robot.commands.IntakeTest;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -25,15 +26,17 @@ public class RobotContainer {
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton shootingTest = new JoystickButton(driver, XboxController.Axis.kRightTrigger.value);
+    private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton shootingTest = new JoystickButton(driver, XboxController.Button.kX.value);
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    //private final Swerve s_Swerve = new Swerve();
     private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
 
   public RobotContainer() {
     Constants.VisionConstants.setTagHeights();
+    /*
+     
     
     s_Swerve.setDefaultCommand(
        new TeleopSwerve(
@@ -44,6 +47,8 @@ public class RobotContainer {
          () -> robotCentric.getAsBoolean()
        )
     );
+    */
+    /* 
     armSubsystem.setDefaultCommand(
       new ArmTestCommand(
         () -> driver.getAButton(),
@@ -53,13 +58,15 @@ public class RobotContainer {
         () -> js1.getY()
       )
     );
-
+    */
     configureButtonBindings();
    
   }
 
   private void configureButtonBindings() {
-     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+     //zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+     shootingTest.whileTrue(new ShootingTestCommand());
+     intake.whileTrue(new IntakeTest());
   }
 
   public Command getAutonomousCommand() {
