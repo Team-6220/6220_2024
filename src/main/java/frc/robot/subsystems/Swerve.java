@@ -12,7 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,6 +35,11 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber turnKD = new TunableNumber("turn Kd", Constants.SwerveConstants.turnKD);
     private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
     private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
+
+    private final TunableNumber startingX = new TunableNumber("Swerve Starting Position X (Meters)", 0);
+    private final TunableNumber startingY = new TunableNumber("Swerve Starting Position Y (Meters)", 0);
+    private final TunableNumber startingHeading = new TunableNumber("Starting Position Heading (Degrees): ", 0);
+
     private double lastTurnUpdate;
     private double autoTurnHeading;
 
@@ -49,7 +53,16 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, SwerveConstants.Mod0.constants)
         };
 
-        swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
+        swerveOdometry = new SwerveDriveOdometry(
+            SwerveConstants.swerveKinematics,
+            getGyroYaw(),
+            getModulePositions(),
+            new Pose2d(
+                startingX.get(),
+                startingY.get(),
+                Rotation2d.fromDegrees(startingHeading.get())
+            )
+        );
 
         turnPidController = new ProfiledPIDController(turnKP.get(), turnKI.get(), turnKD.get(), new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
         turnPidController.setIZone(Constants.SwerveConstants.turnIZone);
@@ -112,8 +125,28 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
+    public void resetOdometry(){
+        swerveOdometry = new SwerveDriveOdometry(
+            SwerveConstants.swerveKinematics,
+            getGyroYaw(),
+            getModulePositions(),
+            new Pose2d(
+                startingX.get(),
+                startingY.get(),
+                Rotation2d.fromDegrees(startingHeading.get())
+            )
+        );
+    }
+
     public Rotation2d getHeading(){
         return getPose().getRotation();
+    }
+
+    public double getHeadingToSpeaker(){
+        Pose2d currPose = swerveOdometry.getPoseMeters();
+        //make the speaker the origin, positive x direction is forward to driver, positive y is to the right of the driver
+        double angle = Math.toDegrees(Math.atan2(currPose.getX(), currPose.getY()));
+        return 180 - angle;
     }
 
     public void setHeading(Rotation2d heading){
