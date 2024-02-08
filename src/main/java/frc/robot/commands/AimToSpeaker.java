@@ -12,8 +12,6 @@ import frc.robot.subsystems.VisionSubsystem;
 public class AimToSpeaker extends Command {
   private TurnToHeading turnToHeading;
   private VisionSubsystem s_VisionSubsystem;
-
-  private double targetHeading;
   private boolean hasSeenTarget;
 
   private Swerve s_Swerve;    
@@ -23,7 +21,6 @@ public class AimToSpeaker extends Command {
         //addRequirements(s_Swerve);
         s_VisionSubsystem = VisionSubsystem.getInstance();
         hasSeenTarget = false;
-        targetHeading = s_Swerve.getHeadingToSpeaker();
     }
 
   // Called when the command is initially scheduled.
@@ -42,7 +39,7 @@ public class AimToSpeaker extends Command {
       newHeading = s_Swerve.getHeading().getDegrees() - s_VisionSubsystem.getSteeringOffset();
     } else {
       //Add a more sophisticated system
-      newHeading = targetHeading;
+      newHeading = s_Swerve.getHeadingToSpeaker();;
     }
     turnToHeading.setHeading(newHeading);
     turnToHeading.execute();

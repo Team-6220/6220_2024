@@ -144,7 +144,7 @@ public class Swerve extends SubsystemBase {
 
     public double getHeadingToSpeaker(){
         Pose2d currPose = swerveOdometry.getPoseMeters();
-        //make the speaker the origin, positive x direction is forward to driver, positive y is to the right of the driver
+        //make the speaker the origin, positive x direction is forward to driver, positive y is to the right of the driver for blue and left of the driver for red
         double angle = Math.toDegrees(Math.atan2(currPose.getX(), currPose.getY()));
         return 180 - angle;
     }
