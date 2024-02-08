@@ -36,7 +36,7 @@ public class TeleopSwerve extends Command {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), OIConstants.kDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), OIConstants.kDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), OIConstants.kDeadband);
-
+        // System.out.println(SwerveConstants.maxAngularVelocity);
         if(!s_Swerve.isAutoTurning()) {
             /* Drive */
             s_Swerve.drive(
@@ -52,6 +52,7 @@ public class TeleopSwerve extends Command {
                 !robotCentricSup.getAsBoolean(), 
                 true
             );
+            // System.out.println("LET\"S GOOOOO");
         }
         
     }

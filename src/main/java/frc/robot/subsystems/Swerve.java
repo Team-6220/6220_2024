@@ -31,11 +31,11 @@ public class Swerve extends SubsystemBase {
     private boolean isAutoTurning;
     private ProfiledPIDController turnPidController;
 
-    TunableNumber turnKP = new TunableNumber(getName(), Constants.SwerveConstants.turnKP);
-    TunableNumber turnKI = new TunableNumber(getName(), Constants.SwerveConstants.turnKI);
-    TunableNumber turnKD = new TunableNumber(getName(), Constants.SwerveConstants.turnKD);
-    TunableNumber turnMaxVel = new TunableNumber(getName(), Constants.SwerveConstants.turnMaxVel);
-    TunableNumber turnMaxAccel = new TunableNumber(getName(), Constants.SwerveConstants.turnMaxAccel);
+    private final TunableNumber turnKP = new TunableNumber("turn kP", Constants.SwerveConstants.turnKP);
+    private final TunableNumber turnKI = new TunableNumber("turn kI", Constants.SwerveConstants.turnKI);
+    private final TunableNumber turnKD = new TunableNumber("turn Kd", Constants.SwerveConstants.turnKD);
+    private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
+    private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
     private double lastTurnUpdate;
     private double autoTurnHeading;
 
@@ -164,7 +164,17 @@ public class Swerve extends SubsystemBase {
         }
         lastTurnUpdate = Timer.getFPGATimestamp();
 
-        return turnPidController.calculate(getHeading().getDegrees());
+    
+        double speed = turnPidController.calculate(getHeading().getDegrees());
+
+        SmartDashboard.putNumber(" raw speed", speed);
+
+        if(speed > SwerveConstants.maxAngularVelocity) {
+            speed = SwerveConstants.maxAngularVelocity;
+        } if (speed < -SwerveConstants.maxAngularVelocity) {
+            speed = -SwerveConstants.maxAngularVelocity;
+        }
+        return speed;
     }
 
     @Override
@@ -181,14 +191,17 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putNumber("Real Heading", getHeading().getDegrees());
         SmartDashboard.putNumber("Auto Turn Heading", autoTurnHeading);
-
+        SmartDashboard.putNumber("Turn Controller Setpoint", turnPidController.getSetpoint().position);
         if(turnKP.hasChanged()
         || turnKD.hasChanged()
         || turnKI.hasChanged()) {
             turnPidController.setPID(turnKP.get(), turnKI.get(), turnKD.get());
+            turnPidController.reset(getHeading().getDegrees());
         }
         if(turnMaxAccel.hasChanged() || turnMaxVel.hasChanged()) {
             turnPidController.setConstraints(new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
+            turnPidController.reset(getHeading().getDegrees());
         }
+        
     }
 }
