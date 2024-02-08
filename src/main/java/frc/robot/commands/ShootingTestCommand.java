@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.lib.util.TunableNumber;
 
 public class ShootingTestCommand extends Command {
 
@@ -29,10 +28,9 @@ public class ShootingTestCommand extends Command {
   @Override
   public void execute() {
     armSubsystem.driveToGoal(armSubsystem.armTestAngle.get());
-    shooterSubsystem.spinToVelocity(shooterSubsystem.shooterTestVelocity.get());
-    //System.out.println("Shooter Test NUm: " + shooterSubsystem.shooterTestVelocity.get());
+    double[] velocities = {shooterSubsystem.shooterTestVelocityA.get(), shooterSubsystem.shooterTestVelocityB.get()};
+    shooterSubsystem.spinToVelocity(velocities);
     if(armSubsystem.isAtGoal() && shooterSubsystem.isAtSetpoint()){
-      //System.out.println("Fire");
       intakeSubsystem.feedShooter();
     }
   }

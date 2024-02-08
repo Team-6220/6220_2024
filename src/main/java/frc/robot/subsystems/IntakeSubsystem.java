@@ -15,7 +15,6 @@ public class IntakeSubsystem extends SubsystemBase{
     private final DigitalInput intakeBreakBeam;
     private boolean hasNote = false;
     private boolean noteInTransit = false;
-    private double startOfNoteTransitPos;
 
     private IntakeSubsystem() {
         intakeMotor  = new TalonFX(IntakeConstants.intakeMotorID);
