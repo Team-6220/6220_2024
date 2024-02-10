@@ -21,6 +21,7 @@ public class TurnToHeading extends Command {
     @Override
     public void initialize(){
         s_Swerve.setIsAutoTurning(true);
+        s_Swerve.setTurnControllerGoal(heading);
     }
 
     @Override
