@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import edu.wpi.first.wpilibj.shuffleboard.*;
+
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 
 // import com.pathplanner.lib.*;
@@ -36,6 +38,8 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
+
+    public ShuffleboardTab fieldPoseTab = Shuffleboard.getTab("Field Pose 2d tab (map)");
 
     public Field2d field2d = new Field2d();
 
@@ -90,8 +94,8 @@ public class Swerve extends SubsystemBase {
 
             // Set up custom logging to add the current path to a field 2d widget
             PathPlannerLogging.setLogActivePathCallback((poses) -> field2d.getObject("path").setPoses(poses));
-
-            SmartDashboard.putData("Field", field2d);
+            Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
+            // SmartDashboard.putData("Field", field2d);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -213,6 +217,7 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
         SmartDashboard.putString("getpose", getPose().toString());
+        SmartDashboard.putString("getRobotPoseField 2d", field2d.getRobotPose().toString());
         for(SwerveModule mod : mSwerveMods){
             // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
