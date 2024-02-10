@@ -39,7 +39,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import frc.lib.util.TunableNumber;
 
 public class Swerve extends SubsystemBase {
-    public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
     private boolean isAutoTurning;
@@ -77,8 +76,6 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, SwerveConstants.Mod0.constants)
         };
 
-
-        swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
         odometer = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, new Rotation2d(0), positions);
 
             AutoBuilder.configureHolonomic(
@@ -196,13 +193,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        Pose2d afterModify = swerveOdometry.getPoseMeters();
-        
-        return swerveOdometry.getPoseMeters();
+        return odometer.getPoseMeters();
     }
 
     public void setPose(Pose2d pose) {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+        odometer.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
     public Rotation2d getHeading(){
@@ -210,9 +205,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getHeadingToSpeaker(){
-        Pose2d currPose = swerveOdometry.getPoseMeters();
-        //make the speaker the origin, positive x direction is forward to driver, positive y is to the right of the driver for blue and left of the driver for red
-        double angle = Math.toDegrees(Math.atan2(currPose.getX(), currPose.getY()));
+        Pose2d currPose = odometer.getPoseMeters();
+        double angle = Math.toDegrees(Math.atan2(currPose.getX(), currPose.getY() - 5.5));
         return 180 - angle;
     }
 
@@ -222,11 +216,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setHeading(Rotation2d heading){
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
+        odometer.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
     }
 
     public void zeroHeading(){
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        odometer.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
     }
 
     public Rotation2d getGyroYaw() {
@@ -284,7 +278,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        odometer.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
         SmartDashboard.putString("getpose", getPose().toString());
         SmartDashboard.putString("getRobotPoseField 2d", field2d.getRobotPose().toString());
