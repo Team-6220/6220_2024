@@ -11,6 +11,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,33 +23,41 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import edu.wpi.first.wpilibj.shuffleboard.*;
+
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+
+// import com.pathplanner.lib.*;
+
+import frc.lib.util.TunableNumber;
 
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
-    private boolean isAutoTurning;
-    private ProfiledPIDController turnPidController;
 
-    private final TunableNumber turnKP = new TunableNumber("turn kP", Constants.SwerveConstants.turnKP);
-    private final TunableNumber turnKI = new TunableNumber("turn kI", Constants.SwerveConstants.turnKI);
-    private final TunableNumber turnKD = new TunableNumber("turn Kd", Constants.SwerveConstants.turnKD);
-    private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
-    private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
+    public ShuffleboardTab fieldPoseTab = Shuffleboard.getTab("Field Pose 2d tab (map)");
 
-    private final TunableNumber startingX = new TunableNumber("Swerve Starting Position X (Meters)", 0);
-    private final TunableNumber startingY = new TunableNumber("Swerve Starting Position Y (Meters)", 0);
-    private final TunableNumber startingHeading = new TunableNumber("Starting Position Heading (Degrees): ", 0);
+    public Field2d field2d = new Field2d();
 
-    private double lastTurnUpdate;
-    private double autoTurnHeading;
+    private SwerveModulePosition[] positions = {
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
+    };
+    private final SwerveDriveOdometry odometer;
 
     public Swerve() {
         gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
+
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, SwerveConstants.Mod3.constants),
@@ -53,21 +66,40 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, SwerveConstants.Mod0.constants)
         };
 
-        swerveOdometry = new SwerveDriveOdometry(
-            SwerveConstants.swerveKinematics,
-            getGyroYaw(),
-            getModulePositions(),
-            new Pose2d(
-                startingX.get(),
-                startingY.get(),
-                Rotation2d.fromDegrees(startingHeading.get())
-            )
-        );
 
-        turnPidController = new ProfiledPIDController(turnKP.get(), turnKI.get(), turnKD.get(), new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
-        turnPidController.setIZone(Constants.SwerveConstants.turnIZone);
-        turnPidController.setTolerance(Constants.SwerveConstants.turnTolerance);
-        turnPidController.enableContinuousInput(0, 360);
+        swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
+        odometer = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, new Rotation2d(0), positions);
+
+            AutoBuilder.configureHolonomic(
+            this::getPose, // Robot pose supplier
+            this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                    new PIDConstants(SwerveConstants.translation_kP, SwerveConstants.translation_kI, SwerveConstants.translation_kD), // Translation PID constants
+                    new PIDConstants(SwerveConstants.rotation_kP, SwerveConstants.rotation_kI, SwerveConstants.rotation_kD), // Rotation PID constants
+                    4.5, // Max module speed, in m/s
+                    0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                    new ReplanningConfig() // Default path replanning config. See the API for the options here
+            ),
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+            );
+
+            // Set up custom logging to add the current path to a field 2d widget
+            PathPlannerLogging.setLogActivePathCallback((poses) -> field2d.getObject("path").setPoses(poses));
+            Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
+            // SmartDashboard.putData("Field", field2d);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -86,11 +118,41 @@ public class Swerve extends SubsystemBase {
                                 );
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
+
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
             SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
         }
-    }    
+    }
+    
+    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    
+        SwerveModuleState[] targetStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
+        setModuleStates(targetStates);
+      }
+    /**
+     * Resets the odometer value
+     */
+    public void resetOdometry(Pose2d pose2d){
+        System.out.println("Reset Odometry: " + pose2d.getX() + ", " + pose2d.getY());
+        this.positions[0] = new SwerveModulePosition();
+        this.positions[1] = new SwerveModulePosition();
+        this.positions[2] = new SwerveModulePosition();
+        this.positions[3] = new SwerveModulePosition();
+        odometer.resetPosition(getGyroYaw(), positions, pose2d);
+  }
+
+/**
+ * Get's the chassis speed of the robot in ROBOT RELATIVE SPEED
+ */
+
+  public ChassisSpeeds getRobotRelativeSpeeds()
+  {
+    ChassisSpeeds chassisSpeeds = SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
+    return chassisSpeeds;
+
+  }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -118,6 +180,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
+        Pose2d afterModify = swerveOdometry.getPoseMeters();
+        
         return swerveOdometry.getPoseMeters();
     }
 
@@ -147,6 +211,11 @@ public class Swerve extends SubsystemBase {
         //make the speaker the origin, positive x direction is forward to driver, positive y is to the right of the driver for blue and left of the driver for red
         double angle = Math.toDegrees(Math.atan2(currPose.getX(), currPose.getY()));
         return 180 - angle;
+    }
+
+    public double getHeadingDegrees()
+    {
+        return getPose().getRotation().getDegrees();
     }
 
     public void setHeading(Rotation2d heading){
@@ -213,7 +282,9 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
-
+        field2d.setRobotPose(getPose());
+        SmartDashboard.putString("getpose", getPose().toString());
+        SmartDashboard.putString("getRobotPoseField 2d", field2d.getRobotPose().toString());
         for(SwerveModule mod : mSwerveMods){
             // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());

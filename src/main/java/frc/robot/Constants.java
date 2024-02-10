@@ -198,6 +198,13 @@ public final class Constants {
     public static final class SwerveConstants {
         public static final int pigeonID = 1;
 
+        public static final double translation_kP = 2.518;
+        public static final double translation_kI = 0.6;
+        public static final double translation_kD = 0.0;
+        public static final double rotation_kP = 1.35;
+        public static final double rotation_kI = 1.25;
+        public static final double rotation_kD = 0.0;
+
         public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
         /* Drivetrain Constants */
@@ -319,7 +326,7 @@ public final class Constants {
     }
 
     public static final class AutoConstants { //FIXME: The below constants are used in the example auto, and must be tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 10;
+        public static final double kMaxSpeedMetersPerSecond = 2;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
