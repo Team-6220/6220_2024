@@ -163,6 +163,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
+        Pose2d afterModify = swerveOdometry.getPoseMeters();
+        
         return swerveOdometry.getPoseMeters();
     }
 
