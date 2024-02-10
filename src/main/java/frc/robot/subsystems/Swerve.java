@@ -42,10 +42,21 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
+    private boolean isAutoTurning;
+    private ProfiledPIDController turnPidController;
 
     public ShuffleboardTab fieldPoseTab = Shuffleboard.getTab("Field Pose 2d tab (map)");
 
     public Field2d field2d = new Field2d();
+
+    private double lastTurnUpdate;
+    private double autoTurnHeading;
+
+    private final TunableNumber turnKP = new TunableNumber("turn kP", Constants.SwerveConstants.turnKP);
+    private final TunableNumber turnKI = new TunableNumber("turn kI", Constants.SwerveConstants.turnKI);
+    private final TunableNumber turnKD = new TunableNumber("turn Kd", Constants.SwerveConstants.turnKD);
+    private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
+    private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
 
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
@@ -100,6 +111,11 @@ public class Swerve extends SubsystemBase {
             PathPlannerLogging.setLogActivePathCallback((poses) -> field2d.getObject("path").setPoses(poses));
             Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
             // SmartDashboard.putData("Field", field2d);
+
+            turnPidController = new ProfiledPIDController(turnKP.get(), turnKI.get(), turnKD.get(), new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
+            turnPidController.setIZone(Constants.SwerveConstants.turnIZone);
+            turnPidController.setTolerance(Constants.SwerveConstants.turnTolerance);
+            turnPidController.enableContinuousInput(0, 360);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -187,19 +203,6 @@ public class Swerve extends SubsystemBase {
 
     public void setPose(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
-    }
-
-    public void resetOdometry(){
-        swerveOdometry = new SwerveDriveOdometry(
-            SwerveConstants.swerveKinematics,
-            getGyroYaw(),
-            getModulePositions(),
-            new Pose2d(
-                startingX.get(),
-                startingY.get(),
-                Rotation2d.fromDegrees(startingHeading.get())
-            )
-        );
     }
 
     public Rotation2d getHeading(){
