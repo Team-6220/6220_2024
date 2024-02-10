@@ -64,11 +64,11 @@ public class VisionSubsystem extends SubsystemBase {
     ty = table.getEntry("ty");
     tv = table.getEntry("tv");
 
-   tab.add("tx", tx);
-   tab.add("ty", ty);
-   tab.add("ta- area", ta);
-   tab.add("tl latency", tl);
-   tab.add("tv- boolean target", tv);
+   tab.add("tx", tx.getDouble(0.0));
+   tab.add("ty", ty.getDouble(0.0));
+   tab.add("ta- area", ta.getDouble(0.0));
+   tab.add("tl latency", tl.getDouble(0.0));
+   tab.add("tv- boolean target", tv.getDouble(0.0));
 
   }
 
