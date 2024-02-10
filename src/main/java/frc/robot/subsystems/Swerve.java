@@ -29,14 +29,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import edu.wpi.first.wpilibj.shuffleboard.*;
-
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-
 // import com.pathplanner.lib.*;
-
-import frc.lib.util.TunableNumber;
 
 public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
@@ -252,6 +246,10 @@ public class Swerve extends SubsystemBase {
     public void resetTurnController() {
         turnPidController.reset(getHeading().getDegrees());
         System.out.println("ResetTurnController");
+    }
+
+    public void setTurnControllerGoal(double goal) {
+        turnPidController.setGoal(goal);
     }
 
     public double getTurnPidSpeed() {

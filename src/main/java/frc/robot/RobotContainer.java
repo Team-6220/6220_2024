@@ -37,7 +37,8 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton aimToHeading = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton aimToSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);    private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
+    private final JoystickButton aimToSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
