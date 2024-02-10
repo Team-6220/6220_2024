@@ -13,6 +13,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -34,6 +36,8 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
+
+    public Field2d field2d = new Field2d();
 
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
@@ -54,14 +58,13 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, SwerveConstants.Mod0.constants)
         };
 
-        
 
         swerveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
         odometer = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, new Rotation2d(0), positions);
 
             AutoBuilder.configureHolonomic(
             this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -84,6 +87,11 @@ public class Swerve extends SubsystemBase {
             },
             this // Reference to this subsystem to set requirements
             );
+
+            // Set up custom logging to add the current path to a field 2d widget
+            PathPlannerLogging.setLogActivePathCallback((poses) -> field2d.getObject("path").setPoses(poses));
+
+            SmartDashboard.putData("Field", field2d);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -119,6 +127,7 @@ public class Swerve extends SubsystemBase {
      * Resets the odometer value
      */
     public void resetOdometry(Pose2d pose2d){
+        System.out.println("Reset Odometry: " + pose2d.getX() + ", " + pose2d.getY());
         this.positions[0] = new SwerveModulePosition();
         this.positions[1] = new SwerveModulePosition();
         this.positions[2] = new SwerveModulePosition();
@@ -202,6 +211,7 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
+        field2d.setRobotPose(getPose());
         SmartDashboard.putString("getpose", getPose().toString());
         for(SwerveModule mod : mSwerveMods){
             // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
@@ -210,5 +220,7 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);  
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + "setAngle", mod.getDesiredState());
         }
+
+        
     }
 }

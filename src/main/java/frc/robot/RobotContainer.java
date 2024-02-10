@@ -65,7 +65,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    s_Swerve.setPose(new Pose2d(0.37,2.42,new Rotation2d(0)));
+    //s_Swerve.setPose(new Pose2d(15.3,5.55,new Rotation2d(0)));
     return autoChooser.getSelected();
   }
 
