@@ -10,7 +10,9 @@ import java.util.Optional;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.fasterxml.jackson.databind.ser.std.ToEmptyObjectSerializer;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -157,6 +159,14 @@ public final class Constants {
     }
 
     public static final class VisionConstants{
+
+        public static final String LIMELIGHT3_NAME_STRING = "limelight";
+        public static final String LIMELIGHT2_NAME_STRING = "Limelight_2";
+
+
+        public static final Pose2d SPEAKER_POSE2D_BLUE = new Pose2d(new Translation2d(-.0381, 5.547868), new Rotation2d(0));
+        public static final Pose2d SPEAKER_POSE2D_RED = new Pose2d(new Translation2d(16.5793, 5.547868), new Rotation2d(180));
+        
         //FIXME: set limelight values
         public static final double limelightHeightInches = 0;
         public static final double limelightAngleDegrees = 0;

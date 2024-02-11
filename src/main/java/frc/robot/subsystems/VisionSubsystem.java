@@ -2,24 +2,27 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+/*
+
 package frc.robot.subsystems;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import java.util.List;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
+
   private static VisionSubsystem INSTANCE = null;
+
   private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   // NetworkTableEntry tx = table.getEntry("tx");
   NetworkTableEntry tx = table.getEntry("tx"); //horizontal offset
@@ -54,7 +57,7 @@ public class VisionSubsystem extends SubsystemBase {
   private double heightOfCamAboveFloor = 0; //TODO: CHANGE ACCORDINGLY -- The height of your camera above the floor (h1 in the equation in the link)
   
   
-  /** Creates a new VisionSubsystem. */
+  
   private VisionSubsystem() {
     // this.camera = new PhotonCamera("photonvision");
     // currResult = camera.getLatestResult();
@@ -140,3 +143,5 @@ public class VisionSubsystem extends SubsystemBase {
     return INSTANCE;
   }
 }
+
+*/

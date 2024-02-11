@@ -2,11 +2,13 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -15,6 +17,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AimToSpeaker;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.TurnToHeading;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.Swerve;
 
 
@@ -22,26 +25,30 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
   /* Controllers */
-    private final XboxController driver = new XboxController(0);
+  private final XboxController driver = new XboxController(0);
 
-    /* Drive Controls */
+  /* Drive Controls */
 
-    //Trying to add driver control curves
+  //Trying to add driver control curves
     
 
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+  private final int translationAxis = XboxController.Axis.kLeftY.value;
+  private final int strafeAxis = XboxController.Axis.kLeftX.value;
+  private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-    /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton aimToHeading = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton aimToSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
+  /* Driver Buttons */
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton aimToHeading = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton aimToSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
 
-    /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+  /* Subsystems */
+  private final Swerve s_Swerve = new Swerve();
+  public final PoseEstimatorSubsystem s_PoseEstimator = new PoseEstimatorSubsystem(s_Swerve::getGyroYaw, s_Swerve::getModulePositions);
+
+
+  
 
 
   public RobotContainer() {
@@ -66,14 +73,24 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureButtonBindings();
+    configureDashBoard();
     
+
+  }
+
+  private void configureDashBoard() {
+    /**** Vision tab ****/
+    final var visionTab = Shuffleboard.getTab("Vision");
+
+    // Pose estimation
+    s_PoseEstimator.addDashboardWidgets(visionTab);
   }
 
   private void configureButtonBindings() {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-    zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(new Translation2d(0,0), s_Swerve.getGyroYaw()))));
+    //zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(new Translation2d(0,0), s_Swerve.getGyroYaw()))));
     aimToHeading.whileTrue(new TurnToHeading(s_Swerve, 90));
-    aimToSpeaker.whileTrue(new AimToSpeaker(s_Swerve));
+    aimToSpeaker.whileTrue(new AimToSpeaker(s_Swerve, s_PoseEstimator::getCurrentPose));
   }
 
   public Command getAutonomousCommand() {

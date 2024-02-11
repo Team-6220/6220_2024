@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -36,18 +37,22 @@ public class TeleopSwerve extends Command {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), OIConstants.kDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), OIConstants.kDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), OIConstants.kDeadband);
+
+        //Because origin is always blue, invert the drivers x and y controls if they are on red
+        var invert = DriverStation.getAlliance().map(alliance -> alliance == DriverStation.Alliance.Blue).orElse(false) ? 1: -1;
+
         // System.out.println(SwerveConstants.maxAngularVelocity);
         if(!s_Swerve.isAutoTurning()) {
             /* Drive */
             s_Swerve.drive(
-                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
+                new Translation2d(translationVal*invert, strafeVal*invert).times(SwerveConstants.maxSpeed), 
                 rotationVal * SwerveConstants.maxAngularVelocity, 
                 !robotCentricSup.getAsBoolean(), 
                 true
             );
         } else {
             s_Swerve.drive(
-                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
+                new Translation2d(translationVal*invert, strafeVal*invert).times(SwerveConstants.maxSpeed), 
                 s_Swerve.getTurnPidSpeed(), 
                 !robotCentricSup.getAsBoolean(), 
                 true

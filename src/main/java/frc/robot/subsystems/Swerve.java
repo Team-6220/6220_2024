@@ -154,12 +154,10 @@ public class Swerve extends SubsystemBase {
  * Get's the chassis speed of the robot in ROBOT RELATIVE SPEED
  */
 
-  public ChassisSpeeds getRobotRelativeSpeeds()
-  {
-    ChassisSpeeds chassisSpeeds = SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
-    return chassisSpeeds;
-
-  }
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        ChassisSpeeds chassisSpeeds = SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
+        return chassisSpeeds;
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -264,7 +262,7 @@ public class Swerve extends SubsystemBase {
     
         double speed = turnPidController.calculate(getHeading().getDegrees());
 
-        SmartDashboard.putNumber(" raw speed", speed);
+        //SmartDashboard.putNumber("raw speed", speed);
 
         if(speed > SwerveConstants.maxAngularVelocity) {
             speed = SwerveConstants.maxAngularVelocity;
