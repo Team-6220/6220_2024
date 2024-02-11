@@ -23,12 +23,13 @@ public class AimToSpeaker extends Command {
   private Swerve s_Swerve;    
   private Supplier<Pose2d> botPoseSupplier;
   private Pose2d speakerPose2d;
+  private boolean isBlue;
 
   public AimToSpeaker(Swerve s_Swerve, Supplier<Pose2d> botPoseSupplier) {
     this.s_Swerve = s_Swerve;
     this.botPoseSupplier = botPoseSupplier;
-    //s_VisionSubsystem = VisionSubsystem.getInstance();
-    if(DriverStation.getAlliance().get() == Alliance.Blue) {
+    this.isBlue = DriverStation.getAlliance().get() == Alliance.Blue;
+    if(isBlue) {
       speakerPose2d = VisionConstants.SPEAKER_POSE2D_BLUE;
     } else {
       speakerPose2d = VisionConstants.SPEAKER_POSE2D_RED;
@@ -51,9 +52,10 @@ public class AimToSpeaker extends Command {
     double newHeading = 0;
     Pose2d botPose = botPoseSupplier.get();
 
-
-    newHeading = botPose.minus(speakerPose2d).getRotation().getDegrees();
-
+    newHeading = -1 * Math.toDegrees(Math.atan2(botPose.getY() - speakerPose2d.getY(), botPose.getX() - speakerPose2d.getX()));
+    if(isBlue){
+      newHeading = 180 + newHeading;
+    }
     /*
     
     if(s_VisionSubsystem.hasTarget()) {
