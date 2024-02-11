@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import java.util.function.Supplier;
@@ -15,8 +16,10 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.Results;
@@ -52,6 +55,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   
   private final SwerveDrivePoseEstimator poseEstimator;
   private final Field2d field2d = new Field2d();
+  private Pose2d visionBotPose2d = new Pose2d();
 
   public PoseEstimatorSubsystem(Supplier<Rotation2d> rotationSupplier, Supplier<SwerveModulePosition[]> modulePositionSupplier) {
   
@@ -102,7 +106,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         pose.getRotation().getDegrees());
   }
 
-  
+  public void zeroHeading() {
+    poseEstimator.resetPosition(rotationSupplier.get(), modulePositionSupplier.get(), new Pose2d(getCurrentPose().getTranslation(), new Rotation2d()));
+  }
 
 
 
@@ -111,14 +117,21 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     // Update pose estimator with drivetrain sensors
     poseEstimator.update(rotationSupplier.get(), modulePositionSupplier.get());
 
-    LimelightResults limelightResults = LimelightHelpers.getLatestResults(VisionConstants.LIMELIGHT3_NAME_STRING);
+    LimelightResults limelightResults = LimelightHelpers.getLatestResults("");
     
     double latency = limelightResults.targetingResults.latency_capture + limelightResults.targetingResults.latency_jsonParse;
-    Pose2d botPose2d = limelightResults.targetingResults.getBotPose2d();
-    poseEstimator.addVisionMeasurement(botPose2d, Timer.getFPGATimestamp() - (latency/1000.0));
+    Pose2d botPose2d = limelightResults.targetingResults.getBotPose2d_wpiBlue();
+
+    Translation2d botTranslation2d = botPose2d.getTranslation();
+
+    if(limelightResults.targetingResults.valid && botPose2d.getX() != 0) {
+        poseEstimator.addVisionMeasurement(new Pose2d(botTranslation2d, rotationSupplier.get()), Timer.getFPGATimestamp() - (latency/1000.0));
+    }
 
     // Set the pose on the dashboard
     var dashboardPose = poseEstimator.getEstimatedPosition();
     field2d.setRobotPose(dashboardPose);
+
+    SmartDashboard.putString("VisionBotPose", botPose2d.toString());
   }
 }

@@ -88,6 +88,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+    zeroGyro.onTrue(new InstantCommand(() -> s_PoseEstimator.zeroHeading()));
     //zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(new Translation2d(0,0), s_Swerve.getGyroYaw()))));
     aimToHeading.whileTrue(new TurnToHeading(s_Swerve, 90));
     aimToSpeaker.whileTrue(new AimToSpeaker(s_Swerve, s_PoseEstimator::getCurrentPose));
