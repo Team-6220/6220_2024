@@ -10,6 +10,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -37,6 +41,9 @@ public class Swerve extends SubsystemBase {
     public AHRS gyro;
     private boolean isAutoTurning;
     private ProfiledPIDController turnPidController;
+
+    private HashMap<Double, Rotation2d> gyro_headings = new HashMap<Double, Rotation2d>();
+    private LinkedList<Double> gyro_timestamps = new LinkedList<Double>();
 
     public ShuffleboardTab fieldPoseTab = Shuffleboard.getTab("Field Pose 2d tab (map)");
 
@@ -274,8 +281,42 @@ public class Swerve extends SubsystemBase {
         return speed;
     }
 
+    public double getHeadingByTimestamp(double timestamp){
+        double timea = 0, timeb = 0;
+        if(timestamp > gyro_timestamps.getFirst()){
+            timea = gyro_timestamps.getFirst();
+        }
+        else if(timestamp < gyro_timestamps.getLast()){
+            timea = gyro_timestamps.getLast();
+        }
+        else{
+            for(int i = 0; i < gyro_timestamps.size(); i++){
+                if(gyro_timestamps.get(i) == timestamp){
+
+                }
+                else if(gyro_timestamps.get(i) < timestamp){
+                    timea = gyro_timestamps.get(i-1);
+                    timeb = gyro_timestamps.get(i);
+                    break;
+                }
+            }
+        }
+        if (timeb == 0){
+            return gyro_headings.get(timea).getDegrees();
+        }
+        return ((timestamp - timea)/(timeb - timea) * (gyro_headings.get(timeb).getDegrees() - gyro_headings.get(timea).getDegrees())) + gyro_headings.get(timea).getDegrees();
+        
+    }
+
     @Override
     public void periodic(){
+        Double timestamp = Timer.getFPGATimestamp();
+        gyro_headings.put(timestamp, getHeading());
+        gyro_timestamps.addFirst(timestamp);
+        if(gyro_timestamps.size() > 60){
+            timestamp = gyro_timestamps.removeLast();
+            gyro_headings.remove(timestamp);
+        }
         odometer.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
         SmartDashboard.putString("getpose", getPose().toString());
