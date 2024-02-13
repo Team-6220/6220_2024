@@ -11,10 +11,15 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import java.util.List;
 
+import org.opencv.core.Mat.Tuple2;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-   
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,11 +27,7 @@ public class VisionSubsystem extends SubsystemBase {
   private static VisionSubsystem INSTANCE = null;
   private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   // NetworkTableEntry tx = table.getEntry("tx");
-  NetworkTableEntry tx = table.getEntry("tx"); //horizontal offset
-  NetworkTableEntry ty = table.getEntry("ty"); //vertical offset
-  NetworkTableEntry ta = table.getEntry("ta"); //Target area (0% of image to 100% of image)
-  NetworkTableEntry tl = table.getEntry("tl"); //The pipeline's latency contribution (ms). Add to "cl" to get total latency.
-  NetworkTableEntry tv = table.getEntry("tv"); //check whetehr the limelight have any valid target
+  NetworkTableEntry tx,ty,ta, tl, tv, jsonDumpEntry;//check whetehr the limelight have any valid target
   
   // private final PhotonCamera camera;
   // private PhotonPipelineResult currResult;
@@ -36,9 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
   // private double pitch, yaw, skew, area;
 
   
-  double xOffset = tx.getDouble(0.0);
-  double yOffset = ty.getDouble(0.0);
-  double validTarget = tv.getDouble(0.0);
+  double xOffset, yOffset, validTarget, lastTimeStampSeconds;
   
   ShuffleboardTab tab = Shuffleboard.getTab("Limelight");
 
@@ -63,6 +62,12 @@ public class VisionSubsystem extends SubsystemBase {
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     tv = table.getEntry("tv");
+    jsonDumpEntry = table.getEntry("json");
+
+    xOffset = tx.getDouble(0.0);
+    yOffset = ty.getDouble(0.0);
+    validTarget = tv.getDouble(0.0);
+    lastTimeStampSeconds  = 0;
 
    tab.add("tx", tx.getDouble(0.0));
    tab.add("ty", ty.getDouble(0.0));
@@ -90,13 +95,35 @@ public class VisionSubsystem extends SubsystemBase {
     return distanceFromLimelightToGoalInches;
   }
 
-  public double getSteeringOffset()
+  public Tuple2<Double> getSteeringOffset()
   {
     xOffset = tx.getDouble(0.0) + 0; //add any offsets if needed
-    return xOffset;
+    double timestamp = getTimestampSeconds();
+    return new Tuple2<Double>(xOffset, timestamp);
   }
 
-  public boolean hasTarget()
+  public double getTimestampSeconds(){
+    String jsonDump = jsonDumpEntry.getString("{}");  
+
+    double currentTimeStampSeconds = lastTimeStampSeconds;
+    // Attempts to get the time stamp for when the robot pose was calculated
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode jsonNodeData = mapper.readTree(jsonDump);
+      double tsValue = jsonNodeData.path("Results").path("ts").asDouble();
+      SmartDashboard.putNumber("tsValue", tsValue);
+      if (tsValue != 0) {
+        // Converts from milleseconds to seconds
+        currentTimeStampSeconds = tsValue / 1000;
+      }
+    } catch (JsonProcessingException e) {
+      SmartDashboard.putString("Json Parsing Error", e.getStackTrace().toString());
+      return -1;
+    }
+    return currentTimeStampSeconds;
+  }
+
+  public boolean hasTarget() 
   {
     if(tv.getDouble(0.0) == 1) {
       return true;
