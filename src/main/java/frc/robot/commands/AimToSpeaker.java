@@ -36,7 +36,7 @@ public class AimToSpeaker extends Command {
   public void execute() {
     double newHeading;
     if(!hasSeenTarget && s_VisionSubsystem.hasTarget()) {
-      newHeading = s_Swerve.getHeading().getDegrees() - s_VisionSubsystem.getSteeringOffset().get_1();
+      newHeading = s_Swerve.getHeadingByTimestamp(s_VisionSubsystem.getSteeringOffset().get_0()) - s_VisionSubsystem.getSteeringOffset().get_1();
     } else {
       newHeading = s_Swerve.getHeadingToSpeaker();
     }
