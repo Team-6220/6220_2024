@@ -45,6 +45,7 @@ public class ArmSubsystem extends SubsystemBase{
 
         this.armMotorA.burnFlash();
         this.armMotorB.burnFlash();
+
     }
 
     /**

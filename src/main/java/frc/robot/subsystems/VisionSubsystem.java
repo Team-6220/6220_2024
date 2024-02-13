@@ -69,11 +69,11 @@ public class VisionSubsystem extends SubsystemBase {
     validTarget = tv.getDouble(0.0);
     lastTimeStampSeconds  = 0;
 
-   tab.add("tx", tx.getDouble(0.0));
-   tab.add("ty", ty.getDouble(0.0));
-   tab.add("ta- area", ta.getDouble(0.0));
-   tab.add("tl latency", tl.getDouble(0.0));
-   tab.add("tv- boolean target", tv.getDouble(0.0));
+   //tab.add("tx", tx.getDouble(0.0));
+   //tab.add("ty", ty.getDouble(0.0));
+   //tab.add("ta- area", ta.getDouble(0.0));
+   //tab.add("tl latency", tl.getDouble(0.0));
+   //tab.add("tv- boolean target", tv.getDouble(0.0));
 
   }
 

@@ -4,10 +4,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.LimelightHelpers.*;
+import frc.robot.LimelightHelpers;
 
 public class AimToSpeaker extends Command {
   private TurnToHeading turnToHeading;
@@ -34,9 +37,14 @@ public class AimToSpeaker extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    LimelightHelpers.LimelightResults limelightResults = LimelightHelpers.getLatestResults("");
+
+    double latency = limelightResults.targetingResults.latency_capture;
+
     double newHeading;
     if(!hasSeenTarget && s_VisionSubsystem.hasTarget()) {
-      newHeading = s_Swerve.getHeadingByTimestamp(s_VisionSubsystem.getSteeringOffset().get_0()) - s_VisionSubsystem.getSteeringOffset().get_1();
+      newHeading = s_Swerve.getHeadingByTimestamp(Timer.getFPGATimestamp() - 1000/latency) - limelightResults.targetingResults.targets_Fiducials[0].tx;
     } else {
       newHeading = s_Swerve.getHeadingToSpeaker();
     }
