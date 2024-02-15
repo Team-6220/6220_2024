@@ -8,63 +8,52 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.LimelightHelpers;
 
 public class AimToSpeaker extends Command {
-  private TurnToHeading turnToHeading;
-  private VisionSubsystem s_VisionSubsystem;
-  private boolean hasSeenTarget;
+    private VisionSubsystem s_VisionSubsystem;
+    private boolean hasSeenTarget;
+    private Swerve s_Swerve;    
 
-  private Swerve s_Swerve;    
-    
     public AimToSpeaker(Swerve s_Swerve) {
         this.s_Swerve = s_Swerve;
-        //addRequirements(s_Swerve);
         s_VisionSubsystem = VisionSubsystem.getInstance();
         hasSeenTarget = false;
+        addRequirements(s_Swerve);
     }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    //This is done so that the starting position of the heading command is the same as the bot so the profiled pid loop will track smoothly
-    //We may not need this
-    turnToHeading = new TurnToHeading(s_Swerve, s_Swerve.getHeading().getDegrees());
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
-    LimelightHelpers.LimelightResults limelightResults = LimelightHelpers.getLatestResults("");
-
-    double latency = limelightResults.targetingResults.latency_capture;
-
-    double newHeading;
-    if(!hasSeenTarget && s_VisionSubsystem.hasTarget()) {
-      newHeading = s_Swerve.getHeadingByTimestamp(Timer.getFPGATimestamp() - latency/1000) - limelightResults.targetingResults.targets_Fiducials[0].tx;
-    } else {
-      newHeading = s_Swerve.getHeadingToSpeaker();
+    @Override
+    public void initialize() {
+        s_Swerve.setIsAutoTurning(true);
+        s_Swerve.setTurnControllerGoal(s_Swerve.getHeadingToSpeaker());
     }
-    turnToHeading.setHeading(newHeading);
-    turnToHeading.execute();
-    SmartDashboard.putBoolean("Is Facing Speaker", isFacingSpeaker());
-  }
 
-  public boolean isFacingSpeaker() {
-    if(turnToHeading.isFacingHeading()) {
-      return true;
+    @Override
+    public void execute() {
+        LimelightHelpers.LimelightResults limelightResults = LimelightHelpers.getLatestResults("");
+        double latency = limelightResults.targetingResults.latency_capture;
+        double newHeading;
+        if(!hasSeenTarget && s_VisionSubsystem.hasTarget()) {
+            newHeading = s_Swerve.getHeadingByTimestamp(Timer.getFPGATimestamp() - latency/1000) - limelightResults.targetingResults.targets_Fiducials[0].tx;
+        } else {
+            newHeading = s_Swerve.getHeadingToSpeaker();
+        }
+        s_Swerve.setAutoTurnHeading(newHeading);
+        SmartDashboard.putBoolean("Is Facing Speaker", isFacingSpeaker());
     }
-    return false;
-  }
 
+    public boolean isFacingSpeaker() {
+        if(s_Swerve.isFacingTurnTarget()) {
+            return true;
+        }
+        return false;
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    turnToHeading.end(false);
-  }
+    @Override
+    public void end(boolean interrupted) {
+        s_Swerve.setIsAutoTurning(false);
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return isFacingSpeaker();
-  }
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return isFacingSpeaker();
+    }
 }
