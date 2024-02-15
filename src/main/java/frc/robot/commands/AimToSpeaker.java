@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -9,7 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.LimelightHelpers.*;
 import frc.robot.LimelightHelpers;
 
 public class AimToSpeaker extends Command {
@@ -44,7 +39,7 @@ public class AimToSpeaker extends Command {
 
     double newHeading;
     if(!hasSeenTarget && s_VisionSubsystem.hasTarget()) {
-      newHeading = s_Swerve.getHeadingByTimestamp(Timer.getFPGATimestamp() - 1000/latency) - limelightResults.targetingResults.targets_Fiducials[0].tx;
+      newHeading = s_Swerve.getHeadingByTimestamp(Timer.getFPGATimestamp() - latency/1000) - limelightResults.targetingResults.targets_Fiducials[0].tx;
     } else {
       newHeading = s_Swerve.getHeadingToSpeaker();
     }

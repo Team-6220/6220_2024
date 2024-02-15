@@ -12,7 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -328,7 +327,6 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);  
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + "setAngle", mod.getDesiredState());
         }
-
         SmartDashboard.putNumber("Real Heading", getHeading().getDegrees());
         SmartDashboard.putNumber("Auto Turn Heading", autoTurnHeading);
         SmartDashboard.putNumber("Turn Controller Setpoint", turnPidController.getSetpoint().position);
@@ -342,6 +340,5 @@ public class Swerve extends SubsystemBase {
             turnPidController.setConstraints(new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
             turnPidController.reset(getHeading().getDegrees());
         }
-        
     }
 }
