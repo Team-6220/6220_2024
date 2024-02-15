@@ -11,12 +11,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -25,6 +27,8 @@ public final class Constants {
     public static boolean TUNING_MODE = true;
 
     public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
+
+    public static boolean isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
@@ -157,6 +161,14 @@ public final class Constants {
     }
 
     public static final class VisionConstants{
+
+        public static final String LIMELIGHT3_NAME_STRING = "limelight";
+        public static final String LIMELIGHT2_NAME_STRING = "Limelight_2";
+
+
+        public static final Pose2d SPEAKER_POSE2D_BLUE = new Pose2d(new Translation2d(-.0381, 5.547868), new Rotation2d(0));
+        public static final Pose2d SPEAKER_POSE2D_RED = new Pose2d(new Translation2d(16.5793, 5.547868), new Rotation2d(180));
+        
         //FIXME: set limelight values
         public static final double limelightHeightInches = 0;
         public static final double limelightAngleDegrees = 0;

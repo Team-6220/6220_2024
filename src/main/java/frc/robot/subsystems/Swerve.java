@@ -2,9 +2,10 @@ package frc.robot.subsystems;
 
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.SwerveModule;
 import frc.robot.Constants.SwerveConstants;
-
+import frc.robot.Constants.VisionConstants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -29,6 +30,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -205,9 +207,16 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getHeadingToSpeaker(){
-        Pose2d currPose = odometer.getPoseMeters();
-        double angle = Math.toDegrees(Math.atan2(currPose.getX(), currPose.getY() - 5.5));
-        return 180 - angle;
+        double angle = getHeadingDegrees();
+        if(LimelightHelpers.getTV(VisionConstants.LIMELIGHT3_NAME_STRING)){
+            angle = 0;
+        }else{
+            Pose2d currPose = odometer.getPoseMeters();
+            Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+            angle = Math.toDegrees(Math.atan2(speakerPose.getX() - currPose.getX(), speakerPose.getY() - currPose.getY()));
+            angle += (Constants.isRed ? 0 : 180);
+        }
+        return angle;
     }
 
     public double getHeadingDegrees()
