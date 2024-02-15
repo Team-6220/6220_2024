@@ -15,7 +15,6 @@ public class TurnToHeading extends Command {
     public TurnToHeading(Swerve s_Swerve, double heading) {
         this.s_Swerve = s_Swerve;
         this.heading = heading;
-        addRequirements(s_Swerve);
     }
 
     @Override

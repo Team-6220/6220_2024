@@ -16,7 +16,6 @@ public class AimToSpeaker extends Command {
         this.s_Swerve = s_Swerve;
         s_VisionSubsystem = VisionSubsystem.getInstance();
         hasSeenTarget = false;
-        addRequirements(s_Swerve);
     }
 
     @Override
