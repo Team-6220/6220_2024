@@ -208,13 +208,14 @@ public class Swerve extends SubsystemBase {
 
     public double getHeadingToSpeaker(){
         double angle = getHeadingDegrees();
-        if(LimelightHelpers.getTV(VisionConstants.LIMELIGHT3_NAME_STRING)){
+        //LimelightHelpers.getTV(VisionConstants.LIMELIGHT3_NAME_STRING)
+        if(false){
             angle = 0;
         }else{
             Pose2d currPose = odometer.getPoseMeters();
             Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
-            angle = Math.toDegrees(Math.atan2(speakerPose.getX() - currPose.getX(), speakerPose.getY() - currPose.getY()));
-            angle += (Constants.isRed ? 0 : 180);
+            angle = -Math.toDegrees(Math.atan2(speakerPose.getX() - currPose.getX(), speakerPose.getY() - currPose.getY()));
+            //angle += (Constants.isRed ? 0 : 180);
         }
         return angle;
     }
@@ -277,7 +278,7 @@ public class Swerve extends SubsystemBase {
         lastTurnUpdate = Timer.getFPGATimestamp();
 
     
-        double speed = turnPidController.calculate(getHeading().getDegrees());
+        double speed = turnPidController.calculate(getHeadingDegrees());
 
         SmartDashboard.putNumber(" raw speed", speed);
 

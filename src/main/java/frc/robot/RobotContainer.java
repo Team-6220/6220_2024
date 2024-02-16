@@ -3,6 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -69,7 +70,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-    zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(new Translation2d(0,0), s_Swerve.getGyroYaw()))));
+    zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0)))));
     aimToSpeaker.whileTrue(new TeleopAimSwerve(
         s_Swerve,
         () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
