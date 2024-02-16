@@ -88,14 +88,14 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   }
 
   private void updateValues(){
-    currResult = camera.getLatestResult();
-    hasTargets = currResult.hasTargets();
-    targets = currResult.getTargets();
-    bestTarget = currResult.getBestTarget();
-    yaw = bestTarget.getYaw();
-    pitch = bestTarget.getPitch();
-    skew = bestTarget.getSkew();
-    area = bestTarget.getArea();
+    // currResult = camera.getLatestResult();
+    // hasTargets = currResult.hasTargets();
+    // targets = currResult.getTargets();
+    // bestTarget = currResult.getBestTarget();
+    // yaw = bestTarget.getYaw();
+    // pitch = bestTarget.getPitch();
+    // skew = bestTarget.getSkew();
+    // area = bestTarget.getArea();
   }
 
   public boolean getHasTargets()
@@ -105,12 +105,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public double getTurnOffset()
   {
-    if(hasTargets)
+    if(currResult.getBestTarget() == null)
     {
-      SmartDashboard.putNumber("yaw", yaw);
-      return yaw;
+      return 0.0; 
     }
-    return -1.0; 
+    SmartDashboard.putNumber("yaw", currResult.getBestTarget().getYaw());
+    return currResult.getBestTarget().getYaw();
   }
 
   @Override

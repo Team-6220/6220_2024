@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Swerve;
 
@@ -37,23 +38,14 @@ public class TeleopSwerve extends Command {
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), OIConstants.kDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), OIConstants.kDeadband);
         // System.out.println(SwerveConstants.maxAngularVelocity);
-        if(!s_Swerve.isAutoTurning()) {
-            /* Drive */
-            s_Swerve.drive(
-                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
-                rotationVal * SwerveConstants.maxAngularVelocity, 
-                !robotCentricSup.getAsBoolean(), 
-                true
-            );
-        } else {
-            s_Swerve.drive(
-                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
-                s_Swerve.getTurnPidSpeed(), 
-                !robotCentricSup.getAsBoolean(), 
-                true
-            );
-            // System.out.println("LET\"S GOOOOO");
-        }
+        int invert =  (Constants.isRed) ? -1 : 1; 
+        /* Drive */
+        s_Swerve.drive(
+            new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed * invert), 
+            rotationVal * SwerveConstants.maxAngularVelocity, 
+            !robotCentricSup.getAsBoolean(), 
+            true
+        );
         
     }
 }
