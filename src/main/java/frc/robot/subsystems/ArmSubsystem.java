@@ -66,7 +66,7 @@ public class ArmSubsystem extends SubsystemBase{
         m_Controller.setIZone(3);
 
         //Setting Tolerance
-        m_Controller.setTolerance(.2);
+        m_Controller.setTolerance(.15);
     }
 
     /**
@@ -115,7 +115,7 @@ public class ArmSubsystem extends SubsystemBase{
         lastTurnUpdate = Timer.getFPGATimestamp();
 
         m_Controller.setGoal(goal);
-        
+      
         double calculatedSpeed = m_Controller.calculate(getArmPosition());
 
         if(calculatedSpeed > 0.5){
@@ -125,7 +125,7 @@ public class ArmSubsystem extends SubsystemBase{
             calculatedSpeed = -0.5;
         }
 
-        armMotorA.set(calculatedSpeed);
+        armMotorA.set(-calculatedSpeed);
         //+90 because feed forward want the angle to be 0 at horizontal for gravity calculations
     }
 
@@ -151,7 +151,7 @@ public class ArmSubsystem extends SubsystemBase{
      * @returns the value in degrees of the arm    
      */
     public double getArmPosition(){
-        return convertEncoderValueToArmDegrees(this.armEncoder.get()) + ArmConstants.armOffset;
+        return convertEncoderValueToArmDegrees(armEncoder.get()) + ArmConstants.armOffset;
     }
 
     public boolean isAtGoal() {
@@ -173,9 +173,9 @@ public class ArmSubsystem extends SubsystemBase{
             m_Constraints = new TrapezoidProfile.Constraints(armMaxVel.get(), armMaxAccel.get());
         }
         SmartDashboard.putNumber("Arm Angle", getArmPosition());
-        SmartDashboard.putNumber("Controller Goal", m_Controller.getGoal().position);
-        SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
-        SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition()));
+        // SmartDashboard.putNumber("Controller Goal", m_Controller.getGoal().position);
+        // SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
+        // SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition()));
         //System.out.println(getArmPosition());
     }
 
