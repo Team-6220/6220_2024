@@ -105,12 +105,12 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public double getTurnOffset()
   {
-    if(!currResult.hasTargets())
+    if(hasTargets)
     {
-      return 0.0; 
+      SmartDashboard.putNumber("yaw", yaw);
+      return yaw;
     }
-    SmartDashboard.putNumber("yaw", currResult.getBestTarget().getYaw());
-    return currResult.getBestTarget().getYaw();
+    return -1.0; 
   }
 
   @Override
