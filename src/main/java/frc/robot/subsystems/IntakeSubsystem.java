@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.TunableNumber;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase{
@@ -16,10 +18,19 @@ public class IntakeSubsystem extends SubsystemBase{
     private boolean hasNote = false;
     private boolean noteInTransit = false;
 
+    private final PIDController intakeController;
+
+    private final TunableNumber Kp = new TunableNumber("Intake kP", IntakeConstants.kP);
+    private final TunableNumber Ki = new TunableNumber("Intake kI", IntakeConstants.kI);
+    private final TunableNumber Kd = new TunableNumber("Intake kD", IntakeConstants.kD);
+
+    private final TunableNumber transDist = new TunableNumber("Intake Transit Distance", IntakeConstants.transitDistance);
+
     private IntakeSubsystem() {
         intakeMotor  = new TalonFX(IntakeConstants.intakeMotorID);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
         intakeBreakBeam = new DigitalInput(IntakeConstants.breakBeamPort);
+        intakeController = new PIDController(Kp.get(), Ki.get(), Kd.get());
     }
 
     public void simpleDrive(boolean reversed, double speed){
@@ -29,13 +40,15 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void driveToIntake(){
         if(!noteInBeam() && !hasNote && !noteInTransit){
-            intakeMotor.set(-IntakeConstants.intakeSpeed);
+            intakeMotor.set(IntakeConstants.intakeSpeed);
         } else if (noteInBeam() && !hasNote && !noteInTransit) {
             noteInTransit = true;
+            intakeMotor.setPosition(0);
             
         } else if(noteInTransit) {
-            System.out.println("Falcon Position: note in transit" );
-            intakeMotor.set(-.2);
+            intakeMotor.set(intakeController.calculate(intakeMotor.getPosition().getValueAsDouble(), transDist.get()));
+        } else {
+            stop();
         }
     }
 

@@ -112,7 +112,7 @@ public final class Constants {
         public static final int intakeMotorID = 15;
 
         //FIXME: set inverted
-        public static final boolean intakeMotorInverted = false;
+        public static final boolean intakeMotorInverted = true;
 
         //FIXME: set break beam port
         public static final int breakBeamPort = 1;
@@ -123,6 +123,12 @@ public final class Constants {
         public static final double ejectSpeedAmp = .5;
 
         public static final double armSetPointIntake = 83.5;
+
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double transitDistance = 0;
     }
 
     public static final class ShooterConstants{
