@@ -22,12 +22,15 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
@@ -40,7 +43,26 @@ import edu.wpi.first.wpilibj.shuffleboard.*;
 // import com.pathplanner.lib.*;
 
 public class Swerve extends SubsystemBase {
+
+    // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
+    // you trust your various sensors. Smaller numbers will cause the filter to
+    // "trust" the estimate from that particular component more than the others. 
+    // This in turn means the particualr component will have a stronger influence
+    // on the final pose estimate.
+
+    /**
+     * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
+     * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
+     */
+    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
     
+    /**
+     * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
+     * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
+     */
+    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
+
+
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
     private boolean isAutoTurning;
@@ -61,6 +83,8 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber turnKD = new TunableNumber("turn Kd", Constants.SwerveConstants.turnKD);
     private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
     private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
+
+    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .1);
 
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
@@ -84,7 +108,7 @@ public class Swerve extends SubsystemBase {
         };
 
 
-        poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.swerveKinematics, getGyroYaw(), positions, new Pose2d());
+        poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.swerveKinematics, new Rotation2d(), positions, new Pose2d(), stateStdDevs, visionMeasurementStdDevs);
         //odometer = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, new Rotation2d(0), positions);
 
         AutoBuilder.configureHolonomic(
@@ -331,7 +355,8 @@ public class Swerve extends SubsystemBase {
             gyro_headings.remove(timestamp);
         }
 
-        //LimelightCalculations.updatePoseEstimation(poseEstimator);
+        
+        LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         
         poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
