@@ -5,22 +5,30 @@
 package frc.robot;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     
     public static boolean TUNING_MODE = true;
+
+    public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
+
+    public static boolean isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
@@ -74,12 +82,12 @@ public final class Constants {
         public static final int armMotorBID = 14;
 
         //FIXME: set inverted
-        public static final boolean motorAInverted = false;
-        public static final boolean motorBInverted = true;
+        public static final boolean motorAInverted = true;
+        public static final boolean motorBInverted = false;
 
         //FIXME: set pid values
-        public static final double kP = .035; //0.009
-        public static final double kI = 0.01;//0.0005
+        public static final double kP = .04; //0.009
+        public static final double kI = 0.015;//0.0005
         public static final double kD = 0;//0.001
         public static final double armMaxVel = 65;
         public static final double armMaxAccel = 85;
@@ -101,28 +109,40 @@ public final class Constants {
 
     public static final class IntakeConstants{
         //FIXME: set id
-        public static final int intakeMotorID = 0;
+        public static final int intakeMotorID = 15;
+
+        //FIXME: set inverted
+        public static final boolean intakeMotorInverted = false;
 
         //FIXME: set break beam port
-        public static final int breakBeamPort = 0;
+        public static final int breakBeamPort = 1;
 
         //FIXME: set intake speed
-        public static final double intakeSpeed = 0;
+        public static final double intakeSpeed = .3;
+        public static final double ejectSpeedSpeaker = .5;
+        public static final double ejectSpeedAmp = .5;
+
+        public static final double armSetPointIntake = 83.5;
     }
 
     public static final class ShooterConstants{
         //FIXME: set motor IDs
-        public static final int shooterMotorAID = 0;
-        public static final int shooterMotorBID = 0;
+        public static final int shooterMotorAID = 16;
+        public static final int shooterMotorBID = 17;
+
+        public static final boolean motorAInverted = false;
+        public static final boolean motorBInverted = false;
 
         //FIXME: set break beam port
-        public static final int breakBeamPort = 0;
+        // public static final int breakBeamPort = 0;
 
         //FIXME: set shooter velocity pid
-        public static final double kP = 0;
+        public static final double kP = 0.0007;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kFF = 0;
+        public static final double kFFkS = 0;
+        public static final double kFFkV = 0.00017;
+        public static final double kFFkA = 0;
 
         //FIXME: create lookup table
         public static final double [][] shooterLookupTable = {
@@ -132,6 +152,14 @@ public final class Constants {
     }
 
     public static final class VisionConstants{
+
+        public static final String LIMELIGHT3_NAME_STRING = "limelight";
+        public static final String LIMELIGHT2_NAME_STRING = "Limelight_2";
+
+
+        public static final Pose2d SPEAKER_POSE2D_BLUE = new Pose2d(new Translation2d(-.0381, 5.547868), new Rotation2d(0));
+        public static final Pose2d SPEAKER_POSE2D_RED = new Pose2d(new Translation2d(16.5793, 5.547868), new Rotation2d(180));
+        
         //FIXME: set limelight values
         public static final double limelightHeightInches = 0;
         public static final double limelightAngleDegrees = 0;
@@ -156,10 +184,28 @@ public final class Constants {
             tagHeights.put(15, 47.5);
             tagHeights.put(16, 47.5);
         }
+
+        public static final double speakerTagID = ALLIANCE_COLOR.isPresent()
+                                            ?
+                                                ALLIANCE_COLOR.get() == DriverStation.Alliance.Red
+                                                ?
+                                                    4d
+                                                :
+                                                    7d
+                                            :
+                                                -1d;
+                                                     
     }
 
     public static final class SwerveConstants {
         public static final int pigeonID = 1;
+
+        public static final double translation_kP = 2.518;
+        public static final double translation_kI = 0.6;
+        public static final double translation_kD = 0.0;
+        public static final double rotation_kP = 1.35;
+        public static final double rotation_kI = 1.25;
+        public static final double rotation_kD = 0.0;
 
         public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
@@ -219,15 +265,16 @@ public final class Constants {
         public static final double driveKV = 1.51;
         public static final double driveKA = 0.27;
 
+
         //Turning Pid Constants
-        public static final double turnKP = 0;
+        public static final double turnKP = 6;
         public static final double turnKD = 0;
-        public static final double turnKI = 0;
-        public static final double turnMaxVel = 0;
-        public static final double turnMaxAccel = 0;
+        public static final double turnKI = 1;
+        public static final double turnMaxVel = 400;
+        public static final double turnMaxAccel = 800;
         public static final double turnTolerance = 2;
         public static final double turnIZone = 1;
-        
+
         /* Swerve Profiling Values */
         /** Meters per Second */
         public static final double maxSpeed = 6380.0 / 60.0 * wheelCircumference * driveGearRatio;
@@ -237,7 +284,7 @@ public final class Constants {
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-        
+
         /* Module Specific Constants */
         // Back Right Module 0
         public static final class Mod0 { //FIXME: This must be tuned to specific robot
