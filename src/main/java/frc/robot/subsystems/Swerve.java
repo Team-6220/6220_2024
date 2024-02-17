@@ -54,13 +54,13 @@ public class Swerve extends SubsystemBase {
      * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
      * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
      */
-    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
+    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0);
     
     /**
      * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
      * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
      */
-    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
+    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, Double.MAX_VALUE);
 
 
     public SwerveModule[] mSwerveMods;
@@ -84,7 +84,7 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
     private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
 
-    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .1);
+    public TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", 10);
 
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
@@ -242,8 +242,9 @@ public class Swerve extends SubsystemBase {
         
         Pose2d currPose = getPose();
         Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
-        double angle = -Math.toDegrees(Math.atan2(speakerPose.getX() - currPose.getX(), speakerPose.getY() - currPose.getY()));
-        //angle += (Constants.isRed ? 0 : 180);
+        double angle = Math.toDegrees(Math.atan2(currPose.getY() - speakerPose.getY(), currPose.getX() - (speakerPose.getX())));
+        angle += (Constants.isRed ? 90 : -90);
+        
         return angle;
     }
 
@@ -356,7 +357,7 @@ public class Swerve extends SubsystemBase {
         }
 
         
-        //LimelightCalculations.updatePoseEstimation(poseEstimator, this);
+        LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         
         poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
