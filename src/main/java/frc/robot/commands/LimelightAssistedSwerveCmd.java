@@ -30,7 +30,7 @@ public class LimelightAssistedSwerveCmd extends Command {
   private final PhotonVisionSubsystem m_VisionSubsystem;
   private final Swerve s_Swerve;
   private final PIDController limelightPidController;
-  private final Supplier<Boolean> aButton;
+  private final Supplier<Boolean> aButton, autoRange;
 
   private DoubleSupplier translationSup, strafeSup, rotationSup;
 
@@ -39,12 +39,13 @@ public class LimelightAssistedSwerveCmd extends Command {
   private final TunableNumber turnkI = new TunableNumber("turnkI", 0);
   private final TunableNumber turnTolerance = new TunableNumber("turnTolerance", 3);
 
-  public LimelightAssistedSwerveCmd(Swerve s_Swerve, Supplier<Boolean> aButton, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup) {
+  public LimelightAssistedSwerveCmd(Swerve s_Swerve, Supplier<Boolean> aButton, Supplier<Boolean> autoRange, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_VisionSubsystem = PhotonVisionSubsystem.getInstance();
     limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
     this.s_Swerve = s_Swerve;
     this.aButton = aButton;
+    this.autoRange = autoRange;
     limelightPidController.setTolerance(turnTolerance.get());
     limelightPidController.setIZone(4);
     
@@ -80,6 +81,10 @@ public class LimelightAssistedSwerveCmd extends Command {
       // System.out.println("success!");
       if(Math.abs(m_VisionSubsystem.getTurnOffset()) < turnTolerance.get()) {
         steeroutput = 0;
+      }
+      if(autoRange.get())
+      {
+        strafeVal = 0.1;
       }
     }
     else

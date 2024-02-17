@@ -93,6 +93,7 @@ public class RobotContainer {
     aimToNote.whileTrue(
       new LimelightAssistedSwerveCmd(s_Swerve, 
       () -> driver.getRightBumper(),
+      () -> driver.getLeftBumper(),
       () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
         () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)),
         () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(rotationAxis)))
