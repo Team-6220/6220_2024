@@ -55,17 +55,17 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   private List<PhotonTrackedTarget> targets;
   private PhotonTrackedTarget bestTarget;
   private double pitch, yaw, skew, area, latency, filteredYaw;
-  private Swerve s_Swerve;
+  // private Swerve s_Swerve;
   private LinearFilter linearFilter;
 
   // private final ProfiledPIDController s_turnController, s_transitionController;
   // private final TrapezoidProfile.Constraints s_turnConstraints, s_transitionConstraints;
 
 
-  private PhotonVisionSubsystem(Swerve s_Swerve) {
+  private PhotonVisionSubsystem() {
     currResult = camera.getLatestResult();
     hasTargets = currResult.hasTargets();
-    this.s_Swerve = s_Swerve;
+    // this.s_Swerve = s_Swerve;
     linearFilter = LinearFilter.singlePoleIIR(.1, 0.02);
     // this.s_turnConstraints = new TrapezoidProfile.Constraints(photonTurn_maxVel.get(), photonTurn_maxAccel.get());
     // this.s_transitionConstraints = new TrapezoidProfile.Constraints(photonTransit_maxVel.get(), photonTransit_maxAccel.get());
@@ -120,10 +120,10 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   {
     SmartDashboard.putNumber("yaw", yaw);
     
-    double gyroHeading = s_Swerve.getHeadingByTimestamp(Timer.getFPGATimestamp() - latency*1000);
+    // double gyroHeading = s_Swerve.getHeadingByTimestamp(Timer.getFPGATimestamp() - latency*1000);
     SmartDashboard.putNumber("YawFiltered", filteredYaw);
-    System.out.println(gyroHeading - filteredYaw);
-    return gyroHeading - yaw;
+    // System.out.println(gyroHeading - filteredYaw);
+    return yaw;
   }
 
   @Override
@@ -133,9 +133,9 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     updateValues();
   }
 
-  public static synchronized PhotonVisionSubsystem getInstance(Swerve s_Swerve){
+  public static synchronized PhotonVisionSubsystem getInstance(){
     if(INSTANCE == null)
-      INSTANCE = new PhotonVisionSubsystem(s_Swerve);
+      INSTANCE = new PhotonVisionSubsystem();
     return INSTANCE;
   }
 }

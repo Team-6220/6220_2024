@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Swerve;
+import frc.robot.commands.LimelightAssistedSwerveCmd;
 import frc.robot.commands.TeleopAimSwerve;
  import frc.robot.subsystems.PhotonVisionSubsystem;
 
@@ -38,12 +39,12 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton aimToHeading = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton aimToSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton aimToNote = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton aimToNote = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-    private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance(s_Swerve);
+    // private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
 
 
   public RobotContainer() {
@@ -90,12 +91,12 @@ public class RobotContainer {
       )
     );
     aimToNote.whileTrue(
-      new TeleopAimSwerve(
-        s_Swerve, 
-        () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
+      new LimelightAssistedSwerveCmd(s_Swerve, 
+      () -> driver.getRightBumper(),
+      () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
         () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)),
-        () -> p_PhotonVisionSubsystem.getTurnOffset())
-      );
+        () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(rotationAxis)))
+    );
   }
 
   public Command getAutonomousCommand() {
