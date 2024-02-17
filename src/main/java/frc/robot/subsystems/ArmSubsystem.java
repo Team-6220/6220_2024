@@ -26,7 +26,8 @@ public class ArmSubsystem extends SubsystemBase{
     private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", ArmConstants.armMaxAccel);
 
     public final TunableNumber armTestAngle = new TunableNumber("Arm Degree Goal Set", 0);
-
+    public final TunableNumber armAmpAngle = new TunableNumber("Amp Degree Set", ArmConstants.ampSetPoint);
+    
     private final CANSparkMax armMotorA, armMotorB;
     private final DutyCycleEncoder armEncoder;
     

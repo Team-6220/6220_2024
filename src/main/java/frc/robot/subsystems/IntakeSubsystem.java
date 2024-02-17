@@ -56,6 +56,11 @@ public class IntakeSubsystem extends SubsystemBase{
         simpleDrive(true, IntakeConstants.ejectSpeedSpeaker);
     }
 
+    public void feedAmp()
+    {
+        simpleDrive(true, IntakeConstants.ejectSpeedAmp);
+    }
+
     public void hopperToShooter(){
         if(noteInBeam()){
             intakeMotor.set(IntakeConstants.intakeSpeed);

@@ -77,11 +77,10 @@ public final class Constants {
     }
 
     public static final class ArmConstants{
-        //FIXME: set ids
+
         public static final int armMotorAID = 13;
         public static final int armMotorBID = 14;
 
-        //FIXME: set inverted
         public static final boolean motorAInverted = true;
         public static final boolean motorBInverted = false;
 
@@ -102,6 +101,8 @@ public final class Constants {
         //FIXME: set setpoints
         public static final double intakeSetpoint = 0;
         public static final double restingSetpoint = 0;
+        public static final double ampSetPoint = 0;
+        public static final double ampShooterSpeed = 0.15; // TODO: change this accordingly
 
         //FIXME: set actual port values and reversed for arm encoder
         public static final int k_ENC_PORT = 0;
@@ -120,7 +121,7 @@ public final class Constants {
         //FIXME: set intake speed
         public static final double intakeSpeed = .3;
         public static final double ejectSpeedSpeaker = .5;
-        public static final double ejectSpeedAmp = .5;
+        public static final double ejectSpeedAmp = .25;
 
         public static final double armSetPointIntake = 83.5;
 
