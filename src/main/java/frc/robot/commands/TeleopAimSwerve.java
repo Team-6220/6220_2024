@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
@@ -28,6 +29,7 @@ public class TeleopAimSwerve extends Command{
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), OIConstants.kDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), OIConstants.kDeadband);
         s_Swerve.setAutoTurnHeading(headingTarget.getAsDouble());
+        SmartDashboard.putNumber("headingTarget", headingTarget.getAsDouble());
         double rotationVal = s_Swerve.getTurnPidSpeed();
         int invert =  (Constants.isRed) ? -1 : 1; 
         s_Swerve.drive(
