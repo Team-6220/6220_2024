@@ -23,13 +23,20 @@ public class IntakeTest extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    s_intakeSubsystem.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_armSubsystem.driveToGoal(IntakeConstants.armSetPointIntake);
+    double armPos = 0;
+    if(s_intakeSubsystem.noteInTransit()) {
+      armPos = 45;
+    } else {
+      armPos = IntakeConstants.armSetPointIntake;
+    }
+    s_armSubsystem.driveToGoal(armPos);
+    
     s_intakeSubsystem.driveToIntake();
   }
 

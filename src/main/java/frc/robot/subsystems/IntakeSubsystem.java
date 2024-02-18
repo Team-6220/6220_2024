@@ -15,7 +15,6 @@ public class IntakeSubsystem extends SubsystemBase{
     private final TalonFX intakeMotor;
 
     private final DigitalInput intakeBreakBeam;
-    private boolean hasNote = false;
     private boolean noteInTransit = false;
 
     private final PIDController intakeController;
@@ -39,26 +38,27 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void driveToIntake(){
-        if(!noteInBeam() && !hasNote && !noteInTransit){
+        if(!noteInBeam() && !noteInTransit){
             intakeMotor.set(IntakeConstants.intakeSpeed);
-        } else if (noteInBeam() && !hasNote && !noteInTransit) {
+        } else if (noteInBeam() && !noteInTransit) {
             noteInTransit = true;
             intakeMotor.setPosition(0);
             
         } else if(noteInTransit) {
             intakeMotor.set(intakeController.calculate(intakeMotor.getPosition().getValueAsDouble(), transDist.get()));
+            SmartDashboard.putNumber("Intake Position", intakeMotor.getPosition().getValueAsDouble());
         } else {
             stop();
         }
     }
 
     public void feedShooter() {
-        simpleDrive(true, IntakeConstants.ejectSpeedSpeaker);
+        simpleDrive(false, IntakeConstants.ejectSpeedSpeaker);
     }
 
     public void feedAmp()
     {
-        simpleDrive(true, IntakeConstants.ejectSpeedAmp);
+        simpleDrive(false, IntakeConstants.ejectSpeedAmp);
     }
 
     public void hopperToShooter(){
@@ -70,6 +70,10 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
+    public void reset() {
+        noteInTransit = false;
+    }
+
     public void stop(){
         intakeMotor.set(0);
     }
@@ -77,10 +81,19 @@ public class IntakeSubsystem extends SubsystemBase{
     public boolean noteInBeam(){
         return !intakeBreakBeam.get();
     }
+    public boolean noteInTransit() {
+        return noteInTransit;
+    }
 
     @Override
     public void periodic(){
         SmartDashboard.putBoolean("Beam In Note", noteInBeam());
+        if(Kp.hasChanged()
+        || Ki.hasChanged()
+        || Kd.hasChanged()) {
+            intakeController.setPID(Kp.get(), Ki.get(), Kd.get());
+        }
+        
     }
 
     public static IntakeSubsystem getInstance() {

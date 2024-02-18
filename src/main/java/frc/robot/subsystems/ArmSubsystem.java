@@ -67,7 +67,7 @@ public class ArmSubsystem extends SubsystemBase{
         m_Controller.setIZone(3);
 
         //Setting Tolerance
-        m_Controller.setTolerance(.15);
+        m_Controller.setTolerance(.5);
     }
 
     /**
@@ -126,7 +126,7 @@ public class ArmSubsystem extends SubsystemBase{
             calculatedSpeed = -0.5;
         }
 
-        armMotorA.set(-calculatedSpeed);
+        armMotorA.set(calculatedSpeed);
         //+90 because feed forward want the angle to be 0 at horizontal for gravity calculations
     }
 

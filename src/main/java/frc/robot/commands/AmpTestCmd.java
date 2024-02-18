@@ -39,23 +39,25 @@ public class AmpTestCmd extends Command {
   @Override
   public void execute() {
     armSubsystem.driveToGoal(armSubsystem.armAmpAngle.get());
-    if(armSubsystem.isAtGoal())
-    {
+    
       if(shootSupplier.get())
       {
         shooterSubsystem.spinManually(ArmConstants.ampShooterSpeed);
         intakeSubsystem.feedAmp();
+      } else {
+        shooterSubsystem.stop();
+        intakeSubsystem.stop();
       }
-    }
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+  public void end(boolean interrupted) {
+    armSubsystem.stop();
+    shooterSubsystem.stop();
+    intakeSubsystem.stop();
   }
+
+  
 }
