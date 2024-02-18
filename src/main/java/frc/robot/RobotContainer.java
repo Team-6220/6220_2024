@@ -20,31 +20,44 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
   /* Controllers */
-    private final XboxController driver = new XboxController(0);
+  private final XboxController driver = new XboxController(0);
+  private final Joystick operator = new Joystick(1);
+  /* Drive Controls */
+  private final int translationAxis = XboxController.Axis.kLeftY.value;
+  private final int strafeAxis = XboxController.Axis.kLeftX.value;
+  private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-    /* Drive Controls */
+  /* Driver Buttons */
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton aimToHeading = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton aimToSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton aimToNote = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
+  private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+  /* Operator Buttons */
+  private final JoystickButton idleMode = new JoystickButton(operator, 7);
+  private final JoystickButton intakeMode = new JoystickButton(operator, 8);
+  private final JoystickButton ampMode = new JoystickButton(operator, 9);
+  private final JoystickButton speakerMode = new JoystickButton(operator, 10);
+  private final JoystickButton climbMode = new JoystickButton(operator, 11);
+  /* Subsystems */
+  private final Swerve s_Swerve = new Swerve();
+  //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
 
-    //Trying to add driver control curves
-    
+  public enum RobotState{
+    IDLE,
+    INTAKE,
+    AMP,
+    SPEAKER,
+    CLIMB
+  }
 
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-    /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton aimToHeading = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton aimToSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton aimToNote = new JoystickButton(driver, XboxController.Button.kX.value);
-    private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
-    private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
-   //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
-
+  public RobotState robotState; 
 
   public RobotContainer() {
+    this.robotState = RobotState.IDLE;
+
     Constants.VisionConstants.setTagHeights();
 
     s_Swerve.setDefaultCommand(
@@ -57,16 +70,9 @@ public class RobotContainer {
         )
     );
 
-    // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
-
-    // Another option that allows you to specify the default auto by its name
-    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
     configureButtonBindings();
-    
   }
 
   private void configureButtonBindings() {
@@ -89,6 +95,11 @@ public class RobotContainer {
     );
     aimToNote.whileTrue(new ShootingTestCommand());
     intake.whileTrue(new IntakeTest());
+    idleMode.onTrue(new InstantCommand(() -> robotState = RobotState.IDLE));
+    intakeMode.onTrue(new InstantCommand(() -> robotState = RobotState.INTAKE));
+    ampMode.onTrue(new InstantCommand(() -> robotState = RobotState.AMP));
+    speakerMode.onTrue(new InstantCommand(() -> robotState = RobotState.SPEAKER));
+    climbMode.onTrue(new InstantCommand(() -> robotState = RobotState.CLIMB));
   }
 
   public Command getAutonomousCommand() {
