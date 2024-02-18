@@ -12,11 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Swerve;
-import frc.robot.commands.TeleopAimSwerve;
- import frc.robot.subsystems.PhotonVisionSubsystem;
-
+import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.commands.*;
 
 public class RobotContainer {
 
@@ -40,10 +38,10 @@ public class RobotContainer {
     private final JoystickButton aimToSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton aimToNote = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
-
+    private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-    private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
+   //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
 
 
   public RobotContainer() {
@@ -86,16 +84,11 @@ public class RobotContainer {
         s_Swerve,
         () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
         () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)), 
-        () -> 90
+        () -> -90
       )
     );
-    aimToNote.whileTrue(
-      new TeleopAimSwerve(
-        s_Swerve, 
-        () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
-        () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)),
-        () -> p_PhotonVisionSubsystem.getTurnOffset())
-      );
+    aimToNote.whileTrue(new ShootingTestCommand());
+    intake.whileTrue(new IntakeTest());
   }
 
   public Command getAutonomousCommand() {

@@ -77,18 +77,17 @@ public final class Constants {
     }
 
     public static final class ArmConstants{
-        //FIXME: set ids
+
         public static final int armMotorAID = 13;
         public static final int armMotorBID = 14;
 
-        //FIXME: set inverted
         public static final boolean motorAInverted = true;
         public static final boolean motorBInverted = false;
 
         //FIXME: set pid values
-        public static final double kP = .04; //0.009
-        public static final double kI = 0.015;//0.0005
-        public static final double kD = 0;//0.001
+        public static final double kP = .06; //0.009
+        public static final double kI = 0.08;//0.0005
+        public static final double kD = 0.0005;//0.001
         public static final double armMaxVel = 65;
         public static final double armMaxAccel = 85;
 
@@ -97,11 +96,13 @@ public final class Constants {
             {/* distance to target, arm angle */}
         };
 
-        public static final double armOffset = -265; // arm up
+        public static final double armOffset = -80; // arm up
 
         //FIXME: set setpoints
         public static final double intakeSetpoint = 0;
         public static final double restingSetpoint = 0;
+        public static final double ampSetPoint = -5;
+        public static final double ampShooterSpeed = 0.6; // TODO: change this accordingly
 
         //FIXME: set actual port values and reversed for arm encoder
         public static final int k_ENC_PORT = 0;
@@ -119,16 +120,16 @@ public final class Constants {
 
         //FIXME: set intake speed
         public static final double intakeSpeed = .3;
-        public static final double ejectSpeedSpeaker = .5;
-        public static final double ejectSpeedAmp = .5;
+        public static final double ejectSpeedSpeaker = .95;
+        public static final double ejectSpeedAmp = .4;
 
         public static final double armSetPointIntake = 83.5;
 
-        public static final double kP = 0;
+        public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double transitDistance = 0;
+        public static final double transitDistance = 2;
     }
 
     public static final class ShooterConstants{
@@ -297,7 +298,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 10;
             public static final int canCoderID = 4;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(103.71);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(7.55859375);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -307,7 +308,7 @@ public final class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 12;
             public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-57);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-147.919921875);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -317,7 +318,7 @@ public final class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 11;
             public static final int canCoderID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(97.12);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(93.076171875);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -327,7 +328,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-41.74);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(166.11328125);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

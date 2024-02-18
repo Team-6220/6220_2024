@@ -101,10 +101,10 @@ public class Swerve extends SubsystemBase {
 
 
         mSwerveMods = new SwerveModule[] {
-            new SwerveModule(0, SwerveConstants.Mod3.constants),
-            new SwerveModule(1, SwerveConstants.Mod2.constants),
-            new SwerveModule(2, SwerveConstants.Mod1.constants),
-            new SwerveModule(3, SwerveConstants.Mod0.constants)
+            new SwerveModule(0, SwerveConstants.Mod0.constants),
+            new SwerveModule(1, SwerveConstants.Mod1.constants),
+            new SwerveModule(2, SwerveConstants.Mod2.constants),
+            new SwerveModule(3, SwerveConstants.Mod3.constants)
         };
 
 
@@ -242,8 +242,8 @@ public class Swerve extends SubsystemBase {
         
         Pose2d currPose = getPose();
         Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
-        double angle = -Math.toDegrees(Math.atan2(speakerPose.getX() - currPose.getX(), speakerPose.getY() - currPose.getY()));
-        //angle += (Constants.isRed ? 0 : 180);
+        double angle = Math.toDegrees(Math.atan2(speakerPose.getY() - currPose.getY(), speakerPose.getX() - currPose.getX()));
+        angle += (Constants.isRed ? 0 : 180);
         return angle;
     }
 
@@ -356,21 +356,20 @@ public class Swerve extends SubsystemBase {
         }
 
         
-        LimelightCalculations.updatePoseEstimation(poseEstimator, this);
+        //LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         
         poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
         SmartDashboard.putString("getpose", getPose().toString());
         SmartDashboard.putString("getRobotPoseField 2d", field2d.getRobotPose().toString());
-
-        /* 
-        for(SwerveModule mod : mSwerveMods){
-            // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);  
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + "setAngle", mod.getDesiredState());
-        }
+ 
+        // for(SwerveModule mod : mSwerveMods){
+        //     // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
+        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
+        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
+        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);  
+        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + "setAngle", mod.getDesiredState());
+        // }
         SmartDashboard.putNumber("Real Heading", getHeading().getDegrees());
         SmartDashboard.putNumber("Auto Turn Heading", autoTurnHeading);
         SmartDashboard.putNumber("Turn Controller Setpoint", turnPidController.getSetpoint().position);
@@ -384,6 +383,5 @@ public class Swerve extends SubsystemBase {
             turnPidController.setConstraints(new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
             turnPidController.reset(getHeading().getDegrees());
         }
-        */
     }
 }
