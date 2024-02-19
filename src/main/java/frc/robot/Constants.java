@@ -100,7 +100,9 @@ public final class Constants {
 
         //FIXME: set setpoints
         public static final double intakeSetpoint = 0;
+        public static final double hoverSetpoint = 0;
         public static final double restingSetpoint = 0;
+        public static final double climbSetpoint = 0;
         public static final double ampSetPoint = -5;
         public static final double ampShooterSpeed = 0.6; // TODO: change this accordingly
 

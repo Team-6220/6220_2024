@@ -113,18 +113,6 @@ public class RobotContainer {
       return;
     }
     robotState.setState(newState);
-    if(newState == State.IDLE){
-      s_Swerve.setDefaultCommand(
-        new TeleopSwerve(
-            s_Swerve, 
-            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
-            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)), 
-            () -> OIConstants.modifyRotAxis(-driver.getRawAxis(rotationAxis)), 
-            () -> robotCentric.getAsBoolean()
-        )
-      );
-      s_Arm.setDefaultCommand(new ArmCommand());
-    }
   }
 
 }
