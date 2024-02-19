@@ -12,8 +12,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.RobotState.State;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.commands.*;
 
 public class RobotContainer {
@@ -43,20 +48,16 @@ public class RobotContainer {
   private final JoystickButton climbMode = new JoystickButton(operator, 11);
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
+  private final ArmSubsystem s_Arm = ArmSubsystem.getInstance();
+  private final IntakeSubsystem s_Intake = IntakeSubsystem.getInstance();
+  private final ClimberSubsystem s_Climber = ClimberSubsystem.getInstance();
+  private final ShooterSubsystem s_Shooter = ShooterSubsystem.getInstance();
   //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
-
-  public enum RobotState{
-    IDLE,
-    INTAKE,
-    AMP,
-    SPEAKER,
-    CLIMB
-  }
 
   public RobotState robotState; 
 
   public RobotContainer() {
-    this.robotState = RobotState.IDLE;
+    this.robotState = RobotState.getInstance();
 
     Constants.VisionConstants.setTagHeights();
 
@@ -95,16 +96,35 @@ public class RobotContainer {
     );
     aimToNote.whileTrue(new ShootingTestCommand());
     intake.whileTrue(new IntakeTest());
-    idleMode.onTrue(new InstantCommand(() -> robotState = RobotState.IDLE));
-    intakeMode.onTrue(new InstantCommand(() -> robotState = RobotState.INTAKE));
-    ampMode.onTrue(new InstantCommand(() -> robotState = RobotState.AMP));
-    speakerMode.onTrue(new InstantCommand(() -> robotState = RobotState.SPEAKER));
-    climbMode.onTrue(new InstantCommand(() -> robotState = RobotState.CLIMB));
+    idleMode.onTrue(new InstantCommand(() -> updateRobotState(State.IDLE)));
+    intakeMode.onTrue(new InstantCommand(() -> updateRobotState(State.INTAKE)));
+    ampMode.onTrue(new InstantCommand(() -> updateRobotState(State.AMP)));
+    speakerMode.onTrue(new InstantCommand(() -> updateRobotState(State.SPEAKER)));
+    climbMode.onTrue(new InstantCommand(() -> updateRobotState(State.CLIMB)));
   }
 
   public Command getAutonomousCommand() {
     //s_Swerve.setPose(new Pose2d(15.3,5.55,new Rotation2d(0)));
     return autoChooser.getSelected();
+  }
+
+  public void updateRobotState(State newState){
+    if(newState == robotState.getState()){
+      return;
+    }
+    robotState.setState(newState);
+    if(newState == State.IDLE){
+      s_Swerve.setDefaultCommand(
+        new TeleopSwerve(
+            s_Swerve, 
+            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
+            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)), 
+            () -> OIConstants.modifyRotAxis(-driver.getRawAxis(rotationAxis)), 
+            () -> robotCentric.getAsBoolean()
+        )
+      );
+      s_Arm.setDefaultCommand(new ArmCommand());
+    }
   }
 
 }

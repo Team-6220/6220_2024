@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants;
+import frc.robot.RobotState;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Swerve;
 
@@ -28,7 +29,6 @@ public class TeleopSwerve extends Command {
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
-
     }
 
     @Override
@@ -37,6 +37,14 @@ public class TeleopSwerve extends Command {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), OIConstants.kDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), OIConstants.kDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), OIConstants.kDeadband);
+        if(RobotState.getInstance().getState() == RobotState.State.AMP){
+            s_Swerve.setAutoTurnHeading(90);
+            rotationVal = s_Swerve.getTurnPidSpeed();
+        }
+        else if(RobotState.getInstance().getState() == RobotState.State.SPEAKER){
+            s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker());
+            rotationVal = s_Swerve.getTurnPidSpeed();
+        }
         int invert =  (Constants.isRed) ? -1 : 1; 
         /* Drive */
         s_Swerve.drive(
