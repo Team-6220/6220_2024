@@ -57,14 +57,10 @@ public class IntakeCommand extends Command{
                 true, 
                 true
         );
-        if(trigger.getAsBoolean()){
-            armAngle = ArmConstants.intakeSetpoint;
-            intake.driveToIntake();
-        }
-        else{
-            armAngle = ArmConstants.hoverSetpoint;
-            intake.stop();
-        }
+        
+        armAngle = ArmConstants.intakeSetpoint;
+        intake.driveToIntake();
+
         arm.driveToGoal(armAngle);
         if((swerve.isFacingTurnTarget() || manualOverride.getAsBoolean()) && arm.isAtGoal()){
             //call intake method to feed wheel

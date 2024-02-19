@@ -13,7 +13,7 @@ import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.Supplier;
 
-public class AmpTestCmd extends Command {
+public class AmpCommand extends Command {
 
   private final ArmSubsystem armSubsystem;
   private final ShooterSubsystem shooterSubsystem;
@@ -22,7 +22,7 @@ public class AmpTestCmd extends Command {
   private final Supplier<Boolean> shootSupplier; // Use this so that it's the driver click the button for it to shoot.
 
   /** Creates a new AmpTestCmd. */
-  public AmpTestCmd(Supplier<Boolean> shootSupplier) {
+  public AmpCommand(Supplier<Boolean> shootSupplier) {
     armSubsystem = ArmSubsystem.getInstance();
     shooterSubsystem = ShooterSubsystem.getInstance();
     intakeSubsystem = IntakeSubsystem.getInstance();

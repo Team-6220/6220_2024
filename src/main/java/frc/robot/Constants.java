@@ -101,7 +101,7 @@ public final class Constants {
         //FIXME: set setpoints
         public static final double intakeSetpoint = 0;
         public static final double hoverSetpoint = 0; //for like right above intake
-        public static final double restingSetpoint = 0;
+        public static final double restingSetpoint = 75;
         public static final double ampSetPoint = -5;
         public static final double ampShooterSpeed = 0.6; // TODO: change this accordingly
 
@@ -141,6 +141,8 @@ public final class Constants {
         public static final boolean motorAInverted = false;
         public static final boolean motorBInverted = false;
 
+
+        public static final double idleOutput = .1;
         //FIXME: set break beam port
         // public static final int breakBeamPort = 0;
 
