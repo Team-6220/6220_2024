@@ -7,10 +7,14 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.Optional;
 
+import org.opencv.core.Mat.Tuple2;
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,6 +23,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -33,12 +38,13 @@ public final class Constants {
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
 
-        public static final int kDriverYAxis = 1;
-        public static final int kDriverXAxis = 0;
-        public static final int kDriverRotAxis = 4;
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
         public static final double kDeadband = 0.05;
+
+        public static final int translationAxis = XboxController.Axis.kLeftY.value;
+        public static final int strafeAxis = XboxController.Axis.kLeftX.value;
+        public static final int rotationAxis = XboxController.Axis.kRightX.value;
 
         public static double modifyMoveAxis(double value) {
             // Deadband
@@ -74,6 +80,28 @@ public final class Constants {
                 return -b + (1-b)*(a*Math.pow(value, 3) + (1-a)*value);
             }
           }
+
+        public static double[] getDriverInputs(XboxController driver) {
+            double[] inputs = new double[3];
+
+            inputs[0] = OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis));
+            inputs[1] = OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis));
+            inputs[2] = OIConstants.modifyRotAxis(-driver.getRawAxis(rotationAxis));
+
+            inputs[0] = MathUtil.applyDeadband(inputs[0], OIConstants.kDeadband);
+            inputs[1] = MathUtil.applyDeadband(inputs[1], OIConstants.kDeadband);
+            inputs[2] = MathUtil.applyDeadband(inputs[2], OIConstants.kDeadband);
+
+            int invert =  (Constants.isRed) ? -1 : 1; 
+
+            inputs[0] *= invert;
+            inputs[1] *= invert;
+
+            inputs[0] *= SwerveConstants.maxSpeed;
+            inputs[1] *= SwerveConstants.maxSpeed;
+            inputs[2] *= SwerveConstants.maxAngularVelocity;
+            return inputs;
+        }
     }
 
     public static final class ArmConstants{
@@ -91,10 +119,39 @@ public final class Constants {
         public static final double armMaxVel = 65;
         public static final double armMaxAccel = 85;
 
+
+        public static final double minArmShootAngle = 75;
+        public static final double maxArmShootAngle = 40;
         //FIXME: create lookup table
         public static final double [][] armLookupTable = {
-            {/* distance to target, arm angle */}
+            {1, 75},
+            {3, 65}
         };
+
+        public static double getArmAngleFromDistance(double distance) {
+
+            if(distance < armLookupTable[0][0]) {
+                return minArmShootAngle;
+            }
+            if(distance > armLookupTable[armLookupTable.length-1][0]) {
+                return maxArmShootAngle;
+            }
+
+            double[] smaller = new double[2];
+            double[] larger = new double[2];
+
+            for(int i = 0; i < armLookupTable.length-2; i++) {
+                if(distance >= armLookupTable[i][0] && distance <= armLookupTable[i+1][0]) {
+                    smaller = armLookupTable[i];
+                    larger = armLookupTable[i+1];
+                    break;
+                }
+            }
+            //Y = Y1 + (X - X1) * ((Y2 - Y1)/(X2 - X1))
+            return smaller[1] + (distance - smaller[0]) * ((larger[1]-smaller[1])/(larger[0]-smaller[0]));
+            
+            
+        }
 
         public static final double armOffset = -80; // arm up
 
@@ -143,6 +200,12 @@ public final class Constants {
 
 
         public static final double idleOutput = .1;
+
+        public static final double minShooterVelA = 2000;
+        public static final double minShooterVelB = 2000;
+
+        public static final double maxShooterVelA = 4500;
+        public static final double maxShooterVelB = 4500;
         //FIXME: set break beam port
         // public static final int breakBeamPort = 0;
 
@@ -155,10 +218,39 @@ public final class Constants {
         public static final double kFFkA = 0;
 
         //FIXME: create lookup table
-        public static final double [][] shooterLookupTable = {
-            {/* distance to target, shooter speed */}
+        public static final double[][] shooterLookupTable = {
+            {3000,3000,1},
+            {4000,4000,3}
         };
+        public static double[] getVelocitiesFromDistance(double distance) {
+            double[] velocities = new double[2];
 
+            if(distance < shooterLookupTable[0][2]) {
+                velocities[0] = minShooterVelA;
+                velocities[1] = minShooterVelB;
+                return velocities;
+            }
+            if(distance > shooterLookupTable[shooterLookupTable.length-1][2]) {
+                velocities[0] = maxShooterVelA;
+                velocities[1] = maxShooterVelB;
+                return velocities;
+            }
+
+            double[] smaller = new double[3];
+            double[] larger = new double[3];
+
+            for(int i = 0; i < shooterLookupTable.length-2; i++) {
+                if(distance >= shooterLookupTable[i][2] && distance <= shooterLookupTable[i+1][2]) {
+                    smaller = shooterLookupTable[i];
+                    larger = shooterLookupTable[i+1];
+                    break;
+                }
+            }
+            //Y = Y1 + (X - X1) * ((Y2 - Y1)/(X2 - X1))
+            velocities[0] = smaller[0] + (distance - smaller[2]) * ((larger[0]-smaller[0])/(larger[2]-smaller[2]));
+            velocities[1] = smaller[0] + (distance - smaller[2]) * ((larger[1]-smaller[1])/(larger[2]-smaller[2]));
+            return velocities;
+        }
     }
 
     public static final class VisionConstants{

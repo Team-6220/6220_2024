@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
@@ -20,31 +21,31 @@ public class IntakeCommand extends Command{
     private final IntakeSubsystem intake;
     private final ArmSubsystem arm;
     private final PhotonVisionSubsystem vis;
-    private final DoubleSupplier translation, strafe, rotation;
     private final BooleanSupplier manualOverride, trigger;
     private double armAngle = ArmConstants.hoverSetpoint;
-    public IntakeCommand(Swerve swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier override, BooleanSupplier trigger){
+    private XboxController driver;
+
+    public IntakeCommand(Swerve swerve, XboxController driver, BooleanSupplier override, BooleanSupplier trigger){
         this.swerve = swerve;
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
         this.vis = PhotonVisionSubsystem.getInstance();
-        this.strafe = strafeSup;
-        this.translation = translationSup;
-        this.rotation = rotationSup;
         this.manualOverride = override;
         this.trigger = trigger;
+        this.driver = driver;
         addRequirements(this.swerve, arm, intake, vis);
     }
 
     @Override
     public void execute(){
-        double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), OIConstants.kDeadband);
-        double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), OIConstants.kDeadband);
+
+        double[] driverInputs = OIConstants.getDriverInputs(driver);
+
         double headingTarget = swerve.getHeadingDegrees();
         swerve.setAutoTurnHeading(headingTarget);
         double rotationVal = swerve.getTurnPidSpeed();
         if(!vis.getHasTargets() || manualOverride.getAsBoolean()){
-            rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), OIConstants.kDeadband) * SwerveConstants.maxAngularVelocity;
+            rotationVal = driverInputs[2];
         }else if(vis.getHasTargets() && !manualOverride.getAsBoolean()){
             headingTarget += vis.getTurnOffset();
             swerve.setAutoTurnHeading(headingTarget);
@@ -52,12 +53,12 @@ public class IntakeCommand extends Command{
         }
         int invert = (Constants.isRed) ? -1 : 1; 
         swerve.drive(
-                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed * invert), 
+                new Translation2d(driverInputs[0], driverInputs[1]).times(SwerveConstants.maxSpeed * invert), 
                 rotationVal, 
                 true, 
                 true
         );
-        
+
         armAngle = ArmConstants.intakeSetpoint;
         intake.driveToIntake();
 

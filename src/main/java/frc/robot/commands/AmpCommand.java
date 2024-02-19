@@ -4,12 +4,17 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.Supplier;
 
@@ -18,16 +23,19 @@ public class AmpCommand extends Command {
   private final ArmSubsystem armSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final IntakeSubsystem intakeSubsystem;
-
+  private final XboxController driver;
+  private final Swerve s_Swerve;
   private final Supplier<Boolean> shootSupplier; // Use this so that it's the driver click the button for it to shoot.
 
   /** Creates a new AmpTestCmd. */
-  public AmpCommand(Supplier<Boolean> shootSupplier) {
+  public AmpCommand(Swerve s_Swerve, XboxController driver, Supplier<Boolean> shootSupplier) {
     armSubsystem = ArmSubsystem.getInstance();
     shooterSubsystem = ShooterSubsystem.getInstance();
     intakeSubsystem = IntakeSubsystem.getInstance();
     this.shootSupplier = shootSupplier;
-    addRequirements(armSubsystem,shooterSubsystem);
+    this.s_Swerve = s_Swerve;
+    this.driver = driver;
+    addRequirements(armSubsystem,shooterSubsystem, s_Swerve);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -38,6 +46,17 @@ public class AmpCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double[] driverInputs = OIConstants.getDriverInputs(driver);
+
+    s_Swerve.setAutoTurnHeading(90);
+    double rotationVal = s_Swerve.getTurnPidSpeed();
+    s_Swerve.drive(
+      new Translation2d(driverInputs[0], driverInputs[1]),
+      rotationVal,
+      true,
+      true
+    );
+
     armSubsystem.driveToGoal(armSubsystem.armAmpAngle.get());
     
       if(shootSupplier.get())

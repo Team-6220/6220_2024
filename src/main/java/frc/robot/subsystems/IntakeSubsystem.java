@@ -54,11 +54,13 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void feedShooter() {
         simpleDrive(false, IntakeConstants.ejectSpeedSpeaker);
+        noteInTransit = false;
     }
 
     public void feedAmp()
     {
         simpleDrive(false, IntakeConstants.ejectSpeedAmp);
+        noteInTransit = false;
     }
 
     public void hopperToShooter(){

@@ -10,23 +10,19 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
 public class TeleopSwerve extends Command {    
     private Swerve s_Swerve;    
-    private DoubleSupplier translationSup;
-    private DoubleSupplier strafeSup;
-    private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
+    private XboxController driver;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
+    public TeleopSwerve(Swerve s_Swerve, XboxController driver, BooleanSupplier robotCentricSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
-
-        this.translationSup = translationSup;
-        this.strafeSup = strafeSup;
-        this.rotationSup = rotationSup;
+        this.driver = driver;
         this.robotCentricSup = robotCentricSup;
 
     }
@@ -34,14 +30,12 @@ public class TeleopSwerve extends Command {
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), OIConstants.kDeadband);
-        double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), OIConstants.kDeadband);
-        double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), OIConstants.kDeadband);
-        int invert =  (Constants.isRed) ? -1 : 1; 
+        double[] driverInputs = OIConstants.getDriverInputs(driver);
+        
         /* Drive */
         s_Swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed*invert), 
-            rotationVal * SwerveConstants.maxAngularVelocity, 
+            new Translation2d(driverInputs[0], driverInputs[1]), 
+            driverInputs[2], 
             !robotCentricSup.getAsBoolean(), 
             true
         );

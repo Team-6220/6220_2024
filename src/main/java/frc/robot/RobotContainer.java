@@ -15,6 +15,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AmpCommand;
 import frc.robot.commands.ArmIdleCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeIdleCommand;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.SpeakerCommand;
 import frc.robot.commands.TeleopSwerve;
@@ -33,10 +34,6 @@ public class RobotContainer {
 
     //Trying to add driver control curves
     
-
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
@@ -59,10 +56,8 @@ public class RobotContainer {
 
     s_Swerve.setDefaultCommand(
         new TeleopSwerve(
-            s_Swerve, 
-            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
-            () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)), 
-            () -> OIConstants.modifyRotAxis(-driver.getRawAxis(rotationAxis)), 
+            s_Swerve,
+            driver,
             () -> robotCentric.getAsBoolean()
         )
     );
@@ -72,6 +67,7 @@ public class RobotContainer {
     
     s_ShooterSubsystem.setDefaultCommand(new ShooterIdleCommand());
 
+    s_IntakeSubsystem.setDefaultCommand(new IntakeIdleCommand());
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -88,19 +84,25 @@ public class RobotContainer {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0)))));
     
-    ampTemporary.whileTrue(new AmpCommand(() -> driver.rightTrigger(.5, null).getAsBoolean()));
+    ampTemporary.whileTrue(new AmpCommand(
+      s_Swerve,
+      driver,
+      () -> driver.rightTrigger(.5, null).getAsBoolean())
+    );
 
     intakeTemporary.whileTrue(new IntakeCommand(
       s_Swerve, 
-      () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
-      () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)), 
-      () -> OIConstants.modifyRotAxis(-driver.getRawAxis(rotationAxis)),  override, () -> driver.rightTrigger(.5, null).getAsBoolean())
+      driver,  
+      override, 
+      () -> driver.rightTrigger(.5, null).getAsBoolean()).until(() -> s_IntakeSubsystem.noteInTransit())
     );
 
-    speakerTemporary.whileTrue(new SpeakerCommand(s_Swerve, 
-      () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(translationAxis)), 
-      () -> OIConstants.modifyMoveAxis(-driver.getRawAxis(strafeAxis)), 
-      () -> OIConstants.modifyRotAxis(-driver.getRawAxis(rotationAxis)), override));
+    speakerTemporary.whileTrue(new SpeakerCommand(
+      s_Swerve, 
+      driver,
+      override)
+    );
+
   }
 
   public Command getAutonomousCommand() {
