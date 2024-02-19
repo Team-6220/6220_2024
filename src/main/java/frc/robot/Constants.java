@@ -140,7 +140,7 @@ public final class Constants {
             double[] smaller = new double[2];
             double[] larger = new double[2];
 
-            for(int i = 0; i < armLookupTable.length-2; i++) {
+            for(int i = 0; i < armLookupTable.length-1; i++) {
                 if(distance >= armLookupTable[i][0] && distance <= armLookupTable[i+1][0]) {
                     smaller = armLookupTable[i];
                     larger = armLookupTable[i+1];
@@ -239,7 +239,7 @@ public final class Constants {
             double[] smaller = new double[3];
             double[] larger = new double[3];
 
-            for(int i = 0; i < shooterLookupTable.length-2; i++) {
+            for(int i = 0; i < shooterLookupTable.length-1; i++) {
                 if(distance >= shooterLookupTable[i][2] && distance <= shooterLookupTable[i+1][2]) {
                     smaller = shooterLookupTable[i];
                     larger = shooterLookupTable[i+1];
