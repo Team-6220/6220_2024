@@ -87,7 +87,8 @@ public class RobotContainer {
     ampTemporary.whileTrue(new AmpCommand(
       s_Swerve,
       driver,
-      () -> driver.rightTrigger(.5, null).getAsBoolean())
+      () -> driver.rightTrigger(.5, null).getAsBoolean(),
+      () -> override.getAsBoolean())
     );
 
     intakeTemporary.whileTrue(new IntakeCommand(

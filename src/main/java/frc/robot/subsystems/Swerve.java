@@ -200,6 +200,32 @@ public class Swerve extends SubsystemBase {
 
   }
 
+  /**
+     * AKA get x value to amp as of map in pathplanner, forward/positvie is away from DRIVER'S POINT OF VIEW at BLUE SIDE
+     * @return the forward/backward/x distance from robot to amp
+     */
+    public double getForwardBackwardToAmp()
+    {
+        Pose2d currPose = getPose();
+        Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        double xDistance = ampPose.getX(); // - currPose.getX() // I don't think we need this
+        SmartDashboard.putNumber("forward backward", xDistance);
+        return xDistance;
+    }
+
+    /**
+     * AKA get y value to amp as of map in pathplanner
+     * @return the left/right/y distance from robot to amp, right/negative is to the right side of the driver FROM THE BLUE SIDE
+     */
+    public double getLeftAndRightToAmp()
+    {
+        Pose2d currPose = getPose();
+        Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        double yDistance = ampPose.getY() ; //- currPose.getY() // I don't think we need it
+        SmartDashboard.putNumber("left and right", yDistance);
+        return yDistance;
+    }
+
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxSpeed);

@@ -261,7 +261,9 @@ public final class Constants {
 
         public static final Pose2d SPEAKER_POSE2D_BLUE = new Pose2d(new Translation2d(-.0381, 5.547868), new Rotation2d(0));
         public static final Pose2d SPEAKER_POSE2D_RED = new Pose2d(new Translation2d(16.5793, 5.547868), new Rotation2d(180));
-        
+        public static final Pose2d AMP_POSE2D_RED = new Pose2d(new Translation2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323-16.25)), new Rotation2d(270));
+        public static final Pose2d AMP_POSE2D_BLUE = new Pose2d(new Translation2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323-16.25)), new Rotation2d(270));
+
         //FIXME: set limelight values
         public static final double limelightHeightInches = 0;
         public static final double limelightAngleDegrees = 0;
