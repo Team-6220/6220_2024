@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -76,7 +77,10 @@ public class RobotContainer {
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
+    NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
+    NamedCommands.registerCommand("pickup", new IntakeCommand(s_Swerve));
     SmartDashboard.putData("Auto Chooser", autoChooser);
+   
 
     configureButtonBindings();
     
