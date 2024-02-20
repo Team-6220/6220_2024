@@ -5,8 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -25,14 +27,14 @@ public class AmpCommand extends Command {
   private final IntakeSubsystem intakeSubsystem;
   private final XboxController driver;
   private final Swerve s_Swerve;
-  private final Supplier<Boolean> shootSupplier; // Use this so that it's the driver click the button for it to shoot.
+  private final JoystickButton shoot; // Use this so that it's the driver click the button for it to shoot.
 
   /** Creates a new AmpTestCmd. */
-  public AmpCommand(Swerve s_Swerve, XboxController driver, Supplier<Boolean> shootSupplier) {
+  public AmpCommand(Swerve s_Swerve, XboxController driver, JoystickButton shoot) {
     armSubsystem = ArmSubsystem.getInstance();
     shooterSubsystem = ShooterSubsystem.getInstance();
     intakeSubsystem = IntakeSubsystem.getInstance();
-    this.shootSupplier = shootSupplier;
+    this.shoot = shoot;
     this.s_Swerve = s_Swerve;
     this.driver = driver;
     addRequirements(armSubsystem,shooterSubsystem, s_Swerve);
@@ -59,7 +61,7 @@ public class AmpCommand extends Command {
 
     armSubsystem.driveToGoal(armSubsystem.armAmpAngle.get());
     
-      if(shootSupplier.get())
+      if(shoot.getAsBoolean())
       {
         shooterSubsystem.spinManually(ArmConstants.ampShooterSpeed);
         intakeSubsystem.feedAmp();

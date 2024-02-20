@@ -43,6 +43,7 @@ public class RobotContainer {
     private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
     private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton noNote = new JoystickButton(driver, XboxController.Button.kStart.value);
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final ArmSubsystem s_ArmSubsystem = ArmSubsystem.getInstance();
@@ -84,17 +85,18 @@ public class RobotContainer {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0)))));
     
+    noNote.onTrue(new InstantCommand(() -> s_IntakeSubsystem.reset()));
+
     ampTemporary.whileTrue(new AmpCommand(
       s_Swerve,
       driver,
-      () -> driver.rightTrigger(.5, null).getAsBoolean())
+      override)
     );
 
     intakeTemporary.whileTrue(new IntakeCommand(
       s_Swerve, 
       driver,  
-      override, 
-      () -> driver.rightTrigger(.5, null).getAsBoolean()).until(() -> s_IntakeSubsystem.noteInTransit())
+      override).until(() -> s_IntakeSubsystem.noteInTransit())
     );
 
     speakerTemporary.whileTrue(new SpeakerCommand(

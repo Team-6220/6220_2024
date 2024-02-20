@@ -113,8 +113,8 @@ public final class Constants {
         public static final boolean motorBInverted = false;
 
         //FIXME: set pid values
-        public static final double kP = .06; //0.009
-        public static final double kI = 0.08;//0.0005
+        public static final double kP = .04; //0.009
+        public static final double kI = 0.03;//0.0005
         public static final double kD = 0.0005;//0.001
         public static final double armMaxVel = 65;
         public static final double armMaxAccel = 85;
@@ -156,9 +156,9 @@ public final class Constants {
         public static final double armOffset = -80; // arm up
 
         //FIXME: set setpoints
-        public static final double intakeSetpoint = 0;
+        public static final double intakeSetpoint = 83.5;
         public static final double hoverSetpoint = 0; //for like right above intake
-        public static final double restingSetpoint = 75;
+        public static final double restingSetpoint = 70;
         public static final double ampSetPoint = -5;
         public static final double ampShooterSpeed = 0.6; // TODO: change this accordingly
 
@@ -199,7 +199,7 @@ public final class Constants {
         public static final boolean motorBInverted = false;
 
 
-        public static final double idleOutput = .1;
+        public static final double idleOutput = .05;
 
         public static final double minShooterVelA = 2000;
         public static final double minShooterVelB = 2000;
@@ -262,6 +262,7 @@ public final class Constants {
         public static final Pose2d SPEAKER_POSE2D_BLUE = new Pose2d(new Translation2d(-.0381, 5.547868), new Rotation2d(0));
         public static final Pose2d SPEAKER_POSE2D_RED = new Pose2d(new Translation2d(16.5793, 5.547868), new Rotation2d(180));
         
+        public static final Translation2d CENTER_OF_FIELD = new Translation2d(8.2706,4.105148);
         //FIXME: set limelight values
         public static final double limelightHeightInches = 0;
         public static final double limelightAngleDegrees = 0;
@@ -393,7 +394,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 10;
             public static final int canCoderID = 4;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(7.55859375);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(2.98828125);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -403,7 +404,7 @@ public final class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 12;
             public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-147.919921875);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-156.181640625);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -413,7 +414,7 @@ public final class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 11;
             public static final int canCoderID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(93.076171875);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(79.892578125);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -423,7 +424,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(166.11328125);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(160.751953125);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
