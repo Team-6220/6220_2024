@@ -25,7 +25,9 @@ public class SpeakerCommand extends Command{
     private final BooleanSupplier manualOverride;
     private double[] velocities  = {0, 0};
     private double armAngle = ArmConstants.restingSetpoint;
+    private boolean isAuto;
     public SpeakerCommand(Swerve swerve, XboxController driver, BooleanSupplier override){
+        isAuto = false;
         this.swerve = swerve;
         this.shooter = ShooterSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
@@ -35,9 +37,28 @@ public class SpeakerCommand extends Command{
         addRequirements(this.swerve, arm, intake, shooter);
     }
 
+    public SpeakerCommand(Swerve swerve){
+        isAuto = true;
+        this.swerve = swerve;
+        this.shooter = ShooterSubsystem.getInstance();
+        this.intake = IntakeSubsystem.getInstance();
+        this.arm = ArmSubsystem.getInstance();
+        this.driver = null;
+        manualOverride = () -> false;
+        addRequirements(this.swerve, arm, intake, shooter);
+    }
+
     @Override
     public void execute(){
-        double[] driverInputs = OIConstants.getDriverInputs(driver);
+        double[] driverInputs;
+        if(!isAuto)
+        {
+            driverInputs = OIConstants.getDriverInputs(driver);
+        }
+        else
+        {
+            driverInputs = new double[] {0,0,0};
+        }
         swerve.setAutoTurnHeading(swerve.getHeadingToSpeaker());
         double rotationVal = swerve.getTurnPidSpeed();
         if(manualOverride.getAsBoolean()){

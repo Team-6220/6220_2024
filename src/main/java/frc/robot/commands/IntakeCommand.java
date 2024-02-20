@@ -28,6 +28,7 @@ public class IntakeCommand extends Command{
     private final BooleanSupplier manualOverride;
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
+    private boolean isAuto;
 
     private final TunableNumber turnkP = new TunableNumber("intakeTurnkP", 4);
     private final TunableNumber turnkD = new TunableNumber("intakeTurnkD", 0.002);
@@ -35,6 +36,7 @@ public class IntakeCommand extends Command{
     private final TunableNumber turnTolerance = new TunableNumber("turnTolerance", 3);
 
     public IntakeCommand(Swerve swerve, XboxController driver, BooleanSupplier override) {
+        isAuto = false;
         this.swerve = swerve;
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
@@ -47,14 +49,44 @@ public class IntakeCommand extends Command{
         addRequirements(this.swerve, arm, intake, vis);
     }
 
+    public IntakeCommand(Swerve swerve) {
+        isAuto = true;
+        this.swerve = swerve;
+        this.intake = IntakeSubsystem.getInstance();
+        this.arm = ArmSubsystem.getInstance();
+        this.vis = PhotonVisionSubsystem.getInstance();
+        this.manualOverride = ()-> false;
+        this.driver = null;
+        limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
+        limelightPidController.setTolerance(turnTolerance.get());
+        limelightPidController.setIZone(4);
+        addRequirements(this.swerve, arm, intake, vis);
+    }
+
     @Override
     public void execute(){
+        double[] driverInputs;
+        double rotationVal = 0, translation = 0, strafeVal = 0;
+        if(isAuto)
+        {
+            driverInputs = OIConstants.getDriverInputs(driver);
+            translation = driverInputs[0];
+            strafeVal = driverInputs[1];
+            rotationVal = driverInputs[2];
+        }
+        else
+        {
+            if(vis.getHasTargets()) {
+                rotationVal = limelightPidController.calculate(vis.getTurnOffset());
 
-        double[] driverInputs = OIConstants.getDriverInputs(driver);
-
-        double rotationVal = driverInputs[2];
-        double translation = driverInputs[0];
-        double strafeVal = driverInputs[1];
+                rotationVal = (rotationVal > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(rotationVal< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:rotationVal;
+                // System.out.println("success!");
+                if(Math.abs(vis.getTurnOffset()) < turnTolerance.get()) {
+                    rotationVal = 0;
+                }
+                translation = -.3 * SwerveConstants.maxSpeed;
+            }
+        }
 
         if(manualOverride.getAsBoolean()) {
             if(vis.getHasTargets()) {

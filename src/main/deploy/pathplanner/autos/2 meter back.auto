@@ -16,6 +16,12 @@
           "data": {
             "pathName": "2 meter back"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": null
+          }
         }
       ]
     }
