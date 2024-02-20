@@ -65,7 +65,7 @@ public class IntakeCommand extends Command{
                 if(Math.abs(vis.getTurnOffset()) < turnTolerance.get()) {
                     rotationVal = 0;
                 }
-                translation = -.4 * SwerveConstants.maxSpeed;
+                translation = -.3 * SwerveConstants.maxSpeed;
             }
         }
 

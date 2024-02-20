@@ -49,7 +49,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   // private final TunableNumber photonTransit_maxAccel = new TunableNumber("photonTransit_maxAccel", PhotonVisionConstants.ANGULAR_MAXIMUMACCEL);
   // private final TunableNumber photonTransit_Tolerance = new TunableNumber("photonTransit_Tolerance", PhotonVisionConstants.ANGULAR_Tolerance);
 
-  private PhotonCamera camera = new PhotonCamera("Camera_Module_v1");
+  private PhotonCamera camera = new PhotonCamera("Intake_Camera");
   private PhotonPipelineResult currResult;
   private boolean hasTargets;
   private List<PhotonTrackedTarget> targets;
