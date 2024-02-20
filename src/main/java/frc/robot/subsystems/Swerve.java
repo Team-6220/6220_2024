@@ -84,7 +84,7 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
     private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
 
-    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .1);
+    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .2);
 
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
@@ -199,6 +199,32 @@ public class Swerve extends SubsystemBase {
     return chassisSpeeds;
 
   }
+
+  /**
+     * AKA get x value to amp as of map in pathplanner, forward/positvie is away from DRIVER'S POINT OF VIEW at BLUE SIDE
+     * @return the forward/backward/x distance from robot to amp
+     */
+    public double getForwardBackwardToAmp()
+    {
+        Pose2d currPose = getPose();
+        Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        double xDistance = ampPose.getX(); // - currPose.getX() // I don't think we need this
+        SmartDashboard.putNumber("forward backward", xDistance);
+        return xDistance;
+    }
+
+    /**
+     * AKA get y value to amp as of map in pathplanner
+     * @return the left/right/y distance from robot to amp, right/negative is to the right side of the driver FROM THE BLUE SIDE
+     */
+    public double getLeftAndRightToAmp()
+    {
+        Pose2d currPose = getPose();
+        Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        double yDistance = ampPose.getY() ; //- currPose.getY() // I don't think we need it
+        SmartDashboard.putNumber("left and right", yDistance);
+        return yDistance;
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -356,7 +382,7 @@ public class Swerve extends SubsystemBase {
         }
 
         
-        //LimelightCalculations.updatePoseEstimation(poseEstimator, this);
+        LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         
         poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
