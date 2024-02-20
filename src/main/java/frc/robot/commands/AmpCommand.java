@@ -47,7 +47,7 @@ public class AmpCommand extends Command {
     armSubsystem = ArmSubsystem.getInstance();
     shooterSubsystem = ShooterSubsystem.getInstance();
     intakeSubsystem = IntakeSubsystem.getInstance();
-    this.shoot = shoot;
+    this.shootSupplier = shootSupplier;
     this.s_Swerve = s_Swerve;
     this.driver = driver;
     manuelOverride = override;
