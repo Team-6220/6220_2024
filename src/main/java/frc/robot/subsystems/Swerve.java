@@ -140,12 +140,13 @@ public class Swerve extends SubsystemBase {
         turnPidController = new ProfiledPIDController(turnKP.get(), turnKI.get(), turnKD.get(), new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
         turnPidController.setIZone(Constants.SwerveConstants.turnIZone);
         turnPidController.setTolerance(Constants.SwerveConstants.turnTolerance);
-        turnPidController.enableContinuousInput(0, 360);
+        turnPidController.enableContinuousInput(-180, 180);
 
         // Set up custom logging to add the current path to a field 2d widget
         PathPlannerLogging.setLogActivePathCallback((poses) -> field2d.getObject("path").setPoses(poses));
         Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
         // SmartDashboard.putData("Field", field2d);
+        createShuffleOutputs();
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -167,7 +168,7 @@ public class Swerve extends SubsystemBase {
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
-            SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
+            //SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
         }
     }
     
@@ -269,7 +270,7 @@ public class Swerve extends SubsystemBase {
         Pose2d currPose = getPose();
         Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
         double angle = Math.toDegrees(Math.atan2(speakerPose.getY() - currPose.getY(), speakerPose.getX() - currPose.getX()));
-        angle += (Constants.isRed ? 0 : 180);
+        angle += (Constants.isRed ? 0 : 180) -5;
         return angle;
     }
 
@@ -333,7 +334,7 @@ public class Swerve extends SubsystemBase {
     
         double speed = turnPidController.calculate(getHeadingDegrees());
 
-        SmartDashboard.putNumber(" raw speed", speed);
+        //SmartDashboard.putNumber(" raw speed", speed);
 
         if(speed > SwerveConstants.maxAngularVelocity) {
             speed = SwerveConstants.maxAngularVelocity;
@@ -386,19 +387,7 @@ public class Swerve extends SubsystemBase {
         
         poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
-        SmartDashboard.putString("getpose", getPose().toString());
-        SmartDashboard.putString("getRobotPoseField 2d", field2d.getRobotPose().toString());
- 
-        // for(SwerveModule mod : mSwerveMods){
-        //     // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);  
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + "setAngle", mod.getDesiredState());
-        // }
-        SmartDashboard.putNumber("Real Heading", getHeading().getDegrees());
-        SmartDashboard.putNumber("Auto Turn Heading", autoTurnHeading);
-        SmartDashboard.putNumber("Turn Controller Setpoint", turnPidController.getSetpoint().position);
+        
         if(turnKP.hasChanged()
         || turnKD.hasChanged()
         || turnKI.hasChanged()) {
@@ -409,5 +398,25 @@ public class Swerve extends SubsystemBase {
             turnPidController.setConstraints(new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
             turnPidController.reset(getHeading().getDegrees());
         }
+        //createShuffleOutputs();
+    }
+
+    private void createShuffleOutputs() {
+        String title = "Swerve";
+        Shuffleboard.getTab(title).addString("Robot Pose", () -> getPose().toString());
+        //SmartDashboard.putString("getRobotPoseField 2d", field2d.getRobotPose().toString());
+ 
+        for(SwerveModule mod : mSwerveMods){
+            // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
+            Shuffleboard.getTab(title).addNumber("Mod " + mod.moduleNumber + " CANcoder", () -> mod.getCANcoder().getDegrees());
+            Shuffleboard.getTab(title).addNumber("Mod " + mod.moduleNumber + " Angle", ()-> mod.getPosition().angle.getDegrees());
+            Shuffleboard.getTab(title).addNumber("Mod " + mod.moduleNumber + " Velocity", ()-> mod.getState().speedMetersPerSecond);  
+            Shuffleboard.getTab(title).addNumber("Mod " + mod.moduleNumber + "setAngle",()-> mod.getDesiredState());
+        }
+        Shuffleboard.getTab(title).addNumber("Real Heading", ()-> getHeading().getDegrees());
+        Shuffleboard.getTab(title).addNumber("Auto Turn Heading", ()->autoTurnHeading);
+        Shuffleboard.getTab(title).addNumber("Turn Controller Setpoint", ()->turnPidController.getSetpoint().position);
+
+        
     }
 }

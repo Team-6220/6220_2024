@@ -120,12 +120,17 @@ public final class Constants {
         public static final double armMaxAccel = 85;
 
 
-        public static final double minArmShootAngle = 75;
+        public static final double minArmShootAngle = 70;
         public static final double maxArmShootAngle = 40;
         //FIXME: create lookup table
         public static final double [][] armLookupTable = {
-            {1, 75},
-            {3, 65}
+            {.9779, 70},
+            {1.4986, 62},
+            {1.905, 58.5},
+            {2.8194, 50.5},
+            {3.302, 47.5},
+            {4.0132, 45},
+            {4.9784, 42}
         };
 
         public static double getArmAngleFromDistance(double distance) {
@@ -201,11 +206,11 @@ public final class Constants {
 
         public static final double idleOutput = .05;
 
-        public static final double minShooterVelA = 2000;
-        public static final double minShooterVelB = 2000;
+        public static final double minShooterVelA = 2800;
+        public static final double minShooterVelB = 2800;
 
-        public static final double maxShooterVelA = 4500;
-        public static final double maxShooterVelB = 4500;
+        public static final double maxShooterVelA = 4400;
+        public static final double maxShooterVelB = 4400;
         //FIXME: set break beam port
         // public static final int breakBeamPort = 0;
 
@@ -219,8 +224,13 @@ public final class Constants {
 
         //FIXME: create lookup table
         public static final double[][] shooterLookupTable = {
-            {3000,3000,1},
-            {4000,4000,3}
+            {2800,2800,.9779},
+            {3000,3000,1.4986},
+            {3200,3200,1.905},
+            {3400,3400,2.8194},
+            {3600,3600,3.302},
+            {3900,3900,4.0132},
+            {4400,4400,4.9784}
         };
         public static double[] getVelocitiesFromDistance(double distance) {
             double[] velocities = new double[2];
@@ -397,7 +407,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 10;
             public static final int canCoderID = 4;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(2.98828125);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-3.8671875);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -407,7 +417,7 @@ public final class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 12;
             public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-156.181640625);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-148.623046875);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -417,7 +427,7 @@ public final class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 11;
             public static final int canCoderID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(79.892578125);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(2.373046875);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -427,7 +437,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(160.751953125);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(114.697265625);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

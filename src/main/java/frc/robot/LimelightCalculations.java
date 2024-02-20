@@ -68,10 +68,16 @@ public final class LimelightCalculations {
             //}
         }
         if(count > 0) {
-            double visionStdDev = constant * (totalDistance/count);
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));
+            double distance = totalDistance/count;
+            if(distance>5) {
+               poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(Double.MAX_VALUE,Double.MAX_VALUE,Double.MAX_VALUE)); 
+            } else {
+                double visionStdDev = constant * (1 + (distance * distance / 30));
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));
+            }
+            
             Pose2d newPose = new Pose2d(new Translation2d((totalX/count) + VisionConstants.CENTER_OF_FIELD.getX(), (totalY/count) + VisionConstants.CENTER_OF_FIELD.getY()), poseEstimator.getEstimatedPosition().getRotation());
-            SmartDashboard.putString("Vision Guess", newPose.toString());
+            //SmartDashboard.putString("Vision Guess", newPose.toString());
             return newPose;
             
         }

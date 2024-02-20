@@ -22,12 +22,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.units.Time;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import frc.lib.util.TunableNumber;
-import frc.robot.Constants.*;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
   private static PhotonVisionSubsystem INSTANCE = null;
@@ -118,7 +112,7 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public double getTurnOffset()
   {
-    SmartDashboard.putNumber("yaw", yaw);
+    //SmartDashboard.putNumber("yaw", yaw);
     return yaw;
   }
 

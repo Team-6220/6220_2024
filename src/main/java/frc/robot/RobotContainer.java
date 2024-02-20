@@ -17,6 +17,7 @@ import frc.robot.commands.ArmIdleCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeIdleCommand;
 import frc.robot.commands.ShooterIdleCommand;
+import frc.robot.commands.ShootingTestCommand;
 import frc.robot.commands.SpeakerCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.ArmSubsystem;
@@ -105,7 +106,7 @@ public class RobotContainer {
       driver,
       override)
     );
-
+    //speakerTemporary.whileTrue(new ShootingTestCommand());
   }
 
   public Command getAutonomousCommand() {
