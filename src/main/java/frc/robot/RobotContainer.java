@@ -90,7 +90,7 @@ public class RobotContainer {
     ampTemporary.whileTrue(new AmpCommand(
       s_Swerve,
       driver,
-      () -> driver.rightTrigger(.5, null).getAsBoolean(),
+      () -> robotCentric.getAsBoolean(),
       () -> override.getAsBoolean())
     );
 
