@@ -4,9 +4,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.util.TunableNumber;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
@@ -17,22 +19,31 @@ import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.Swerve;
 
 public class IntakeCommand extends Command{
+
+    private final PIDController limelightPidController;
     private final Swerve swerve;
     private final IntakeSubsystem intake;
     private final ArmSubsystem arm;
     private final PhotonVisionSubsystem vis;
-    private final BooleanSupplier manualOverride, trigger;
+    private final BooleanSupplier manualOverride;
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
 
-    public IntakeCommand(Swerve swerve, XboxController driver, BooleanSupplier override, BooleanSupplier trigger){
+    private final TunableNumber turnkP = new TunableNumber("intakeTurnkP", 4);
+    private final TunableNumber turnkD = new TunableNumber("intakeTurnkD", 0.002);
+    private final TunableNumber turnkI = new TunableNumber("intakeTurnkI", 0);
+    private final TunableNumber turnTolerance = new TunableNumber("turnTolerance", 3);
+
+    public IntakeCommand(Swerve swerve, XboxController driver, BooleanSupplier override) {
         this.swerve = swerve;
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
         this.vis = PhotonVisionSubsystem.getInstance();
         this.manualOverride = override;
-        this.trigger = trigger;
         this.driver = driver;
+        limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
+        limelightPidController.setTolerance(turnTolerance.get());
+        limelightPidController.setIZone(4);
         addRequirements(this.swerve, arm, intake, vis);
     }
 
@@ -41,31 +52,37 @@ public class IntakeCommand extends Command{
 
         double[] driverInputs = OIConstants.getDriverInputs(driver);
 
-        double headingTarget = swerve.getHeadingDegrees();
-        swerve.setAutoTurnHeading(headingTarget);
-        double rotationVal = swerve.getTurnPidSpeed();
-        if(!vis.getHasTargets() || manualOverride.getAsBoolean()){
-            rotationVal = driverInputs[2];
-        }else if(vis.getHasTargets() && !manualOverride.getAsBoolean()){
-            headingTarget += vis.getTurnOffset();
-            swerve.setAutoTurnHeading(headingTarget);
-            rotationVal = swerve.getTurnPidSpeed();
+        double rotationVal = driverInputs[2];
+        double translation = driverInputs[0];
+        double strafeVal = driverInputs[1];
+
+        if(manualOverride.getAsBoolean()) {
+            if(vis.getHasTargets()) {
+                rotationVal = limelightPidController.calculate(vis.getTurnOffset());
+
+                rotationVal = (rotationVal > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(rotationVal< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:rotationVal;
+                // System.out.println("success!");
+                if(Math.abs(vis.getTurnOffset()) < turnTolerance.get()) {
+                    rotationVal = 0;
+                }
+                translation = -.3 * SwerveConstants.maxSpeed;
+            }
         }
-        int invert = (Constants.isRed) ? -1 : 1; 
+
+
+
+
         swerve.drive(
-                new Translation2d(driverInputs[0], driverInputs[1]).times(SwerveConstants.maxSpeed * invert), 
+                new Translation2d(translation, strafeVal), 
                 rotationVal, 
-                true, 
+                false, 
                 true
         );
 
-        armAngle = ArmConstants.intakeSetpoint;
         intake.driveToIntake();
 
-        arm.driveToGoal(armAngle);
-        if((swerve.isFacingTurnTarget() || manualOverride.getAsBoolean()) && arm.isAtGoal()){
-            //call intake method to feed wheel
-        }
+        arm.driveToGoal(ArmConstants.intakeSetpoint);
+
     }
 
     @Override

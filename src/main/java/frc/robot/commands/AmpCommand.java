@@ -6,8 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -45,7 +47,7 @@ public class AmpCommand extends Command {
     armSubsystem = ArmSubsystem.getInstance();
     shooterSubsystem = ShooterSubsystem.getInstance();
     intakeSubsystem = IntakeSubsystem.getInstance();
-    this.shootSupplier = shootSupplier;
+    this.shoot = shoot;
     this.s_Swerve = s_Swerve;
     this.driver = driver;
     manuelOverride = override;

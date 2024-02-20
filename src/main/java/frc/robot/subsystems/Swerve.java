@@ -84,7 +84,7 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
     private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
 
-    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .1);
+    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .2);
 
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
@@ -382,7 +382,7 @@ public class Swerve extends SubsystemBase {
         }
 
         
-        //LimelightCalculations.updatePoseEstimation(poseEstimator, this);
+        LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         
         poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());

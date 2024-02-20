@@ -21,6 +21,9 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 // import edu.wpi.first.math.controller.ProfiledPIDController;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.units.Time;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.lib.util.TunableNumber;
@@ -46,12 +49,14 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   // private final TunableNumber photonTransit_maxAccel = new TunableNumber("photonTransit_maxAccel", PhotonVisionConstants.ANGULAR_MAXIMUMACCEL);
   // private final TunableNumber photonTransit_Tolerance = new TunableNumber("photonTransit_Tolerance", PhotonVisionConstants.ANGULAR_Tolerance);
 
-  private PhotonCamera camera = new PhotonCamera("photonvision");
+  private PhotonCamera camera = new PhotonCamera("Intake_Camera");
   private PhotonPipelineResult currResult;
   private boolean hasTargets;
   private List<PhotonTrackedTarget> targets;
   private PhotonTrackedTarget bestTarget;
-  private double pitch, yaw, skew, area;
+  private double pitch, yaw, skew, area, latency, filteredYaw;
+  // private Swerve s_Swerve;
+  private LinearFilter linearFilter;
 
   // private final ProfiledPIDController s_turnController, s_transitionController;
   // private final TrapezoidProfile.Constraints s_turnConstraints, s_transitionConstraints;
@@ -60,8 +65,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   private PhotonVisionSubsystem() {
     currResult = camera.getLatestResult();
     hasTargets = currResult.hasTargets();
-
-
+    // this.s_Swerve = s_Swerve;
+    linearFilter = LinearFilter.singlePoleIIR(.1, 0.02);
     // this.s_turnConstraints = new TrapezoidProfile.Constraints(photonTurn_maxVel.get(), photonTurn_maxAccel.get());
     // this.s_transitionConstraints = new TrapezoidProfile.Constraints(photonTransit_maxVel.get(), photonTransit_maxAccel.get());
 
@@ -88,14 +93,22 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   }
 
   private void updateValues(){
-    // currResult = camera.getLatestResult();
-    // hasTargets = currResult.hasTargets();
-    // targets = currResult.getTargets();
-    // bestTarget = currResult.getBestTarget();
-    // yaw = bestTarget.getYaw();
-    // pitch = bestTarget.getPitch();
-    // skew = bestTarget.getSkew();
-    // area = bestTarget.getArea();
+    currResult = camera.getLatestResult();
+    hasTargets = currResult.hasTargets();
+    if(hasTargets)
+    {
+      targets = currResult.getTargets();
+      bestTarget = currResult.getBestTarget();
+      yaw = bestTarget.getYaw();
+      pitch = bestTarget.getPitch();
+      skew = bestTarget.getSkew();
+      area = bestTarget.getArea();
+      latency = currResult.getLatencyMillis();
+    }
+    else
+    {
+      yaw = 0.0;
+    }
   }
 
   public boolean getHasTargets()
@@ -105,18 +118,14 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public double getTurnOffset()
   {
-    if(currResult.getBestTarget() == null)
-    {
-      return 0.0; 
-    }
-    SmartDashboard.putNumber("yaw", currResult.getBestTarget().getYaw());
-    return currResult.getBestTarget().getYaw();
+    SmartDashboard.putNumber("yaw", yaw);
+    return yaw;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    filteredYaw = linearFilter.calculate(yaw);
     updateValues();
   }
 
