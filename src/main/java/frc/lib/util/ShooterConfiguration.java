@@ -103,19 +103,16 @@ public class ShooterConfiguration {
         return ((8 * Math.PI / 9) * (col / (numcol) - (4 * Math.PI / 9)));
     }
 
-    private static List<Pair<Integer, Integer>> getNearestShooterConfigurations(Pose2d robotPose){
+    private static List<Pair<Integer, Integer>> getNearestShooterConfigurations(Pose2d robotPose) throws IllegalPositionException{
         ArrayList<Pair<Integer, Integer>> nearestConfigurations = new ArrayList<Pair<Integer, Integer>>();
         Pair<Double, Double> polar = cartesianToPolar(robotPose);
         int innerRow = (int) Math.floor(polar.getFirst());
         int outerRow = (int) Math.ceil(polar.getFirst());
-        if(polar.getSecond() <= -4 * Math.PI / 9){
-            nearestConfigurations.add(Pair.of(innerRow, 0));
-            nearestConfigurations.add(Pair.of(outerRow, 0));
-            return nearestConfigurations;
-        } else if(polar.getSecond() >= 4 * Math.PI / 9){
-            nearestConfigurations.add(Pair.of(innerRow, 0));
-            nearestConfigurations.add(Pair.of(outerRow, 0));
-            return nearestConfigurations;
+        if(polar.getSecond() <= -4 * Math.PI / 9 || polar.getSecond() >= 4 * Math.PI / 9){
+            throw new IllegalPositionException("Robot is too far to the side");
+        }
+        else if(polar.getFirst() < 1 || polar.getFirst() > 5){
+            throw new IllegalPositionException("Robot is too far to the side");
         }
 
         ArrayList<Pair<Integer, Integer>> points = new ArrayList<Pair<Integer, Integer>>();
@@ -170,7 +167,7 @@ public class ShooterConfiguration {
         return (-coeffs[3] - coeffs[0] * x - coeffs[1] * y) / coeffs[2];
     }
 
-    public static ShooterConfiguration getShooterConfiguration(Pose2d robotPose){
+    public static ShooterConfiguration getShooterConfiguration(Pose2d robotPose) throws IllegalPositionException{
         List<Pair<Integer, Integer>> configs = getNearestShooterConfigurations(robotPose);
         if(configs.size() == 2){
             Pair<Double, Double> polar = cartesianToPolar(robotPose);
