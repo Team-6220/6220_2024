@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.lib.util.ShooterConfiguration;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AmpCommand;
 import frc.robot.commands.ArmIdleCommand;
@@ -54,6 +55,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     Constants.VisionConstants.setTagHeights();
+
+    ShooterConfiguration.setupConfigurations();
 
     s_Swerve.setDefaultCommand(
         new TeleopSwerve(

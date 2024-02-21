@@ -38,6 +38,7 @@ public class ShooterConfiguration {
     }
 
     public static void setupConfigurations(){
+        //FIXME - Add actual values - refer to desmos graph to see corresponding angles
         shooterConfigurations.put(Pair.of(1, 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
         shooterConfigurations.put(Pair.of(1, 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
         shooterConfigurations.put(Pair.of(1, 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
@@ -85,23 +86,24 @@ public class ShooterConfiguration {
         shooterConfigurations.put(Pair.of(5, 12), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
     }
 
-    public static Pair<Double, Double> polarToCartesian(int r, int num){
+    private static Pair<Double, Double> polarToCartesian(int r, int num){
         double angle = ((8 * Math.PI / 9) * (num / (r + 1) * 2) - (4 * Math.PI / 9));
         return Pair.of(r * Math.cos(angle), r * Math.sin(angle));
     }
 
-    public static Pair<Double, Double> cartesianToPolar(Pose2d pose){
+    private static Pair<Double, Double> cartesianToPolar(Pose2d pose){
         Pose2d speakerPos = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
-        double angle = Math.atan2(Math.max(speakerPos.getY(), pose.getY()) - Math.min(speakerPos.getY(), pose.getY()), Math.max(speakerPos.getX(), pose.getX()) - Math.min(speakerPos.getX(), pose.getX()));
+        double yval = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED.getY() - pose.getY() : pose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
+        double angle = Math.atan2(yval, Math.abs(speakerPos.getX() - pose.getX()));
         double r = Math.hypot(Math.abs(pose.getX() - speakerPos.getX()), Math.abs(pose.getY() - speakerPos.getY()));
         return Pair.of(r, angle);
     }
 
-    public static double columnToAngle(int col, int numcol){
+    private static double columnToAngle(int col, int numcol){
         return ((8 * Math.PI / 9) * (col / (numcol) - (4 * Math.PI / 9)));
     }
 
-    public static List<Pair<Integer, Integer>> getNearestShooterConfigurations(Pose2d robotPose){
+    private static List<Pair<Integer, Integer>> getNearestShooterConfigurations(Pose2d robotPose){
         ArrayList<Pair<Integer, Integer>> nearestConfigurations = new ArrayList<Pair<Integer, Integer>>();
         Pair<Double, Double> polar = cartesianToPolar(robotPose);
         int innerRow = (int) Math.floor(polar.getFirst());
@@ -150,7 +152,7 @@ public class ShooterConfiguration {
         return nearestConfigurations;
     }
 
-    public static double[] get_equation_plane(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3){
+    private static double[] get_equation_plane(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3){
         double a1 = x2 - x1;
         double b1 = y2 - y1;
         double c1 = z2 - z1;
@@ -164,7 +166,7 @@ public class ShooterConfiguration {
         return new double[]{a, b, c, d};
     }
 
-    public static double solve_equation_plane(double[] coeffs, double x, double y){
+    private static double solve_equation_plane(double[] coeffs, double x, double y){
         return (-coeffs[3] - coeffs[0] * x - coeffs[1] * y) / coeffs[2];
     }
 
@@ -180,6 +182,9 @@ public class ShooterConfiguration {
             double heading = shooterConfigurations.get(configs.get(0)).getHeadingOffset() + (shooterConfigurations.get(configs.get(1)).getHeadingOffset() - shooterConfigurations.get(configs.get(0)).getHeadingOffset()) * (polar.getFirst() - configs.get(0).getFirst()) / (configs.get(1).getFirst() - configs.get(0).getFirst());
             return new ShooterConfiguration(vels, arm, heading);
         }
+        Pose2d speakerPos = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+        double yval = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED.getY() - robotPose.getY() : robotPose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
+        double xval = Math.abs(robotPose.getX() - speakerPos.getX());
         Pair<Double, Double> a = polarToCartesian(configs.get(0).getFirst(), configs.get(0).getSecond());
         Pair<Double, Double> b = polarToCartesian(configs.get(1).getFirst(), configs.get(1).getSecond());
         Pair<Double, Double> c = polarToCartesian(configs.get(2).getFirst(), configs.get(2).getSecond());
@@ -187,9 +192,9 @@ public class ShooterConfiguration {
         double[] v2coeffs = get_equation_plane(a.getFirst(), a.getSecond(), shooterConfigurations.get(configs.get(0)).getVelocities().getSecond(), b.getFirst(), b.getSecond(), shooterConfigurations.get(configs.get(1)).getVelocities().getSecond(), c.getFirst(), c.getSecond(), shooterConfigurations.get(configs.get(2)).getVelocities().getSecond());
         double[] armcoeffs = get_equation_plane(a.getFirst(), a.getSecond(), shooterConfigurations.get(configs.get(0)).getArmAngle(), b.getFirst(), b.getSecond(), shooterConfigurations.get(configs.get(1)).getArmAngle(), c.getFirst(), c.getSecond(), shooterConfigurations.get(configs.get(2)).getArmAngle());
         double[] headingcoeffs = get_equation_plane(a.getFirst(), a.getSecond(), shooterConfigurations.get(configs.get(0)).getHeadingOffset(), b.getFirst(), b.getSecond(), shooterConfigurations.get(configs.get(1)).getHeadingOffset(), c.getFirst(), c.getSecond(), shooterConfigurations.get(configs.get(2)).getHeadingOffset());
-        Pair<Double, Double> vels = Pair.of(solve_equation_plane(v1coeffs, robotPose.getX(), robotPose.getY()), solve_equation_plane(v2coeffs, robotPose.getX(), robotPose.getY()));
-        double arm = solve_equation_plane(armcoeffs, robotPose.getX(), robotPose.getY());
-        double heading = solve_equation_plane(headingcoeffs, robotPose.getX(), robotPose.getY());
+        Pair<Double, Double> vels = Pair.of(solve_equation_plane(v1coeffs, xval, yval), solve_equation_plane(v2coeffs, xval, yval));
+        double arm = solve_equation_plane(armcoeffs, xval, yval);
+        double heading = solve_equation_plane(headingcoeffs, xval, yval);
         return new ShooterConfiguration(vels, arm, heading);
     }
 }
