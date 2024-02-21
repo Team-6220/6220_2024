@@ -111,31 +111,7 @@ public class Swerve extends SubsystemBase {
         poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.swerveKinematics, new Rotation2d(), positions, new Pose2d(), stateStdDevs, visionMeasurementStdDevs);
         //odometer = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, new Rotation2d(0), positions);
 
-        AutoBuilder.configureHolonomic(
-        this::getPose, // Robot pose supplier
-        this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                new PIDConstants(SwerveConstants.translation_kP, SwerveConstants.translation_kI, SwerveConstants.translation_kD), // Translation PID constants
-                new PIDConstants(SwerveConstants.rotation_kP, SwerveConstants.rotation_kI, SwerveConstants.rotation_kD), // Rotation PID constants
-                4.5, // Max module speed, in m/s
-                0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-                new ReplanningConfig() // Default path replanning config. See the API for the options here
-        ),
-        () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-        },
-        this // Reference to this subsystem to set requirements
-        );
+        
 
         turnPidController = new ProfiledPIDController(turnKP.get(), turnKI.get(), turnKD.get(), new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
         turnPidController.setIZone(Constants.SwerveConstants.turnIZone);
@@ -170,6 +146,33 @@ public class Swerve extends SubsystemBase {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
             //SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
         }
+    }
+    public void configureAutoBuilder() {
+        AutoBuilder.configureHolonomic(
+        this::getPose, // Robot pose supplier
+        this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                new PIDConstants(SwerveConstants.translation_kP, SwerveConstants.translation_kI, SwerveConstants.translation_kD), // Translation PID constants
+                new PIDConstants(SwerveConstants.rotation_kP, SwerveConstants.rotation_kI, SwerveConstants.rotation_kD), // Rotation PID constants
+                4.5, // Max module speed, in m/s
+                0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                new ReplanningConfig() // Default path replanning config. See the API for the options here
+        ),
+        () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+        },
+        this // Reference to this subsystem to set requirements
+        );
     }
     
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {

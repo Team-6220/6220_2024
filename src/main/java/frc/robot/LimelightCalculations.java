@@ -43,7 +43,7 @@ public final class LimelightCalculations {
 
 
         poseEstimator.addVisionMeasurement(new Pose2d(botTranslation2d, s_Swerve.getHeading()), Timer.getFPGATimestamp() - (latency/1000.0));
-        //System.out.println("AddedVisionMeasurement");        
+          
     }
 
     public static Pose2d updateVisionRobotPose2d(LimelightResults limelightResults, SwerveDrivePoseEstimator poseEstimator, double constant) {
@@ -69,8 +69,10 @@ public final class LimelightCalculations {
         }
         if(count > 0) {
             double distance = totalDistance/count;
+            SmartDashboard.putNumber("Distance", distance);
             if(distance>5) {
-               poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(Double.MAX_VALUE,Double.MAX_VALUE,Double.MAX_VALUE)); 
+                System.out.println("Did not use");
+                return null;
             } else {
                 double visionStdDev = constant * (1 + (distance * distance / 30));
                 poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));

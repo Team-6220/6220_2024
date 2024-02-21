@@ -15,6 +15,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.blinkin;
 
 public class SpeakerCommand extends Command{
     private final Swerve swerve;
@@ -25,16 +26,20 @@ public class SpeakerCommand extends Command{
     private final BooleanSupplier manualOverride;
     private double[] velocities  = {0, 0};
     private double armAngle = ArmConstants.restingSetpoint;
-    private boolean isAuto;
+    private boolean isAuto, hasFired;
+    private blinkin s_Blinkin;
+    private double shotClock;
+
     public SpeakerCommand(Swerve swerve, XboxController driver, BooleanSupplier override){
         isAuto = false;
         this.swerve = swerve;
         this.shooter = ShooterSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
+        this.s_Blinkin = blinkin.getInstance();
         this.driver = driver;
         this.manualOverride = override;
-        addRequirements(this.swerve, arm, intake, shooter);
+        addRequirements(this.swerve, arm, intake, shooter, s_Blinkin);
     }
 
     public SpeakerCommand(Swerve swerve){
@@ -43,10 +48,19 @@ public class SpeakerCommand extends Command{
         this.shooter = ShooterSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
+        this.s_Blinkin = blinkin.getInstance();
         this.driver = null;
         manualOverride = () -> false;
-        addRequirements(this.swerve, arm, intake, shooter);
+        intake.setHasNote();
+        addRequirements(this.swerve, arm, intake, shooter, s_Blinkin);
     }
+
+    @Override
+    public void initialize() {
+        hasFired = false;
+        shotClock = 0;
+        
+    } 
 
     @Override
     public void execute(){
@@ -81,9 +95,30 @@ public class SpeakerCommand extends Command{
 
         armAngle = ArmConstants.getArmAngleFromDistance(distanceToSpeaker);
         arm.driveToGoal(armAngle);
-        if(shooter.isAtSetpoint() && (swerve.isFacingTurnTarget() || manualOverride.getAsBoolean()) && arm.isAtGoal()){
+        
+        if((shooter.isAtSetpoint() && (swerve.isFacingTurnTarget() || manualOverride.getAsBoolean()) && arm.isAtGoal()) || hasFired){
             intake.feedShooter();
+            hasFired = true;
+            shotClock++;
+            s_Blinkin.solid_green();
+        } else if(!swerve.isFacingTurnTarget()) {
+            s_Blinkin.solid_red();
+        } else if(!arm.isAtGoal()) {
+            s_Blinkin.solid_purple();
+        } else if(!shooter.isAtSetpoint()) {
+            s_Blinkin.solid_blue();
         }
+        if(!hasFired) {
+            intake.driveToIntake();
+        }
+    }
+
+    @Override
+    public boolean isFinished() {
+        if(shotClock > ShooterConstants.fireTime*50) {
+            return true;
+        }
+        return false;
     }
 
     @Override

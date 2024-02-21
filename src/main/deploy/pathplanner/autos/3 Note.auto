@@ -2,25 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 14.5,
-      "y": 4.1
+      "x": 1.7174788635291562,
+      "y": 5.497296708879134
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "red auto shoot 2"
+            "name": "shoot"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.0
+            "name": "pickup"
           }
         },
         {
@@ -32,7 +32,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "red auto leave"
+            "pathName": "go to note from start"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         }
       ]

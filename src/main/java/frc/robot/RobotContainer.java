@@ -25,6 +25,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.blinkin;
 
 public class RobotContainer {
 
@@ -52,10 +53,15 @@ public class RobotContainer {
     private final IntakeSubsystem s_IntakeSubsystem = IntakeSubsystem.getInstance();
     private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
    //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
-
+    private final blinkin s_Blinkin = blinkin.getInstance();
 
   public RobotContainer() {
     Constants.VisionConstants.setTagHeights();
+
+    NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
+    NamedCommands.registerCommand("pickup", new IntakeCommand(s_Swerve));
+
+    s_Swerve.configureAutoBuilder();
 
     s_Swerve.setDefaultCommand(
         new TeleopSwerve(
@@ -77,8 +83,7 @@ public class RobotContainer {
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
-    NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
-    NamedCommands.registerCommand("pickup", new IntakeCommand(s_Swerve));
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
    
 

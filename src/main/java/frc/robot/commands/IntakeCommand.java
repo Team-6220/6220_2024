@@ -17,6 +17,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.blinkin;
 
 public class IntakeCommand extends Command{
 
@@ -25,6 +26,7 @@ public class IntakeCommand extends Command{
     private final IntakeSubsystem intake;
     private final ArmSubsystem arm;
     private final PhotonVisionSubsystem vis;
+    private final blinkin s_Blinkin;
     private final BooleanSupplier manualOverride;
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
@@ -41,11 +43,12 @@ public class IntakeCommand extends Command{
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
         this.vis = PhotonVisionSubsystem.getInstance();
+        this.s_Blinkin = blinkin.getInstance();
         this.manualOverride = override;
         this.driver = driver;
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
-        limelightPidController.setIZone(4);
+        limelightPidController.setIZone(.5);
         addRequirements(this.swerve, arm, intake, vis);
     }
 
@@ -55,11 +58,12 @@ public class IntakeCommand extends Command{
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
         this.vis = PhotonVisionSubsystem.getInstance();
+        this.s_Blinkin = blinkin.getInstance();
         this.manualOverride = ()-> false;
         this.driver = null;
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
-        limelightPidController.setIZone(4);
+        limelightPidController.setIZone(.5);
         addRequirements(this.swerve, arm, intake, vis);
     }
 
@@ -67,15 +71,14 @@ public class IntakeCommand extends Command{
     public void execute(){
         double[] driverInputs;
         double rotationVal = 0, translation = 0, strafeVal = 0;
-        if(isAuto)
-        {
+        if(!isAuto) {
             driverInputs = OIConstants.getDriverInputs(driver);
             translation = driverInputs[0];
             strafeVal = driverInputs[1];
             rotationVal = driverInputs[2];
         }
-        else
-        {
+
+        if(manualOverride.getAsBoolean() || isAuto) {
             if(vis.getHasTargets()) {
                 rotationVal = limelightPidController.calculate(vis.getTurnOffset());
 
@@ -83,22 +86,14 @@ public class IntakeCommand extends Command{
                 // System.out.println("success!");
                 if(Math.abs(vis.getTurnOffset()) < turnTolerance.get()) {
                     rotationVal = 0;
+                    s_Blinkin.solid_blue();
+                } else {
+                    s_Blinkin.solid_red();
                 }
                 translation = -.3 * SwerveConstants.maxSpeed;
             }
-        }
-
-        if(manualOverride.getAsBoolean()) {
-            if(vis.getHasTargets()) {
-                rotationVal = limelightPidController.calculate(vis.getTurnOffset());
-
-                rotationVal = (rotationVal > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(rotationVal< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:rotationVal;
-                // System.out.println("success!");
-                if(Math.abs(vis.getTurnOffset()) < turnTolerance.get()) {
-                    rotationVal = 0;
-                }
-                translation = -.3 * SwerveConstants.maxSpeed;
-            }
+        } else {
+            s_Blinkin.solid_gold();
         }
 
 
@@ -114,9 +109,15 @@ public class IntakeCommand extends Command{
         intake.driveToIntake();
 
         arm.driveToGoal(ArmConstants.intakeSetpoint);
-
+        
     }
-
+    @Override
+    public boolean isFinished() {
+        if(intake.noteInBeam()) {
+            return true;
+        }
+        return false;
+    }
     @Override
     public void end(boolean interrupted){
         arm.stop();

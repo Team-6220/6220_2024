@@ -87,6 +87,11 @@ public class IntakeSubsystem extends SubsystemBase{
         return noteInTransit;
     }
 
+    public void setHasNote() {
+        noteInTransit = true;
+        intakeMotor.setPosition(transDist.get());
+    }
+
     @Override
     public void periodic(){
         SmartDashboard.putBoolean("Beam In Note", noteInBeam());

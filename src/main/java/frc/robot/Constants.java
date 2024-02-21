@@ -120,11 +120,11 @@ public final class Constants {
         public static final double armMaxAccel = 85;
 
 
-        public static final double minArmShootAngle = 70;
+        public static final double minArmShootAngle = 75;
         public static final double maxArmShootAngle = 40;
         //FIXME: create lookup table
         public static final double [][] armLookupTable = {
-            {.9779, 70},
+            {1.1, 75},
             {1.4986, 62},
             {1.905, 58.5},
             {2.8194, 50.5},
@@ -205,6 +205,7 @@ public final class Constants {
 
 
         public static final double idleOutput = .05;
+        public static final double fireTime = .75;
 
         public static final double minShooterVelA = 2800;
         public static final double minShooterVelB = 2800;
@@ -388,7 +389,7 @@ public final class Constants {
         public static final double turnKI = 1;
         public static final double turnMaxVel = 400;
         public static final double turnMaxAccel = 800;
-        public static final double turnTolerance = 2;
+        public static final double turnTolerance = 3;
         public static final double turnIZone = 1;
 
         /* Swerve Profiling Values */
@@ -417,7 +418,7 @@ public final class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 12;
             public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-148.623046875);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-151.435546875);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -473,5 +474,9 @@ public final class Constants {
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
+    }
+
+    public static final class blinkinConstants {
+        public static final int PWMPort = 9;
     }
 }
