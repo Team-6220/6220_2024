@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 
@@ -45,6 +46,11 @@ public class ShooterConfiguration {
         radiusValues.put(3, 3.0);
         radiusValues.put(4, 4.0);
         radiusValues.put(5, 5.0);
+    }
+
+    public static Translation2d getCarisianPositionFromRowColumn(int row, int column) {
+        Pair<Double, Double> pos = polarToCartesian(radiusValues.get(row), column);
+        return new Translation2d(pos.getFirst(), pos.getSecond());
     }
 
     public static void setupConfigurations(){
