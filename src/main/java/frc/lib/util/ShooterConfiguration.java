@@ -13,7 +13,9 @@ public class ShooterConfiguration {
     private Pair<Double, Double> velocities = Pair.of(0.0, 0.0);
     private double armAngle;
     private double headingOffset;
-    private static HashMap<Pair<Integer, Integer>, ShooterConfiguration> shooterConfigurations = new HashMap<Pair<Integer, Integer>, ShooterConfiguration>();
+    private static HashMap<Integer, Double> radiusValues = new HashMap<Integer, Double>();
+    private static HashMap<Pair<Double, Integer>, ShooterConfiguration> shooterConfigurations = new HashMap<Pair<Double, Integer>, ShooterConfiguration>();
+    private static double GRID_WIDTH = 8 * Math.PI / 9;
 
     private ShooterConfiguration(Pair<Double, Double> velocities, double armAngle, double headingOffset){
         this.velocities = velocities;
@@ -37,57 +39,65 @@ public class ShooterConfiguration {
         this.velocities = velocities;
     }
 
-    public static void setupConfigurations(){
-        //FIXME - Add actual values - refer to desmos graph to see corresponding angles
-        shooterConfigurations.put(Pair.of(1, 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(1, 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(1, 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(1, 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(1, 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(2, 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(2, 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(2, 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(2, 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(2, 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(2, 5), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(2, 6), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 5), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 6), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 7), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(3, 8), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 5), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 6), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 7), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 8), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 9), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(4, 10), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 5), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 6), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 7), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 8), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 9), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 10), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 11), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
-        shooterConfigurations.put(Pair.of(5, 12), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+    public static void setupRadiusValues(){
+        radiusValues.put(1, 1.330325);
+        radiusValues.put(2, 2.0);
+        radiusValues.put(3, 3.0);
+        radiusValues.put(4, 4.0);
+        radiusValues.put(5, 5.0);
     }
 
-    private static Pair<Double, Double> polarToCartesian(int r, int num){
-        double angle = ((8 * Math.PI / 9) * (num / (r + 1) * 2) - (4 * Math.PI / 9));
+    public static void setupConfigurations(){
+        //FIXME - Add actual values - refer to desmos graph to see corresponding angles
+        shooterConfigurations.put(Pair.of(radiusValues.get(1), 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(1), 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(1), 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(1), 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(1), 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(2), 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(2), 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(2), 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(2), 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(2), 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(2), 5), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(2), 6), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 5), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 6), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 7), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(3), 8), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 5), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 6), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 7), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 8), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 9), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(4), 10), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 0), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 1), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 2), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 3), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 4), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 5), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 6), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 7), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 8), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 9), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 10), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 11), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+        shooterConfigurations.put(Pair.of(radiusValues.get(5), 12), new ShooterConfiguration(Pair.of(0d,0d), 0d, 0d));
+    }
+
+    private static Pair<Double, Double> polarToCartesian(double r, int num){
+        double angle = ((GRID_WIDTH) * (num / (r + 1) * 2) - (GRID_WIDTH / 2));
         return Pair.of(r * Math.cos(angle), r * Math.sin(angle));
     }
 
@@ -100,43 +110,43 @@ public class ShooterConfiguration {
     }
 
     private static double columnToAngle(int col, int numcol){
-        return ((8 * Math.PI / 9) * (col / (numcol) - (4 * Math.PI / 9)));
+        return ((GRID_WIDTH) * (col / (numcol) - (GRID_WIDTH / 2)));
     }
 
-    private static List<Pair<Integer, Integer>> getNearestShooterConfigurations(Pose2d robotPose) throws IllegalPositionException{
-        ArrayList<Pair<Integer, Integer>> nearestConfigurations = new ArrayList<Pair<Integer, Integer>>();
+    private static List<Pair<Double, Integer>> getNearestShooterConfigurations(Pose2d robotPose) throws IllegalPositionException{
+        ArrayList<Pair<Double, Integer>> nearestConfigurations = new ArrayList<Pair<Double, Integer>>();
         Pair<Double, Double> polar = cartesianToPolar(robotPose);
         int innerRow = (int) Math.floor(polar.getFirst());
         int outerRow = (int) Math.ceil(polar.getFirst());
-        if(polar.getSecond() <= -4 * Math.PI / 9 || polar.getSecond() >= 4 * Math.PI / 9){
+        if(polar.getSecond() <= -(GRID_WIDTH / 2) || polar.getSecond() >= (GRID_WIDTH / 2)){
             throw new IllegalPositionException("Robot is too far to the side");
         }
         else if(polar.getFirst() < 1 || polar.getFirst() > 5){
             throw new IllegalPositionException("Robot is too far to the side");
         }
 
-        ArrayList<Pair<Integer, Integer>> points = new ArrayList<Pair<Integer, Integer>>();
+        ArrayList<Pair<Double, Integer>> points = new ArrayList<Pair<Double, Integer>>();
         for(int i = 0; i < (innerRow + 1) * 2; i++){
             if(polar.getSecond() >= columnToAngle(i, (innerRow + 1) * 2) && polar.getSecond() <= columnToAngle(i, (innerRow + 1) * 2)){
-                nearestConfigurations.add(Pair.of(innerRow, i));
-                nearestConfigurations.add(Pair.of(innerRow, i + 1));
-                points.add(Pair.of(innerRow, i));
-                points.add(Pair.of(innerRow, i + 1));
+                nearestConfigurations.add(Pair.of(radiusValues.get(innerRow), i));
+                nearestConfigurations.add(Pair.of(radiusValues.get(innerRow), i + 1));
+                points.add(Pair.of(radiusValues.get(innerRow), i));
+                points.add(Pair.of(radiusValues.get(innerRow), i + 1));
                 break;
             }
         }
         for(int i = 0; i < (outerRow + 1) * 2; i++){
             if(polar.getSecond() >= columnToAngle(i, (outerRow + 1) * 2) && polar.getSecond() <= columnToAngle(i, (outerRow + 1) * 2)){
-                nearestConfigurations.add(Pair.of(outerRow, i));
-                nearestConfigurations.add(Pair.of(outerRow, i + 1));
-                points.add(Pair.of(outerRow, i));
-                points.add(Pair.of(outerRow, i + 1));
+                nearestConfigurations.add(Pair.of(radiusValues.get(outerRow), i));
+                nearestConfigurations.add(Pair.of(radiusValues.get(outerRow), i + 1));
+                points.add(Pair.of(radiusValues.get(outerRow), i));
+                points.add(Pair.of(radiusValues.get(outerRow), i + 1));
                 break;
             }
         }
-        Pair<Integer, Integer> furthest = null;
+        Pair<Double, Integer> furthest = null;
         double max = 0;
-        for (Pair<Integer, Integer> point : points){
+        for (Pair<Double, Integer> point : points){
             Pair<Double, Double> pointCartesian = polarToCartesian(point.getFirst(), point.getSecond());
             if(Math.hypot(pointCartesian.getFirst() - robotPose.getX(), pointCartesian.getSecond() - robotPose.getY()) > max){
                 max = Math.hypot(pointCartesian.getFirst() - robotPose.getX(), pointCartesian.getSecond() - robotPose.getY());
@@ -168,7 +178,7 @@ public class ShooterConfiguration {
     }
 
     public static ShooterConfiguration getShooterConfiguration(Pose2d robotPose) throws IllegalPositionException{
-        List<Pair<Integer, Integer>> configs = getNearestShooterConfigurations(robotPose);
+        List<Pair<Double, Integer>> configs = getNearestShooterConfigurations(robotPose);
         if(configs.size() == 2){
             Pair<Double, Double> polar = cartesianToPolar(robotPose);
             Pair<Double, Double> vels = Pair.of(
