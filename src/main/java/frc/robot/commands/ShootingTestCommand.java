@@ -37,7 +37,7 @@ public class ShootingTestCommand extends Command {
 
   private TunableNumber currentRow = new TunableNumber("Current Row", 0);
   private TunableNumber currentColumn = new TunableNumber("Current Column", 0);
-
+  private TunableNumber headingOffsetTest = new TunableNumber("Heading Offset Test", 0);
   public ShootingTestCommand(Swerve s_Swerve, XboxController driverInputs) {
     this.s_Swerve = s_Swerve;
     armSubsystem = ArmSubsystem.getInstance();
@@ -72,9 +72,17 @@ public class ShootingTestCommand extends Command {
     SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
     SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
     SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);
+
+    
+
     xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
     yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
-    s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker());
+    if(Math.abs(s_Swerve.getPose().getX() - setPoint.getX()) < .1 && Math.abs(s_Swerve.getPose().getY() - setPoint.getY()) < .1) {
+      xOutput = 0;
+      yOutput = 0;
+    }
+    
+    s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker() + headingOffsetTest.get());
     rotationVal = s_Swerve.getTurnPidSpeed();
   
 

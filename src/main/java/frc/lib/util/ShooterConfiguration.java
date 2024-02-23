@@ -51,6 +51,7 @@ public class ShooterConfiguration {
     public static Translation2d getFieldCartisianPositionFromRowColumn(int row, int column) {
         setupRadiusValues();
         Pair<Double, Double> pos = polarToCartesian(radiusValues.get(row), column);
+        //System.out.println("X: "+pos.getFirst() + "  Y: " + pos.getSecond());
         if(Constants.isRed) {
             pos = Pair.of(VisionConstants.SPEAKER_POSE2D_RED.getX() - pos.getFirst(), VisionConstants.SPEAKER_POSE2D_RED.getY() - pos.getSecond());
         } else {
@@ -111,7 +112,8 @@ public class ShooterConfiguration {
     }
 
     private static Pair<Double, Double> polarToCartesian(double r, int num){
-        double angle = ((GRID_WIDTH) * (num / (r + 1) * 2) - (GRID_WIDTH / 2));
+        double angle = ((GRID_WIDTH) * (num / ((r + 1) * 2)) - (GRID_WIDTH / 2));
+        System.out.println(angle);
         return Pair.of(r * Math.cos(angle), r * Math.sin(angle));
     }
 

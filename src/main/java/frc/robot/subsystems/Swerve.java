@@ -84,6 +84,7 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
     private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
 
+    
     public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .2);
 
     private SwerveModulePosition[] positions = {
@@ -273,7 +274,7 @@ public class Swerve extends SubsystemBase {
         Pose2d currPose = getPose();
         Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
         double angle = Math.toDegrees(Math.atan2(speakerPose.getY() - currPose.getY(), speakerPose.getX() - currPose.getX()));
-        angle += (Constants.isRed ? 0 : 180) -5;
+        angle += (Constants.isRed ? 0 : 180);
         return angle;
     }
 
@@ -386,7 +387,7 @@ public class Swerve extends SubsystemBase {
         }
 
         
-        LimelightCalculations.updatePoseEstimation(poseEstimator, this);
+        //LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         
         poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
