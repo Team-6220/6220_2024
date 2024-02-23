@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -90,6 +91,10 @@ public class ShooterSubsystem extends SubsystemBase{
         shooterMotorB.set(motorBSpeed);
         SmartDashboard.putNumber("Target Velocity A", velocities[0]);
         SmartDashboard.putNumber("Target Velocity B", velocities[1]);
+    }
+    public void spinToVelocity(Pair<Double, Double> velocities){
+        double[] newVelocities = {velocities.getFirst(), velocities.getSecond()};
+        spinToVelocity(newVelocities);
     }
 
     public void spinManually(double output){

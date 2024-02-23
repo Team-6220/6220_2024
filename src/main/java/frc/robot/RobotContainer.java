@@ -108,12 +108,12 @@ public class RobotContainer {
     
     noNote.onTrue(new InstantCommand(() -> s_IntakeSubsystem.reset()));
 
-    // ampTemporary.whileTrue(new AmpCommand(
-    //   s_Swerve,
-    //   driver,
-    //   () -> robotCentric.getAsBoolean(),
-    //   () -> override.getAsBoolean())
-    // );
+    ampTemporary.whileTrue(new AmpCommand(
+      s_Swerve,
+      driver,
+      () -> robotCentric.getAsBoolean(),
+      () -> override.getAsBoolean())
+    );
 
     intakeTemporary.whileTrue(new IntakeCommand(
       s_Swerve, 
@@ -121,9 +121,10 @@ public class RobotContainer {
       override).until(() -> s_IntakeSubsystem.noteInTransit())
     );
 
-    speakerTemporary.whileTrue(new ShootingTestCommand(
+    speakerTemporary.whileTrue(new SpeakerCommand(
       s_Swerve, 
-      driver)
+      driver,
+      override)
     );
     //speakerTemporary.whileTrue(new ShootingTestCommand());
   }

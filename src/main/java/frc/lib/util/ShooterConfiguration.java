@@ -14,7 +14,7 @@ public class ShooterConfiguration {
     private Pair<Double, Double> velocities = Pair.of(0.0, 0.0);
     private double armAngle;
     private double headingOffset;
-    private static HashMap<Integer, Double> radiusValues = new HashMap<Integer, Double>();
+    public static HashMap<Integer, Double> radiusValues = new HashMap<Integer, Double>();
     private static HashMap<Pair<Double, Integer>, ShooterConfiguration> shooterConfigurations = new HashMap<Pair<Double, Integer>, ShooterConfiguration>();
     private static double GRID_WIDTH = 8 * Math.PI / 9;
 
@@ -46,20 +46,6 @@ public class ShooterConfiguration {
         radiusValues.put(3, 3.0);
         radiusValues.put(4, 4.0);
         radiusValues.put(5, 5.0);
-    }
-
-    public static Translation2d getFieldCartisianPositionFromRowColumn(int row, int column) {
-        setupRadiusValues();
-        Pair<Double, Double> pos = polarToCartesian(radiusValues.get(row), column);
-        //System.out.println("X: "+pos.getFirst() + "  Y: " + pos.getSecond());
-        if(Constants.isRed) {
-            pos = Pair.of(VisionConstants.SPEAKER_POSE2D_RED.getX() - pos.getFirst(), VisionConstants.SPEAKER_POSE2D_RED.getY() - pos.getSecond());
-        } else {
-            pos = Pair.of(VisionConstants.SPEAKER_POSE2D_BLUE.getX() + pos.getFirst(), VisionConstants.SPEAKER_POSE2D_BLUE.getY() + pos.getSecond());
-
-        }
-        System.out.println("X: " + pos.getFirst() + " Y: " + pos.getSecond());
-        return new Translation2d(pos.getFirst(), pos.getSecond());
     }
 
     public static void setupConfigurations(){
@@ -115,10 +101,16 @@ public class ShooterConfiguration {
         shooterConfigurations.put(Pair.of(radiusValues.get(5), 12), new ShooterConfiguration(Pair.of(4600d,4600d), 39d, -3d)); //
     }
 
-    private static Pair<Double, Double> polarToCartesian(double r, int num){
+    public static Pair<Double, Double> polarToCartesian(double r, int num){
         double angle = ((GRID_WIDTH) * (num / ((r + 1) * 2)) - (GRID_WIDTH / 2));
-        System.out.println(angle);
-        return Pair.of(r * Math.cos(angle), r * Math.sin(angle));
+        Pair<Double, Double> pos = Pair.of(r * Math.cos(angle), r * Math.sin(angle));
+        
+        if(Constants.isRed) {
+            pos = Pair.of(VisionConstants.SPEAKER_POSE2D_RED.getX() - pos.getFirst(), VisionConstants.SPEAKER_POSE2D_RED.getY() - pos.getSecond());
+        } else {
+            pos = Pair.of(VisionConstants.SPEAKER_POSE2D_BLUE.getX() + pos.getFirst(), VisionConstants.SPEAKER_POSE2D_BLUE.getY() + pos.getSecond());
+        }
+        return pos;
     }
 
     private static Pair<Double, Double> cartesianToPolar(Pose2d pose){
@@ -136,6 +128,7 @@ public class ShooterConfiguration {
     private static List<Pair<Double, Integer>> getNearestShooterConfigurations(Pose2d robotPose) throws IllegalPositionException{
         ArrayList<Pair<Double, Integer>> nearestConfigurations = new ArrayList<Pair<Double, Integer>>();
         Pair<Double, Double> polar = cartesianToPolar(robotPose);
+        System.out.println("Polar Relative to Speaker, R: " + polar.getFirst() + "Theta: " + polar.getSecond());
         int innerRow = (int) Math.floor(polar.getFirst());
         int outerRow = (int) Math.ceil(polar.getFirst());
         if(polar.getSecond() <= -(GRID_WIDTH / 2) || polar.getSecond() >= (GRID_WIDTH / 2)){
@@ -145,18 +138,22 @@ public class ShooterConfiguration {
             throw new IllegalPositionException("Robot is too far to the side");
         }
 
+        System.out.println(innerRow + " " + outerRow);
         ArrayList<Pair<Double, Integer>> points = new ArrayList<Pair<Double, Integer>>();
         for(int i = 0; i < (innerRow + 1) * 2; i++){
-            if(polar.getSecond() >= columnToAngle(i, (innerRow + 1) * 2) && polar.getSecond() <= columnToAngle(i, (innerRow + 1) * 2)){
+            if(polar.getSecond() >= columnToAngle(i, (innerRow + 1) * 2) && polar.getSecond() <= columnToAngle(i+1, (innerRow + 1) * 2)){
                 nearestConfigurations.add(Pair.of(radiusValues.get(innerRow), i));
                 nearestConfigurations.add(Pair.of(radiusValues.get(innerRow), i + 1));
                 points.add(Pair.of(radiusValues.get(innerRow), i));
                 points.add(Pair.of(radiusValues.get(innerRow), i + 1));
+                System.out.println("It is adding something");
                 break;
             }
+            System.out.println("Inner For Loop columnToAngle 1: " + columnToAngle(i, (innerRow + 1) * 2) + " 2:" + columnToAngle(i+1, (innerRow + 1) * 2));
         }
+        //System.out.println("inner Row complete");
         for(int i = 0; i < (outerRow + 1) * 2; i++){
-            if(polar.getSecond() >= columnToAngle(i, (outerRow + 1) * 2) && polar.getSecond() <= columnToAngle(i, (outerRow + 1) * 2)){
+            if(polar.getSecond() >= columnToAngle(i, (outerRow + 1) * 2) && polar.getSecond() <= columnToAngle(i+1, (outerRow + 1) * 2)){
                 nearestConfigurations.add(Pair.of(radiusValues.get(outerRow), i));
                 nearestConfigurations.add(Pair.of(radiusValues.get(outerRow), i + 1));
                 points.add(Pair.of(radiusValues.get(outerRow), i));
@@ -164,6 +161,10 @@ public class ShooterConfiguration {
                 break;
             }
         }
+        for(Pair<Double, Integer> nearest : nearestConfigurations) {
+            System.out.println(nearest.getFirst() + " " + nearest.getSecond());
+        }
+        System.out.println("Length before culling: " + nearestConfigurations.size());
         Pair<Double, Integer> furthest = null;
         double max = 0;
         for (Pair<Double, Integer> point : points){
@@ -173,9 +174,10 @@ public class ShooterConfiguration {
                 furthest = point;
             }
         }
-
+        
         nearestConfigurations.remove(furthest);
-
+        
+        System.out.println("Got Nearest Configs with length: " + nearestConfigurations.size());
         return nearestConfigurations;
     }
 
@@ -222,6 +224,7 @@ public class ShooterConfiguration {
         Pair<Double, Double> vels = Pair.of(solve_equation_plane(v1coeffs, xval, yval), solve_equation_plane(v2coeffs, xval, yval));
         double arm = solve_equation_plane(armcoeffs, xval, yval);
         double heading = solve_equation_plane(headingcoeffs, xval, yval);
+        System.out.println("New Shooter Config Created at: " + xval + ", " + yval + "/nArm Angle: " + arm + "/nVelocity: " + vels.getFirst() + "/nHeading Offset: " + heading);
         return new ShooterConfiguration(vels, arm, heading);
     }
 }

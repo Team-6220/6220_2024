@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -58,17 +59,18 @@ public class ShootingTestCommand extends Command {
     s_Swerve.resetTurnController();
     fowardAndBackPID.reset(s_Swerve.getPose().getX());
     leftAndRightPID.reset(s_Swerve.getPose().getY());
+
   }
   @Override
   public void execute() {
 
-    Translation2d setPoint = ShooterConfiguration.getFieldCartisianPositionFromRowColumn((int)currentRow.get(), (int)currentColumn.get());
+    Pair<Double, Double> setPoint = ShooterConfiguration.polarToCartesian(ShooterConfiguration.radiusValues.get(currentRow.get()), (int)currentColumn.get());
 
 
     double xOutput, yOutput, rotationVal;
 
-    fowardAndBackPID.setGoal(setPoint.getX());
-    leftAndRightPID.setGoal(setPoint.getY());
+    fowardAndBackPID.setGoal(setPoint.getFirst());
+    leftAndRightPID.setGoal(setPoint.getSecond());
     SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
     SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
     SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);
@@ -77,11 +79,11 @@ public class ShootingTestCommand extends Command {
 
     xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
     yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
-    if(Math.abs(s_Swerve.getPose().getX() - setPoint.getX()) < .1 && Math.abs(s_Swerve.getPose().getY() - setPoint.getY()) < .1) {
+    if(Math.abs(s_Swerve.getPose().getX() - setPoint.getFirst()) < .1 && Math.abs(s_Swerve.getPose().getY() - setPoint.getSecond()) < .1) {
       xOutput = 0;
       yOutput = 0;
     }
-    
+
     s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker() + headingOffsetTest.get());
     rotationVal = s_Swerve.getTurnPidSpeed();
   
