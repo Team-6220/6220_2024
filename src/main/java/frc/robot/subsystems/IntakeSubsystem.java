@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
+import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -39,7 +41,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void driveToIntake(){
         if(!noteInBeam() && !noteInTransit){
-            intakeMotor.set(IntakeConstants.intakeSpeed);
+            intakeMotor.setVoltage(IntakeConstants.intakeSpeed);
         } else if (noteInBeam() && !noteInTransit) {
             noteInTransit = true;
             intakeMotor.setPosition(0);

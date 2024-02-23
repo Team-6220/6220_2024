@@ -107,7 +107,7 @@ public class AmpCommand extends Command {
       true
     );
 
-    armSubsystem.driveToGoal(armSubsystem.armAmpAngle.get());
+    armSubsystem.driveToGoal(ArmConstants.ampSetPoint);
     
     if(fowardAndBackPID.atGoal() && leftAndRightPID.atGoal() && armSubsystem.isAtGoal()) {
       shooterSubsystem.spinManually(ArmConstants.ampShooterSpeed);

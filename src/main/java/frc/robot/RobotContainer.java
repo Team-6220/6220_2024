@@ -12,16 +12,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.lib.util.ShooterConfiguration;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AmpCommand;
 import frc.robot.commands.ArmIdleCommand;
+import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeIdleCommand;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.ShootingTestCommand;
 import frc.robot.commands.SpeakerCommand;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.Tuning_Arm;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -52,10 +56,13 @@ public class RobotContainer {
     private final ArmSubsystem s_ArmSubsystem = ArmSubsystem.getInstance();
     private final IntakeSubsystem s_IntakeSubsystem = IntakeSubsystem.getInstance();
     private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
+    private final ClimberSubsystem s_ClimberSubsystem = ClimberSubsystem.getInstance();
    //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
     private final blinkin s_Blinkin = blinkin.getInstance();
 
   public RobotContainer() {
+    ShooterConfiguration.setupRadiusValues();
+    ShooterConfiguration.setupConfigurations();
     Constants.VisionConstants.setTagHeights();
 
     NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
@@ -74,9 +81,13 @@ public class RobotContainer {
     
     s_ArmSubsystem.setDefaultCommand(new ArmIdleCommand());
     
+    //s_ArmSubsystem.setDefaultCommand(new Tuning_Arm(driver));
+
     s_ShooterSubsystem.setDefaultCommand(new ShooterIdleCommand());
 
     s_IntakeSubsystem.setDefaultCommand(new IntakeIdleCommand());
+
+    s_ClimberSubsystem.setDefaultCommand(new ClimberTestCommand(driver));
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -110,10 +121,9 @@ public class RobotContainer {
       override).until(() -> s_IntakeSubsystem.noteInTransit())
     );
 
-    speakerTemporary.whileTrue(new SpeakerCommand(
+    speakerTemporary.whileTrue(new ShootingTestCommand(
       s_Swerve, 
-      driver,
-      override)
+      driver)
     );
     //speakerTemporary.whileTrue(new ShootingTestCommand());
   }

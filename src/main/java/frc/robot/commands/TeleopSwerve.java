@@ -28,6 +28,11 @@ public class TeleopSwerve extends Command {
     }
 
     @Override
+    public void initialize() {
+        s_Swerve.resetModulesToAbsolute();
+    }
+
+    @Override
     public void execute() {
         /* Get Values, Deadband*/
         double[] driverInputs = OIConstants.getDriverInputs(driver);

@@ -113,11 +113,14 @@ public final class Constants {
         public static final boolean motorBInverted = false;
 
         //FIXME: set pid values
-        public static final double kP = .04; //0.009
-        public static final double kI = 0.03;//0.0005
-        public static final double kD = 0.0005;//0.001
-        public static final double armMaxVel = 65;
-        public static final double armMaxAccel = 85;
+        public static final double kP = 0.25; //0.009
+        public static final double kI = 0.02;//0.0005
+        public static final double kD = 0.005;//0.001
+        public static final double kG = 0.37;
+        public static final double kV = 0.037;
+        public static final double kS = 0.45;
+        public static final double armMaxVel = 200;
+        public static final double armMaxAccel = 450;
 
 
         public static final double minArmShootAngle = 75;
@@ -158,7 +161,7 @@ public final class Constants {
             
         }
 
-        public static final double armOffset = -80; // arm up
+        public static final double armOffset = -80-71.75641979391048; // arm up
 
         //FIXME: set setpoints
         public static final double intakeSetpoint = 83.5;
@@ -182,9 +185,9 @@ public final class Constants {
         public static final int breakBeamPort = 1;
 
         //FIXME: set intake speed
-        public static final double intakeSpeed = .3;
-        public static final double ejectSpeedSpeaker = .95;
-        public static final double ejectSpeedAmp = .4;
+        public static final double intakeSpeed = 4;
+        public static final double ejectSpeedSpeaker = 1;
+        public static final double ejectSpeedAmp = 1;
 
         public static final double armSetPointIntake = 83.5;
 
@@ -402,7 +405,7 @@ public final class Constants {
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
-        /* Module Specific Constants */
+       /* Module Specific Constants */
         // Back Right Module 0
         public static final class Mod0 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 8;
@@ -462,8 +465,11 @@ public final class Constants {
 
     public static final class ClimberConstants{
         //FIXME: set motor IDs
-        public static final int climberDriverLeftID = 0;
-        public static final int climberDriverRightID = 0;
+        public static final int climberDriverLeftID = 18;
+        public static final int climberDriverRightID = 19;
+
+        public static final boolean motorAInverted = false;
+        public static final boolean motorBInverted = false;
 
         //FIXME: set setpoints
         public static final double topSetpoint = 0;

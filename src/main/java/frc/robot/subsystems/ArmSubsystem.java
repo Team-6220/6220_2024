@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -22,18 +23,24 @@ public class ArmSubsystem extends SubsystemBase{
     private final TunableNumber armKp = new TunableNumber("Arm kP", ArmConstants.kP);
     private final TunableNumber armKi = new TunableNumber("Arm kI", ArmConstants.kI);
     private final TunableNumber armKd = new TunableNumber("Arm kD", ArmConstants.kD);
+    private final TunableNumber armKg = new TunableNumber("Arm kG", ArmConstants.kG);
+    private final TunableNumber armKv = new TunableNumber("Arm kV", ArmConstants.kV);
+    private final TunableNumber armKs = new TunableNumber("Arm kS", ArmConstants.kS);
+
     private final TunableNumber armMaxVel = new TunableNumber("ArmMaxVel", ArmConstants.armMaxVel);
     private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", ArmConstants.armMaxAccel);
 
     public final TunableNumber armTestAngle = new TunableNumber("Arm Degree Goal Set", 0);
-    public final TunableNumber armAmpAngle = new TunableNumber("Amp Degree Set", ArmConstants.ampSetPoint);
+    //public final TunableNumber armAmpAngle = new TunableNumber("Amp Degree Set", ArmConstants.ampSetPoint);
     
     private final CANSparkMax armMotorA, armMotorB;
     private final DutyCycleEncoder armEncoder;
     
     private final ProfiledPIDController m_Controller;
+    private ArmFeedforward m_FeedForward;
     private TrapezoidProfile.Constraints m_Constraints;
     private double lastTurnUpdate = 0;
+    private double feedForwardOutput, PIDOutput;
     /**
      * Initializes the ArmSubsystem
      */
@@ -62,7 +69,7 @@ public class ArmSubsystem extends SubsystemBase{
             armKd.get(),
             m_Constraints
             );
-
+        m_FeedForward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
         //Using I only withing 3 degrees of error
         m_Controller.setIZone(3);
 
@@ -116,17 +123,14 @@ public class ArmSubsystem extends SubsystemBase{
         lastTurnUpdate = Timer.getFPGATimestamp();
 
         m_Controller.setGoal(goal);
-      
-        double calculatedSpeed = m_Controller.calculate(getArmPosition());
+        
+        PIDOutput = m_Controller.calculate(getArmPosition());
+        feedForwardOutput = m_FeedForward.calculate((m_Controller.getSetpoint().position+90) * Math.PI/180, m_Controller.getSetpoint().velocity);
+        double calculatedSpeed = PIDOutput + feedForwardOutput;
 
-        if(calculatedSpeed > 0.5){
-            calculatedSpeed = 0.5;
-        }
-        else if (calculatedSpeed < -0.5){
-            calculatedSpeed = -0.5;
-        }
+        
 
-        armMotorA.set(calculatedSpeed);
+        armMotorA.setVoltage(calculatedSpeed);
         //+90 because feed forward want the angle to be 0 at horizontal for gravity calculations
     }
 
@@ -161,6 +165,11 @@ public class ArmSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+        if(getArmPosition() > 87 || getArmPosition() < -10) {
+            stop();
+            System.out.println("Arm Over Extend");
+        }
+
         // This method will be called once per scheduler run
         if(armKp.hasChanged()
         || armKi.hasChanged()
@@ -169,14 +178,22 @@ public class ArmSubsystem extends SubsystemBase{
             m_Controller.setPID(armKp.get(),armKi.get(),armKd.get());
         }
 
+        if(armKs.hasChanged()
+        || armKg.hasChanged()
+        || armKv.hasChanged()) {
+            m_FeedForward = new ArmFeedforward(armKs.get(), armKg.get(), armKv.get());
+        }
+
         if(armMaxVel.hasChanged()
         || armMaxAccel.hasChanged()) {
             m_Constraints = new TrapezoidProfile.Constraints(armMaxVel.get(), armMaxAccel.get());
+            m_Controller.setConstraints(m_Constraints);
         }
         SmartDashboard.putNumber("Arm Angle", getArmPosition());
-        // SmartDashboard.putNumber("Controller Goal", m_Controller.getGoal().position);
-        // SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
-        // SmartDashboard.putNumber("Controller Output", m_Controller.calculate(getArmPosition()));
+        //SmartDashboard.putNumber("Controller Setpoint", m_Controller.getSetpoint().position);
+        //SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
+        //SmartDashboard.putNumber("PID Controller Output", PIDOutput);
+        //SmartDashboard.putNumber("Feed Forward Output", feedForwardOutput);
         //System.out.println(getArmPosition());
     }
 

@@ -48,8 +48,16 @@ public class ShooterConfiguration {
         radiusValues.put(5, 5.0);
     }
 
-    public static Translation2d getCarisianPositionFromRowColumn(int row, int column) {
+    public static Translation2d getFieldCartisianPositionFromRowColumn(int row, int column) {
+        setupRadiusValues();
         Pair<Double, Double> pos = polarToCartesian(radiusValues.get(row), column);
+        if(Constants.isRed) {
+            pos = Pair.of(VisionConstants.SPEAKER_POSE2D_RED.getX() - pos.getFirst(), VisionConstants.SPEAKER_POSE2D_RED.getY() - pos.getSecond());
+        } else {
+            pos = Pair.of(VisionConstants.SPEAKER_POSE2D_BLUE.getX() + pos.getFirst(), VisionConstants.SPEAKER_POSE2D_BLUE.getY() + pos.getSecond());
+
+        }
+        System.out.println("X: " + pos.getFirst() + " Y: " + pos.getSecond());
         return new Translation2d(pos.getFirst(), pos.getSecond());
     }
 

@@ -61,7 +61,7 @@ public final class LimelightCalculations {
                 totalX += aprilTagPoseEstimate.getX();
                 totalY += aprilTagPoseEstimate.getY();
                 totalAngle += aprilTagPoseEstimate.getRotation().getRadians();
-                totalDistance = aprilTag.getTargetPose_CameraSpace().getTranslation().getDistance(new Translation3d(0, 0, 0));
+                totalDistance += aprilTag.getTargetPose_CameraSpace().getTranslation().getDistance(new Translation3d(0, 0, 0));
                 count++;
             //} else {
                 //System.out.println("Bad Vision Data");
@@ -70,8 +70,8 @@ public final class LimelightCalculations {
         if(count > 0) {
             double distance = totalDistance/count;
             SmartDashboard.putNumber("Distance", distance);
-            if(distance>5) {
-                System.out.println("Did not use");
+            if(distance>4) {
+                //System.out.println("Did not use");
                 return null;
             } else {
                 double visionStdDev = constant * (1 + (distance * distance / 30));

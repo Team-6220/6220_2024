@@ -22,8 +22,8 @@ public class ShootingTestCommand extends Command {
   private final double kP = 175;
   private final double kI = 0;
   private final double kD = 0;
-  private final double Vel =  3;
-  private final double Accel = 2;
+  private final double Vel =  2;
+  private final double Accel = 1;
   private final double Tolerance = 0.1;
 
   private final ArmSubsystem armSubsystem;
@@ -62,7 +62,7 @@ public class ShootingTestCommand extends Command {
   @Override
   public void execute() {
 
-    Translation2d setPoint = ShooterConfiguration.getCarisianPositionFromRowColumn((int)currentRow.get(), (int)currentColumn.get());
+    Translation2d setPoint = ShooterConfiguration.getFieldCartisianPositionFromRowColumn((int)currentRow.get(), (int)currentColumn.get());
 
 
     double xOutput, yOutput, rotationVal;
