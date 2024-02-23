@@ -138,7 +138,7 @@ public class ShooterConfiguration {
         return ((GRID_WIDTH) * ((double)col / (double)(numcol))) - (GRID_WIDTH / 2);
     }
 
-    private static List<Pair<Double, Integer>> getNearestShooterConfigurations(Pose2d robotPose) throws IllegalPositionException{
+    private static List<Pair<Integer, Integer>> getNearestShooterConfigurations(Pose2d robotPose) throws IllegalPositionException{
         ArrayList<Pair<Integer, Integer>> nearestConfigurations = new ArrayList<Pair<Integer, Integer>>();
         Pair<Double, Double> polar = cartesianToPolar(robotPose);
         System.out.println("Polar Relative to Speaker, R: " + polar.getFirst() + "Theta: " + polar.getSecond());
@@ -154,8 +154,8 @@ public class ShooterConfiguration {
         System.out.println(innerRow + " " + outerRow);
         for(int i = 0; i < (innerRow + 1) * 2; i++){
             if(polar.getSecond() >= columnToAngle(i, (innerRow + 1) * 2) && polar.getSecond() <= columnToAngle(i+1, (innerRow + 1) * 2)){
-                nearestConfigurations.add(Pair.of(radiusValues.get(innerRow), i));
-                nearestConfigurations.add(Pair.of(radiusValues.get(innerRow), i + 1));
+                nearestConfigurations.add(Pair.of(innerRow, i));
+                nearestConfigurations.add(Pair.of(innerRow, i + 1));
                 
                 //System.out.println("It is adding something");
                 break;
@@ -164,27 +164,25 @@ public class ShooterConfiguration {
         }
         for(int i = 0; i < (outerRow + 1) * 2; i++){
             if(polar.getSecond() >= columnToAngle(i, (outerRow + 1) * 2) && polar.getSecond() <= columnToAngle(i+1, (outerRow + 1) * 2)){
-                nearestConfigurations.add(Pair.of(radiusValues.get(outerRow), i));
-                nearestConfigurations.add(Pair.of(radiusValues.get(outerRow), i + 1));
+                nearestConfigurations.add(Pair.of(outerRow, i));
+                nearestConfigurations.add(Pair.of(outerRow, i + 1));
                 
                 break;
             }
         }
         
         //System.out.println("Length before culling: " + nearestConfigurations.size());
-        Pair<Double, Integer> furthest = null;
+        Pair<Integer, Integer> furthest = null;
         double max = 0;
-        for (Pair<Double, Integer> point : nearestConfigurations){
-            Pair<Double, Double> pointCartesian = polarToCartesian(point.getFirst(), point.getSecond());
+        for (Pair<Integer, Integer> point : nearestConfigurations){
+            Pair<Double, Double> pointCartesian = polarToCartesian(radiusValues.get(point.getFirst()), point.getSecond());
             if(Math.hypot(pointCartesian.getFirst() - robotPose.getX(), pointCartesian.getSecond() - robotPose.getY()) > max){
                 max = Math.hypot(pointCartesian.getFirst() - robotPose.getX(), pointCartesian.getSecond() - robotPose.getY());
-                //System.out.println(max);
                 furthest = point;
             }
         }
         
         nearestConfigurations.remove(furthest);
-        
         //System.out.println("Got Nearest Configs with length: " + nearestConfigurations.size());
         return nearestConfigurations;
     }
@@ -208,17 +206,7 @@ public class ShooterConfiguration {
     }
 
     public static ShooterConfiguration getShooterConfiguration(Pose2d robotPose) throws IllegalPositionException{
-        List<Pair<Double, Integer>> configs = getNearestShooterConfigurations(robotPose);
-        if(configs.size() == 2){
-            Pair<Double, Double> polar = cartesianToPolar(robotPose);
-            Pair<Double, Double> vels = Pair.of(
-                shooterConfigurations.get(configs.get(0)).getVelocities().getFirst() + (shooterConfigurations.get(configs.get(1)).getVelocities().getFirst() - shooterConfigurations.get(configs.get(0)).getVelocities().getFirst()) * (polar.getFirst() - configs.get(0).getFirst()) / (configs.get(1).getFirst() - configs.get(0).getFirst()),
-                shooterConfigurations.get(configs.get(0)).getVelocities().getSecond() + (shooterConfigurations.get(configs.get(1)).getVelocities().getSecond() - shooterConfigurations.get(configs.get(0)).getVelocities().getSecond()) * (polar.getFirst() - configs.get(0).getFirst()) / (configs.get(1).getFirst() - configs.get(0).getFirst())
-            );
-            double arm = shooterConfigurations.get(configs.get(0)).getArmAngle() + (shooterConfigurations.get(configs.get(1)).getArmAngle() - shooterConfigurations.get(configs.get(0)).getArmAngle()) * (polar.getFirst() - configs.get(0).getFirst()) / (configs.get(1).getFirst() - configs.get(0).getFirst());
-            double heading = shooterConfigurations.get(configs.get(0)).getHeadingOffset() + (shooterConfigurations.get(configs.get(1)).getHeadingOffset() - shooterConfigurations.get(configs.get(0)).getHeadingOffset()) * (polar.getFirst() - configs.get(0).getFirst()) / (configs.get(1).getFirst() - configs.get(0).getFirst());
-            return new ShooterConfiguration(vels, arm, heading);
-        }
+        List<Pair<Integer, Integer>> configs = getNearestShooterConfigurations(robotPose);
         Pose2d speakerPos = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
         double yval = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED.getY() - robotPose.getY() : robotPose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
         double xval = Math.abs(robotPose.getX() - speakerPos.getX());
@@ -226,10 +214,29 @@ public class ShooterConfiguration {
         Pair<Double, Double> b = polarToCartesian(configs.get(1).getFirst(), configs.get(1).getSecond());
         Pair<Double, Double> c = polarToCartesian(configs.get(2).getFirst(), configs.get(2).getSecond());
         System.out.println(shooterConfigurations.get(configs.get(0)).getVelocities().getFirst());
-        double[] v1coeffs = get_equation_plane(a.getFirst(), a.getSecond(), shooterConfigurations.get(configs.get(0)).getVelocities().getFirst(), b.getFirst(), b.getSecond(), shooterConfigurations.get(configs.get(1)).getVelocities().getFirst(), c.getFirst(), c.getSecond(), shooterConfigurations.get(configs.get(2)).getVelocities().getFirst());
-        double[] v2coeffs = get_equation_plane(a.getFirst(), a.getSecond(), shooterConfigurations.get(configs.get(0)).getVelocities().getSecond(), b.getFirst(), b.getSecond(), shooterConfigurations.get(configs.get(1)).getVelocities().getSecond(), c.getFirst(), c.getSecond(), shooterConfigurations.get(configs.get(2)).getVelocities().getSecond());
-        double[] armcoeffs = get_equation_plane(a.getFirst(), a.getSecond(), shooterConfigurations.get(configs.get(0)).getArmAngle(), b.getFirst(), b.getSecond(), shooterConfigurations.get(configs.get(1)).getArmAngle(), c.getFirst(), c.getSecond(), shooterConfigurations.get(configs.get(2)).getArmAngle());
-        double[] headingcoeffs = get_equation_plane(a.getFirst(), a.getSecond(), shooterConfigurations.get(configs.get(0)).getHeadingOffset(), b.getFirst(), b.getSecond(), shooterConfigurations.get(configs.get(1)).getHeadingOffset(), c.getFirst(), c.getSecond(), shooterConfigurations.get(configs.get(2)).getHeadingOffset());
+        int[][] points = {{configs.get(0).getFirst(), configs.get(0).getSecond()}, {configs.get(1).getFirst(), configs.get(1).getSecond()}, {configs.get(2).getFirst(), configs.get(2).getSecond()}};
+        double[] v1coeffs = get_equation_plane(
+            a.getFirst(), a.getSecond(), shooterConfigurations.get(keys.get(points[0][0]).get(points[0][1])).getVelocities().getFirst(),
+            b.getFirst(), b.getSecond(), shooterConfigurations.get(keys.get(points[1][0]).get(points[1][1])).getVelocities().getFirst(),
+            c.getFirst(), c.getSecond(), shooterConfigurations.get(keys.get(points[2][0]).get(points[2][1])).getVelocities().getFirst()
+        );
+
+        double[] v2coeffs = get_equation_plane(
+            a.getFirst(), a.getSecond(), shooterConfigurations.get(keys.get(points[0][0]).get(points[0][1])).getVelocities().getSecond(),
+            b.getFirst(), b.getSecond(), shooterConfigurations.get(keys.get(points[1][0]).get(points[1][1])).getVelocities().getSecond(),
+            c.getFirst(), c.getSecond(), shooterConfigurations.get(keys.get(points[2][0]).get(points[2][1])).getVelocities().getSecond()
+        );
+
+        double[] armcoeffs = get_equation_plane(
+            a.getFirst(), a.getSecond(), shooterConfigurations.get(keys.get(points[0][0]).get(points[0][1])).getArmAngle(),
+            b.getFirst(), b.getSecond(), shooterConfigurations.get(keys.get(points[1][0]).get(points[1][1])).getArmAngle(),
+            c.getFirst(), c.getSecond(), shooterConfigurations.get(keys.get(points[2][0]).get(points[2][1])).getArmAngle()
+        );
+        double[] headingcoeffs = get_equation_plane(
+            a.getFirst(), a.getSecond(), shooterConfigurations.get(keys.get(points[0][0]).get(points[0][1])).getHeadingOffset(),
+            b.getFirst(), b.getSecond(), shooterConfigurations.get(keys.get(points[1][0]).get(points[1][1])).getHeadingOffset(),
+            c.getFirst(), c.getSecond(), shooterConfigurations.get(keys.get(points[2][0]).get(points[2][1])).getHeadingOffset()
+        );
         Pair<Double, Double> vels = Pair.of(solve_equation_plane(v1coeffs, xval, yval), solve_equation_plane(v2coeffs, xval, yval));
         double arm = solve_equation_plane(armcoeffs, xval, yval);
         double heading = solve_equation_plane(headingcoeffs, xval, yval);
