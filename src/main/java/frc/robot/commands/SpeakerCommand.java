@@ -24,7 +24,6 @@ public class SpeakerCommand extends Command{
     private final IntakeSubsystem intake;
     private final ArmSubsystem arm;
     private final XboxController driver;
-    private final BooleanSupplier manualOverride;
     private double[] velocities  = {0, 0};
     private double armAngle = ArmConstants.restingSetpoint;
     private boolean isAuto, hasFired;
@@ -32,7 +31,7 @@ public class SpeakerCommand extends Command{
     private double shotClock;
     private ShooterConfiguration currentShooterConfiguration;
 
-    public SpeakerCommand(Swerve swerve, XboxController driver, BooleanSupplier override){
+    public SpeakerCommand(Swerve swerve, XboxController driver){
         isAuto = false;
         this.swerve = swerve;
         this.shooter = ShooterSubsystem.getInstance();
@@ -40,7 +39,6 @@ public class SpeakerCommand extends Command{
         this.arm = ArmSubsystem.getInstance();
         this.s_Blinkin = blinkin.getInstance();
         this.driver = driver;
-        this.manualOverride = override;
         addRequirements(this.swerve, arm, intake, shooter, s_Blinkin);
     }
 
@@ -52,7 +50,6 @@ public class SpeakerCommand extends Command{
         this.arm = ArmSubsystem.getInstance();
         this.s_Blinkin = blinkin.getInstance();
         this.driver = null;
-        manualOverride = () -> false;
         intake.setHasNote();
         addRequirements(this.swerve, arm, intake, shooter, s_Blinkin);
     }
@@ -89,9 +86,6 @@ public class SpeakerCommand extends Command{
             }
             swerve.setAutoTurnHeading(swerve.getHeadingToSpeaker() + currentShooterConfiguration.getHeadingOffset());
             double rotationVal = swerve.getTurnPidSpeed();
-            if(manualOverride.getAsBoolean()){
-                rotationVal =  driverInputs[2];
-            }
             swerve.drive(
                     new Translation2d(driverInputs[0], driverInputs[1]), 
                     rotationVal, 
@@ -111,7 +105,7 @@ public class SpeakerCommand extends Command{
             //armAngle = ArmConstants.getArmAngleFromDistance(distanceToSpeaker);
             arm.driveToGoal(currentShooterConfiguration.getArmAngle());
             
-            if((shooter.isAtSetpoint() && (swerve.isFacingTurnTarget() || manualOverride.getAsBoolean()) && arm.isAtGoal()) || hasFired){
+            if((shooter.isAtSetpoint() && swerve.isFacingTurnTarget() && arm.isAtGoal()) || hasFired){
                 intake.feedShooter();
                 hasFired = true;
                 shotClock++;
