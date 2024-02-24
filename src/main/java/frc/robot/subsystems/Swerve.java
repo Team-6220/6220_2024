@@ -217,9 +217,9 @@ public class Swerve extends SubsystemBase {
      * AKA get x value to amp as of map in pathplanner, forward/positvie is away from DRIVER'S POINT OF VIEW at BLUE SIDE
      * @return the forward/backward/x distance from robot to amp
      */
-    public double getForwardBackwardToAmp()
+    public double getAmpX()
     {
-        Pose2d currPose = getPose();
+        //Pose2d currPose = getPose();
         Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
         double xDistance = ampPose.getX(); // - currPose.getX() // I don't think we need this
         SmartDashboard.putNumber("forward backward", xDistance);
@@ -230,7 +230,7 @@ public class Swerve extends SubsystemBase {
      * AKA get y value to amp as of map in pathplanner
      * @return the left/right/y distance from robot to amp, right/negative is to the right side of the driver FROM THE BLUE SIDE
      */
-    public double getLeftAndRightToAmp()
+    public double getAmpY()
     {
         Pose2d currPose = getPose();
         Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
@@ -395,7 +395,7 @@ public class Swerve extends SubsystemBase {
         }
 
         
-        //LimelightCalculations.updatePoseEstimation(poseEstimator, this);
+        LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         
         poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());

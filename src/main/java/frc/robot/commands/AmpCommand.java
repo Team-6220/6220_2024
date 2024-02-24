@@ -40,12 +40,12 @@ public class AmpCommand extends Command {
   private final IntakeSubsystem intakeSubsystem;
   private final XboxController driver;
   private final Swerve s_Swerve;
-  private final Supplier<Boolean> shootSupplier, manuelOverride; // Use this so that it's the driver click the button for it to shoot.
+  private final Supplier<Boolean> shootSupplier, autoControl; // Use this so that it's the driver click the button for it to shoot.
   private final ProfiledPIDController leftAndRightPID, fowardAndBackPID; //from the driver's point of view and 0,0 is at the right hand side of the driver
   private blinkin s_Blinkin;
 
   /** Creates a new AmpTestCmd. */
-  public AmpCommand(Swerve s_Swerve, XboxController driver, Supplier<Boolean> shootSupplier, Supplier<Boolean> override) {
+  public AmpCommand(Swerve s_Swerve, XboxController driver, Supplier<Boolean> shootSupplier, Supplier<Boolean> autoControl) {
     armSubsystem = ArmSubsystem.getInstance();
     shooterSubsystem = ShooterSubsystem.getInstance();
     intakeSubsystem = IntakeSubsystem.getInstance();
@@ -53,7 +53,7 @@ public class AmpCommand extends Command {
     this.shootSupplier = shootSupplier;
     this.s_Swerve = s_Swerve;
     this.driver = driver;
-    manuelOverride = override;
+    this.autoControl = autoControl;
 
     fowardAndBackPID = new ProfiledPIDController(kP.get(), kI.get(),kD.get(), new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
     fowardAndBackPID.setTolerance(Tolerance.get());
@@ -78,14 +78,16 @@ public class AmpCommand extends Command {
   public void execute() {
     double[] driverInputs = OIConstants.getDriverInputs(driver);
     double xOutput, yOutput, rotationVal;
-    if(manuelOverride.get()) {
+    if(!autoControl.get()) {
       xOutput = driverInputs[0];
       yOutput = driverInputs[1];
       rotationVal = driverInputs[2];
+
+      s_Blinkin.solid_purple();
     }
     else {
-      fowardAndBackPID.setGoal(s_Swerve.getForwardBackwardToAmp());
-      leftAndRightPID.setGoal(s_Swerve.getLeftAndRightToAmp());
+      fowardAndBackPID.setGoal(s_Swerve.getAmpX());
+      leftAndRightPID.setGoal(s_Swerve.getAmpY());
 
       SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
       SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
@@ -93,27 +95,26 @@ public class AmpCommand extends Command {
 
       xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
       yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
-
-      s_Swerve.setAutoTurnHeading(90);
-      rotationVal = s_Swerve.getTurnPidSpeed();
+      
       s_Blinkin.sky_blue();
     }
+    s_Swerve.setAutoTurnHeading(90);
+    rotationVal = s_Swerve.getTurnPidSpeed();
 
-    
-      s_Swerve.drive(
-      new Translation2d(xOutput, yOutput),
-      rotationVal,
-      true,
-      true
+    s_Swerve.drive(
+    new Translation2d(xOutput, yOutput),
+    rotationVal,
+    false,
+    true
     );
-
-    armSubsystem.driveToGoal(ArmConstants.ampSetPoint);
+    if(Math.hypot(s_Swerve.getPose().getX() - s_Swerve.getAmpX(), s_Swerve.getPose().getY()-s_Swerve.getAmpY()) < 1.5) {
+      armSubsystem.driveToGoal(ArmConstants.ampSetPoint);
+    } else {
+      armSubsystem.driveToGoal(ArmConstants.restingSetpoint);
+    }
     
-    if(fowardAndBackPID.atGoal() && leftAndRightPID.atGoal() && armSubsystem.isAtGoal()) {
-      shooterSubsystem.spinManually(ArmConstants.ampShooterSpeed);
-      intakeSubsystem.feedAmp();
-      s_Blinkin.solid_green();
-    } else if(shootSupplier.get()) {
+    
+    if(shootSupplier.get()) {
       shooterSubsystem.spinManually(ArmConstants.ampShooterSpeed);
       intakeSubsystem.feedAmp();
       s_Blinkin.solid_green();

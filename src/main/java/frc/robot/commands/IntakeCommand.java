@@ -28,7 +28,7 @@ public class IntakeCommand extends Command{
     private final ArmSubsystem arm;
     private final PhotonVisionSubsystem vis;
     private final blinkin s_Blinkin;
-    private final BooleanSupplier manualOverride;
+    private final BooleanSupplier autoControl;
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
     private boolean isAuto;
@@ -39,14 +39,14 @@ public class IntakeCommand extends Command{
     private final TunableNumber turnkI = new TunableNumber("intakeTurnkI", 0);
     private final TunableNumber turnTolerance = new TunableNumber("turnTolerance", 3);
 
-    public IntakeCommand(Swerve swerve, XboxController driver, BooleanSupplier override) {
+    public IntakeCommand(Swerve swerve, XboxController driver, BooleanSupplier autoControl) {
         isAuto = false;
         this.swerve = swerve;
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
         this.vis = PhotonVisionSubsystem.getInstance();
         this.s_Blinkin = blinkin.getInstance();
-        this.manualOverride = override;
+        this.autoControl = autoControl;
         this.driver = driver;
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
@@ -63,7 +63,7 @@ public class IntakeCommand extends Command{
         this.arm = ArmSubsystem.getInstance();
         this.vis = PhotonVisionSubsystem.getInstance();
         this.s_Blinkin = blinkin.getInstance();
-        this.manualOverride = ()-> false;
+        this.autoControl = ()-> true;
         this.driver = null;
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
@@ -87,7 +87,7 @@ public class IntakeCommand extends Command{
             rotationVal = driverInputs[2];
         }
 
-        if(manualOverride.getAsBoolean() || isAuto) {
+        if(autoControl.getAsBoolean()) {
             if(vis.getHasTargets()) {
                 timeWithoutTarget = 0;
                 rotationVal = limelightPidController.calculate(vis.getTurnOffset());

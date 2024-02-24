@@ -55,9 +55,9 @@ public class RobotContainer {
   /* Driver Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton intakeTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
-  private final JoystickButton ampTemporary = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
+  //private final JoystickButton intakeTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
+  //private final JoystickButton ampTemporary = new JoystickButton(driver, XboxController.Button.kB.value);
+  //private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton noNote = new JoystickButton(driver, XboxController.Button.kStart.value);
@@ -68,6 +68,7 @@ public class RobotContainer {
   /* Operator Buttons */
   private final Trigger intake = new Trigger(operator.button(5, null));
   private final Trigger amp = new Trigger(operator.button(2, null));
+  private final Trigger ampFire = new Trigger(operator.button(1, null));
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final ArmSubsystem s_ArmSubsystem = ArmSubsystem.getInstance();
@@ -138,15 +139,15 @@ public class RobotContainer {
     amp.whileTrue(new AmpCommand(
       s_Swerve,
       driver,
-      () -> robotCentric.getAsBoolean(),
-      () -> override.getAsBoolean())
+      ()->robotControlLeftTrigger.getAsBoolean(),
+      () -> operator.getRawButton(1))
     );
 
     intake.whileTrue(new IntakeCommand(
       s_Swerve, 
       driver,  
-      override).until(() -> s_IntakeSubsystem.noteInTransit())
-    );
+      () -> robotControlLeftTrigger.getAsBoolean())
+      .until(() -> s_IntakeSubsystem.noteInTransit()));
 
     fireRightTrigger.whileTrue(new SpeakerCommand(
       s_Swerve, 
