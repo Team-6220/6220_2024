@@ -1,7 +1,10 @@
 package frc.robot;
 
+import java.nio.file.Path;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,8 +14,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.lib.util.AlienceColorCoordinateFlip;
 import frc.lib.util.ShooterConfiguration;
+import frc.lib.util.TunableNumber;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AmpCommand;
 import frc.robot.commands.ArmIdleCommand;
@@ -57,6 +64,12 @@ public class RobotContainer {
     private final IntakeSubsystem s_IntakeSubsystem = IntakeSubsystem.getInstance();
     private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
     private final ClimberSubsystem s_ClimberSubsystem = ClimberSubsystem.getInstance();
+
+    private final TunableNumber autoMaxVelocity = new TunableNumber("autoMaxVelocity", AutoConstants.autoMaxVelocityMps);
+    private final TunableNumber autoMaxAcceleratMpsSq = new TunableNumber("autoMaxAcceleratMpsSq", AutoConstants.autoMaxAcceleratMpsSq);
+    private final TunableNumber maxAngularVelocityRps = new TunableNumber("maxAngularVelocityRps", AutoConstants.maxAngularVelocityRps);
+    private final TunableNumber maxAngularAcceleratRpsSq = new TunableNumber("maxAngularAcceleratRpsSq", AutoConstants.maxAngularAcceleratRpsSq);
+
    //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
     private final blinkin s_Blinkin = blinkin.getInstance();
 
@@ -88,9 +101,12 @@ public class RobotContainer {
     s_IntakeSubsystem.setDefaultCommand(new IntakeIdleCommand());
 
     s_ClimberSubsystem.setDefaultCommand(new ClimberTestCommand(driver));
+
+
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
-
+    autoChooser.addOption("fourNoteTesting", fourNoteAutoServite());
+    autoChooser.addOption("pick up fartherst Note and Shoot", pickUpFarNoteAndShoot());
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
@@ -104,8 +120,9 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-    zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0)))));
-    
+    zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0))))); //Red side
+    // zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(1.33, 5.60), new Rotation2d(0))))); //Blue Side
+
     noNote.onTrue(new InstantCommand(() -> s_IntakeSubsystem.reset()));
 
     ampTemporary.whileTrue(new AmpCommand(
@@ -132,6 +149,33 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //s_Swerve.setPose(new Pose2d(15.3,5.55,new Rotation2d(0)));
     return autoChooser.getSelected();
+  }
+
+  public SequentialCommandGroup fourNoteAutoServite()
+  {
+    return new SequentialCommandGroup(
+      new SpeakerCommand(s_Swerve),
+      new IntakeCommand(s_Swerve),
+      new SpeakerCommand(s_Swerve),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.2), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), new PathConstraints(autoMaxVelocity.get(), autoMaxAcceleratMpsSq.get(), maxAngularVelocityRps.get(), maxAngularAcceleratRpsSq.get())),
+      new IntakeCommand(s_Swerve),
+      new SpeakerCommand(s_Swerve),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.1), 4.4, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), new PathConstraints(autoMaxVelocity.get(), autoMaxAcceleratMpsSq.get(), maxAngularVelocityRps.get(), maxAngularAcceleratRpsSq.get())),
+      new IntakeCommand(s_Swerve),
+      new SpeakerCommand(s_Swerve)
+    );
+  }
+
+  public SequentialCommandGroup pickUpFarNoteAndShoot()
+  {
+    return new SequentialCommandGroup(
+      // new SpeakerCommand(s_Swerve),
+      // AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(7.5), 7.5, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), new PathConstraints(autoMaxVelocity.get(), autoMaxAcceleratMpsSq.get(), maxAngularVelocityRps.get(), maxAngularAcceleratRpsSq.get())),
+      AutoBuilder.pathfindThenFollowPath()
+      new IntakeCommand(s_Swerve),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(4), 5.8, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), new PathConstraints(autoMaxVelocity.get(), autoMaxAcceleratMpsSq.get(), maxAngularVelocityRps.get(), maxAngularAcceleratRpsSq.get())),
+      new SpeakerCommand(s_Swerve)
+      );
   }
 
 }

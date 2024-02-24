@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants;
@@ -31,6 +32,7 @@ public class IntakeCommand extends Command{
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
     private boolean isAuto;
+    private int timeWithoutTarget = 0, stopIntakeDelay = 20;
 
     private final TunableNumber turnkP = new TunableNumber("intakeTurnkP", 4);
     private final TunableNumber turnkD = new TunableNumber("intakeTurnkD", 0.002);
@@ -49,11 +51,13 @@ public class IntakeCommand extends Command{
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
+        timeWithoutTarget = 0;
         addRequirements(this.swerve, arm, intake, vis);
     }
 
     public IntakeCommand(Swerve swerve) {
         isAuto = true;
+        timeWithoutTarget = 0;
         this.swerve = swerve;
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
@@ -65,6 +69,11 @@ public class IntakeCommand extends Command{
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
         addRequirements(this.swerve, arm, intake, vis);
+    }
+
+    @Override
+    public void initialize() {
+        timeWithoutTarget = 0;
     }
 
     @Override
@@ -80,6 +89,7 @@ public class IntakeCommand extends Command{
 
         if(manualOverride.getAsBoolean() || isAuto) {
             if(vis.getHasTargets()) {
+                timeWithoutTarget = 0;
                 rotationVal = limelightPidController.calculate(vis.getTurnOffset());
 
                 rotationVal = (rotationVal > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(rotationVal< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:rotationVal;
@@ -92,10 +102,14 @@ public class IntakeCommand extends Command{
                 }
                 translation = -.3 * SwerveConstants.maxSpeed;
             }
+            else
+            {
+                timeWithoutTarget++;
+            }
+
         } else {
             s_Blinkin.solid_gold();
         }
-
 
 
 
@@ -113,7 +127,7 @@ public class IntakeCommand extends Command{
     }
     @Override
     public boolean isFinished() {
-        if(intake.noteInBeam()) {
+        if(intake.noteInBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
             return true;
         }
         return false;

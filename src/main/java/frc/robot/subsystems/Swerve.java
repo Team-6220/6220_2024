@@ -84,6 +84,14 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber turnMaxVel = new TunableNumber("turn MaxVel", Constants.SwerveConstants.turnMaxVel);
     private final TunableNumber turnMaxAccel = new TunableNumber("turn Accel", Constants.SwerveConstants.turnMaxAccel);
 
+    private final TunableNumber autoRkP = new TunableNumber("auto R kP", Constants.SwerveConstants.rotation_kP);
+    private final TunableNumber autoRkI = new TunableNumber("auto R kI", Constants.SwerveConstants.rotation_kI);
+    private final TunableNumber autoRkD = new TunableNumber("auto R kD", Constants.SwerveConstants.rotation_kD);
+
+    private final TunableNumber autoTkP = new TunableNumber("auto T kP", Constants.SwerveConstants.translation_kP);
+    private final TunableNumber autoTkI = new TunableNumber("auto T kI", Constants.SwerveConstants.translation_kI);
+    private final TunableNumber autoTkD = new TunableNumber("auto T kD", Constants.SwerveConstants.translation_kD);
+
     
     public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .2);
 
@@ -155,8 +163,8 @@ public class Swerve extends SubsystemBase {
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                new PIDConstants(SwerveConstants.translation_kP, SwerveConstants.translation_kI, SwerveConstants.translation_kD), // Translation PID constants
-                new PIDConstants(SwerveConstants.rotation_kP, SwerveConstants.rotation_kI, SwerveConstants.rotation_kD), // Rotation PID constants
+        new PIDConstants(autoRkP.get(), autoRkI.get(), autoRkD.get()), // Translation PID constants
+        new PIDConstants(autoTkP.get(), autoTkI.get(), autoTkD.get()), // Rotation PID constants
                 4.5, // Max module speed, in m/s
                 0.4, // Drive base radius in meters. Distance from robot center to furthest module.
                 new ReplanningConfig() // Default path replanning config. See the API for the options here

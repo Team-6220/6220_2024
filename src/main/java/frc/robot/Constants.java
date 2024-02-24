@@ -453,6 +453,20 @@ public final class Constants {
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
     
+        public static final double translation_kP = 5;
+        public static final double translation_kI = 0.05;
+        public static final double translation_kD = 0;
+        public static final double rotation_kP = 0.45;
+        public static final double rotation_kI = 0;
+        public static final double rotation_kD = 0.05;
+        public static final double rotationMaxAccel = 120;
+        public static final double rotationMaxVel = 240;
+
+        public static final double autoMaxVelocityMps = 3;
+        public static final double autoMaxAcceleratMpsSq = 5;
+        public static final double maxAngularVelocityRps = Rotation2d.fromDegrees(240).getRadians();
+        public static final double maxAngularAcceleratRpsSq = Rotation2d.fromDegrees(480).getRadians();
+
         public static final double kPXController = 1.5;
         public static final double kPYController = 1.5;
         public static final double kPThetaController = 3;
