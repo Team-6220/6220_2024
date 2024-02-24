@@ -17,10 +17,16 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.blinkin;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.Supplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import frc.lib.util.TunableNumber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -82,13 +88,15 @@ public class AmpCommand extends Command {
       xOutput = driverInputs[0];
       yOutput = driverInputs[1];
       rotationVal = driverInputs[2];
-
+      
       s_Blinkin.solid_purple();
     }
     else {
       fowardAndBackPID.setGoal(s_Swerve.getAmpX());
       leftAndRightPID.setGoal(s_Swerve.getAmpY());
-
+      
+      AutoBuilder.pathfindToPose(s_Swerve.getAmpPose(), AutoConstants.);
+      
       SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
       SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
       SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);

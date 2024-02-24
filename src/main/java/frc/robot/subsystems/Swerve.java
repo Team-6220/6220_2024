@@ -239,6 +239,11 @@ public class Swerve extends SubsystemBase {
         return yDistance;
     }
 
+    public Pose2d getAmpPose()
+    {
+        return Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+    }
+
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxSpeed);
