@@ -104,14 +104,14 @@ public class AmpCommand extends Command {
     s_Swerve.drive(
     new Translation2d(xOutput, yOutput),
     rotationVal,
-    false,
+    true,
     true
     );
-    if(Math.hypot(s_Swerve.getPose().getX() - s_Swerve.getAmpX(), s_Swerve.getPose().getY()-s_Swerve.getAmpY()) < 1.5) {
+    //if(Math.hypot(s_Swerve.getPose().getX() - s_Swerve.getAmpX(), s_Swerve.getPose().getY()-s_Swerve.getAmpY()) < 1.5) {
       armSubsystem.driveToGoal(ArmConstants.ampSetPoint);
-    } else {
-      armSubsystem.driveToGoal(ArmConstants.restingSetpoint);
-    }
+    //} else {
+      //armSubsystem.driveToGoal(ArmConstants.restingSetpoint);
+    //P}
     
     
     if(shootSupplier.get()) {
