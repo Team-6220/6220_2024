@@ -67,15 +67,15 @@ public class SpeakerCommand extends Command{
     @Override
     public void execute(){
 
-        if(currentShooterConfiguration == null) {
-            try {
-                currentShooterConfiguration = ShooterConfiguration.getShooterConfiguration(swerve.getPose());
-            } catch(Exception e) {
-                System.out.println(e);
-                end(true);
-                
-            }
+        
+        try {
+            currentShooterConfiguration = ShooterConfiguration.getShooterConfiguration(swerve.getPose());
+        } catch(Exception e) {
+            System.out.println(e);
+            end(true);
+            
         }
+        
         if(currentShooterConfiguration != null) {
 
             double[] driverInputs;

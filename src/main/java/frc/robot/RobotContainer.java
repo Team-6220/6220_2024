@@ -61,7 +61,7 @@ public class RobotContainer {
     private final blinkin s_Blinkin = blinkin.getInstance();
 
   public RobotContainer() {
-    ShooterConfiguration.setupRadiusValues();
+    ShooterConfiguration.setupRadiusValues();   
     ShooterConfiguration.setupConfigurations();
     Constants.VisionConstants.setTagHeights();
 

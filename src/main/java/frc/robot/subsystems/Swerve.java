@@ -319,7 +319,7 @@ public class Swerve extends SubsystemBase {
 
     public void resetTurnController() {
         turnPidController.reset(getHeading().getDegrees());
-        System.out.println("ResetTurnController");
+        //System.out.println("ResetTurnController");
     }
 
     public void setTurnControllerGoal(double goal) {

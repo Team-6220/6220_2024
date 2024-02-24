@@ -51,23 +51,23 @@ public class ShooterConfiguration {
     }
 
     public static void setupKeys(){
-        
+        keys.add(null);
         for(int i = 1; i < 6; i++){
             ArrayList<Pair<Double, Integer>> inner = new ArrayList<Pair<Double, Integer>>();
-            for(int j = 0; j < (i + 1) * 2; j++){
+            for(int j = 0; j <= (i + 1) * 2; j++){
                 inner.add(Pair.of(radiusValues.get(i), j));
             }
             keys.add(inner);
         }
     }
     public static void setupConfigurations(){
-        
+        setupKeys();
         //FIXME - Add actual values - refer to desmos graph to see corresponding angles
-        shooterConfigurations.put(keys.get(1).get(0), new ShooterConfiguration(Pair.of(2500d,2500d), 70, 0d)); //fails
-        shooterConfigurations.put(keys.get(1).get(1), new ShooterConfiguration(Pair.of(2500d,2500d), 70d, 0d));
-        shooterConfigurations.put(keys.get(1).get(2), new ShooterConfiguration(Pair.of(2500d,2500d), 66d, 0d));
-        shooterConfigurations.put(keys.get(1).get(3), new ShooterConfiguration(Pair.of(2500d,2500d), 65d, 0d));
-        shooterConfigurations.put(keys.get(1).get(4), new ShooterConfiguration(Pair.of(3000d,3000d), 63.5d, -9d));
+        shooterConfigurations.put(keys.get(1).get(0), new ShooterConfiguration(Pair.of(2800d,2800d), 72, 0d)); //fails
+        shooterConfigurations.put(keys.get(1).get(1), new ShooterConfiguration(Pair.of(2800d,2800d), 72d, 0d));
+        shooterConfigurations.put(keys.get(1).get(2), new ShooterConfiguration(Pair.of(2800d,2800d), 72d, 0d));
+        shooterConfigurations.put(keys.get(1).get(3), new ShooterConfiguration(Pair.of(2800d,2800d), 70d, 0d));
+        shooterConfigurations.put(keys.get(1).get(4), new ShooterConfiguration(Pair.of(3000d,3000d), 68d, -9d));
 
         shooterConfigurations.put(keys.get(2).get(0), new ShooterConfiguration(Pair.of(3000d,3000d), 58d, -8d)); //fails
         shooterConfigurations.put(keys.get(2).get(1), new ShooterConfiguration(Pair.of(3000d,3000d), 58d, -8d));
@@ -207,13 +207,13 @@ public class ShooterConfiguration {
 
     public static ShooterConfiguration getShooterConfiguration(Pose2d robotPose) throws IllegalPositionException{
         List<Pair<Integer, Integer>> configs = getNearestShooterConfigurations(robotPose);
-        Pose2d speakerPos = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
-        double yval = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED.getY() - robotPose.getY() : robotPose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
-        double xval = Math.abs(robotPose.getX() - speakerPos.getX());
+        //Pose2d speakerPos = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+        double yval = robotPose.getY();//Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED.getY() - robotPose.getY() : robotPose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
+        double xval = robotPose.getX();//Math.abs(robotPose.getX() - speakerPos.getX());
         Pair<Double, Double> a = polarToCartesian(configs.get(0).getFirst(), configs.get(0).getSecond());
         Pair<Double, Double> b = polarToCartesian(configs.get(1).getFirst(), configs.get(1).getSecond());
         Pair<Double, Double> c = polarToCartesian(configs.get(2).getFirst(), configs.get(2).getSecond());
-        System.out.println(shooterConfigurations.get(configs.get(0)).getVelocities().getFirst());
+        //System.out.println(shooterConfigurations.get(configs.get(0)).getVelocities().getFirst());
         int[][] points = {{configs.get(0).getFirst(), configs.get(0).getSecond()}, {configs.get(1).getFirst(), configs.get(1).getSecond()}, {configs.get(2).getFirst(), configs.get(2).getSecond()}};
         double[] v1coeffs = get_equation_plane(
             a.getFirst(), a.getSecond(), shooterConfigurations.get(keys.get(points[0][0]).get(points[0][1])).getVelocities().getFirst(),
@@ -240,7 +240,7 @@ public class ShooterConfiguration {
         Pair<Double, Double> vels = Pair.of(solve_equation_plane(v1coeffs, xval, yval), solve_equation_plane(v2coeffs, xval, yval));
         double arm = solve_equation_plane(armcoeffs, xval, yval);
         double heading = solve_equation_plane(headingcoeffs, xval, yval);
-        System.out.println("New Shooter Config Created at: " + xval + ", " + yval + "/nArm Angle: " + arm + "/nVelocity: " + vels.getFirst() + "/nHeading Offset: " + heading);
+        //System.out.println("New Shooter Config Created at: " + xval + ", " + yval + "\nArm Angle: " + arm + "\nVelocity: " + vels.getFirst() + "\nHeading Offset: " + heading);
         return new ShooterConfiguration(vels, arm, heading);
     }
 }
