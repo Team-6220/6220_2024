@@ -71,6 +71,7 @@ public class RobotContainer {
   private final Trigger intake = new Trigger(()->operator.getRawButton(5));
   private final Trigger amp = new Trigger(()->operator.getRawButton(2));
   private final Trigger noNote = new Trigger(()->operator.getRawButton(12));
+  private final Trigger climb = new Trigger(()->operator.getRawButton(4));
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -109,14 +110,13 @@ public class RobotContainer {
     
     s_IntakeSubsystem.setDefaultCommand(new IntakeIdleCommand());
     
-    s_ClimberSubsystem.setDefaultCommand(new ClimberTestCommand(driver));
+    //s_ClimberSubsystem.setDefaultCommand(new ClimberTestCommand(driver));
     
     
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("fourNoteTesting", fourNoteAutoServite());
     autoChooser.addOption("pick up fartherst Note and Shoot", pickUpFarNoteAndShoot());
-    System.out.println("hi");
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
@@ -153,6 +153,7 @@ public class RobotContainer {
       s_Swerve, 
       driver)
     );
+    climb.whileTrue(new ClimberTestCommand(operator));
     // speakerTemporary.whileTrue(new ShootingTestCommand());
   }
 
@@ -167,10 +168,10 @@ public class RobotContainer {
       new SpeakerCommand(s_Swerve),
       new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.2), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.PathConstraints),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.2), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
       new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.1), 4.4, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.PathConstraints),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.1), 4.4, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.pathConstraints),
       new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve)
     );
@@ -184,7 +185,7 @@ public class RobotContainer {
     );
     PathPlannerPath pathTofar = new PathPlannerPath(
       bezierPointToFar,
-      AutoConstants.PathConstraints,
+      AutoConstants.pathConstraints,
       new GoalEndState(0, Rotation2d.fromDegrees(180))
       );
       pathTofar.preventFlipping = false;
@@ -192,10 +193,10 @@ public class RobotContainer {
       new SpeakerCommand(s_Swerve),
       new ArmIdleCommand(),
       // AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(7.5), 7.5, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.PathConstraints),
-      AutoBuilder.pathfindThenFollowPath(pathTofar, AutoConstants.PathConstraints),
+      AutoBuilder.pathfindThenFollowPath(pathTofar, AutoConstants.pathConstraints),
       new IntakeCommand(s_Swerve),
       new IntakeIdleCommand(),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(4), 5.8, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.PathConstraints),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(4), 5.8, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
       new SpeakerCommand(s_Swerve)
       );
   }

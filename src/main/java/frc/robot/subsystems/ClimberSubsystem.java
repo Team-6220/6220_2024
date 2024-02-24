@@ -18,6 +18,9 @@ public class ClimberSubsystem extends SubsystemBase{
         climbMotorA = new CANSparkMax(ClimberConstants.climberDriverLeftID, MotorType.kBrushless);
         climbMotorB = new CANSparkMax(ClimberConstants.climberDriverRightID, MotorType.kBrushless);
 
+        climbMotorA.restoreFactoryDefaults();
+        climbMotorB.restoreFactoryDefaults();
+
         climbMotorA.setInverted(ClimberConstants.motorAInverted);
         climbMotorB.setInverted(ClimberConstants.motorBInverted);
 
@@ -25,13 +28,12 @@ public class ClimberSubsystem extends SubsystemBase{
         climbMotorB.setIdleMode(IdleMode.kBrake);
 
         //climbMotorB.follow(climbMotorA, true);
-
         climbMotorA.burnFlash();
         climbMotorB.burnFlash();
     }
 
 
-    public void simpleDrive(double speed){
+    public void simpleDriveRight(double speed){
         if(speed > 0.5){
             speed = 0.5;
         }
@@ -39,6 +41,15 @@ public class ClimberSubsystem extends SubsystemBase{
             speed = -0.5;
         }
         climbMotorA.set(speed);
+        // System.out.println(speed);
+    }
+    public void simpleDriveLeft(double speed){
+        if(speed > 0.5){
+            speed = 0.5;
+        }
+        else if (speed < -0.5){
+            speed = -0.5;
+        }
         climbMotorB.set(speed);
         // System.out.println(speed);
     }

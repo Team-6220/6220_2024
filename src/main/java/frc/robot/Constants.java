@@ -168,7 +168,7 @@ public final class Constants {
             
         }
 
-        public static final double armOffset = -80-71.75641979391048+4; // arm up
+        public static final double armOffset = -80-71.75641979391048+4+23.037368675934204; // arm up
 
         //FIXME: set setpoints
         public static final double intakeSetpoint = 82;
@@ -478,7 +478,7 @@ public final class Constants {
         public static final double kPYController = 1.5;
         public static final double kPThetaController = 3;
     
-        PathConstraints pathConstraints = new PathConstraints(autoMaxVelocityMps, kMaxAccelerationMetersPerSecondSquared, maxAngularVelocityRps, maxAngularAcceleratRpsSq);
+        public static final PathConstraints pathConstraints = new PathConstraints(autoMaxVelocityMps, kMaxAccelerationMetersPerSecondSquared, maxAngularVelocityRps, maxAngularAcceleratRpsSq);
 
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
@@ -491,7 +491,7 @@ public final class Constants {
         public static final int climberDriverLeftID = 18;
         public static final int climberDriverRightID = 19;
 
-        public static final boolean motorAInverted = false;
+        public static final boolean motorAInverted = true;
         public static final boolean motorBInverted = false;
 
         //FIXME: set setpoints

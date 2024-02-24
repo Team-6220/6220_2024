@@ -95,7 +95,7 @@ public class AmpCommand extends Command {
       fowardAndBackPID.setGoal(s_Swerve.getAmpX());
       leftAndRightPID.setGoal(s_Swerve.getAmpY());
       
-      AutoBuilder.pathfindToPose(s_Swerve.getAmpPose(), AutoConstants.);
+      AutoBuilder.pathfindToPose(s_Swerve.getAmpPose(), AutoConstants.pathConstraints);
       
       SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
       SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
