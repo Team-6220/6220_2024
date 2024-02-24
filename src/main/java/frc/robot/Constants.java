@@ -40,7 +40,7 @@ public final class Constants {
 
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
-        public static final double kDeadband = 0.05;
+        public static final double kDeadband = 0.08;
 
         public static final int translationAxis = XboxController.Axis.kLeftY.value;
         public static final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -161,10 +161,10 @@ public final class Constants {
             
         }
 
-        public static final double armOffset = -80-71.75641979391048+6; // arm up
+        public static final double armOffset = -80-71.75641979391048+4; // arm up
 
         //FIXME: set setpoints
-        public static final double intakeSetpoint = 83.5;
+        public static final double intakeSetpoint = 82;
         public static final double hoverSetpoint = 0; //for like right above intake
         public static final double restingSetpoint = 70;
         public static final double ampSetPoint = -5;

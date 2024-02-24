@@ -27,11 +27,11 @@ public class ClimberTestCommand extends Command {
   @Override
   public void execute() {
     if(driver.getLeftTriggerAxis() > 0.1) {
-      s_ClimberSubsystem.simpleDrive(-(driver.getLeftTriggerAxis()-.1));
+      // s_ClimberSubsystem.simpleDrive(-(driver.getLeftTriggerAxis()-.1));
     } else if(driver.getRightTriggerAxis() > .1) {
-      s_ClimberSubsystem.simpleDrive(driver.getRightTriggerAxis()-.1);
+      // s_ClimberSubsystem.simpleDrive(driver.getRightTriggerAxis()-.1);
     } else{
-      s_ClimberSubsystem.simpleDrive(0);
+      // s_ClimberSubsystem.simpleDrive(0);
     }
     
   }

@@ -84,7 +84,7 @@ public class SpeakerCommand extends Command{
             {
                 driverInputs = new double[] {0,0,0};
             }
-            double teamOffset = Constants.isRed ? 0 + currentShooterConfiguration.getHeadingOffset() : 180 - currentShooterConfiguration.getHeadingOffset();
+            double teamOffset = Constants.isRed ? 0 + currentShooterConfiguration.getHeadingOffset() : 180 + currentShooterConfiguration.getHeadingOffset();
             swerve.setAutoTurnHeading(swerve.getHeadingToSpeaker() +teamOffset);
             double rotationVal = swerve.getTurnPidSpeed();
             swerve.drive(

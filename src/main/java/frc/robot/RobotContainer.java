@@ -60,7 +60,6 @@ public class RobotContainer {
   //private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-  private final JoystickButton noNote = new JoystickButton(driver, XboxController.Button.kStart.value);
 
   private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
@@ -68,7 +67,8 @@ public class RobotContainer {
   /* Operator Buttons */
   private final Trigger intake = new Trigger(()->operator.getRawButton(5));
   private final Trigger amp = new Trigger(()->operator.getRawButton(2));
-  private final Trigger ampFire = new Trigger(()->operator.getRawButton(1));
+  private final Trigger noNote = new Trigger(()->operator.getRawButton(12));
+
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final ArmSubsystem s_ArmSubsystem = ArmSubsystem.getInstance();
@@ -154,7 +154,7 @@ public class RobotContainer {
       s_Swerve, 
       driver)
     );
-    //speakerTemporary.whileTrue(new ShootingTestCommand());
+    // speakerTemporary.whileTrue(new ShootingTestCommand());
   }
 
   public Command getAutonomousCommand() {
