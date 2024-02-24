@@ -168,7 +168,7 @@ public final class Constants {
             
         }
 
-        public static final double armOffset = -80-71.75641979391048; // arm up
+        public static final double armOffset = -80-71.75641979391048+6; // arm up
 
         //FIXME: set setpoints
         public static final double intakeSetpoint = 83.5;
@@ -196,7 +196,7 @@ public final class Constants {
         public static final double ejectSpeedSpeaker = 1;
         public static final double ejectSpeedAmp = 1;
 
-        public static final double armSetPointIntake = 83.5;
+        public static final double armSetPointIntake = 81;
 
         public static final double kP = 0.2;
         public static final double kI = 0;

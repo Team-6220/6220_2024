@@ -69,9 +69,9 @@ public class RobotContainer {
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
 
   /* Operator Buttons */
-  private final Trigger intake = new Trigger(operator.button(5, null));
-  private final Trigger amp = new Trigger(operator.button(2, null));
-  private final Trigger ampFire = new Trigger(operator.button(1, null));
+  private final Trigger intake = new Trigger(()->operator.getRawButton(5));
+  private final Trigger amp = new Trigger(()->operator.getRawButton(2));
+  private final Trigger ampFire = new Trigger(()->operator.getRawButton(1));
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final ArmSubsystem s_ArmSubsystem = ArmSubsystem.getInstance();
@@ -138,8 +138,9 @@ public class RobotContainer {
     amp.whileTrue(new AmpCommand(
       s_Swerve,
       driver,
-      ()->robotControlLeftTrigger.getAsBoolean(),
-      () -> operator.getRawButton(1))
+      () -> operator.getRawButton(1),
+      ()->robotControlLeftTrigger.getAsBoolean()
+      )
     );
 
     intake.whileTrue(new IntakeCommand(
