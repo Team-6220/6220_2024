@@ -83,7 +83,7 @@ public class AmpCommand extends Command {
   @Override
   public void execute() {
     double[] driverInputs = OIConstants.getDriverInputs(driver);
-    double xOutput, yOutput, rotationVal;
+    double xOutput = 0, yOutput = 0, rotationVal = 0;
     if(!autoControl.get()) {
       xOutput = driverInputs[0];
       yOutput = driverInputs[1];
@@ -92,8 +92,8 @@ public class AmpCommand extends Command {
       s_Blinkin.solid_purple();
     }
     else {
-      fowardAndBackPID.setGoal(s_Swerve.getAmpX());
-      leftAndRightPID.setGoal(s_Swerve.getAmpY());
+      // fowardAndBackPID.setGoal(s_Swerve.getAmpX());
+      // leftAndRightPID.setGoal(s_Swerve.getAmpY());
       
       AutoBuilder.pathfindToPose(s_Swerve.getAmpPose(), AutoConstants.pathConstraints);
       
@@ -101,13 +101,13 @@ public class AmpCommand extends Command {
       SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
       SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);
 
-      xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
-      yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
+      // xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
+      // yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
       
       s_Blinkin.sky_blue();
     }
-    s_Swerve.setAutoTurnHeading(90);
-    rotationVal = s_Swerve.getTurnPidSpeed();
+    // s_Swerve.setAutoTurnHeading(90);
+    // rotationVal = s_Swerve.getTurnPidSpeed();
 
     s_Swerve.drive(
     new Translation2d(xOutput, yOutput),

@@ -6,9 +6,12 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.util.RumbleManager;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
@@ -100,7 +103,7 @@ public class IntakeCommand extends Command{
                 } else {
                     s_Blinkin.solid_red();
                 }
-                translation = -.3 * SwerveConstants.maxSpeed;
+                translation = -.5 * SwerveConstants.maxSpeed;
             }
             else
             {
@@ -128,6 +131,10 @@ public class IntakeCommand extends Command{
     @Override
     public boolean isFinished() {
         if(intake.noteInBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
+            if(intake.noteInBeam())
+            {
+                RumbleManager.rumble(driver, 0.2);
+            }
             return true;
         }
         return false;

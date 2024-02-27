@@ -20,6 +20,9 @@ import frc.lib.math.Conversions;
 import frc.lib.util.SwerveModuleConstants;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 
+import frc.robot.Constants;
+import frc.robot.Constants.SwerveConstants;
+
 public class SwerveModule {
     public int moduleNumber;
     private Rotation2d angleOffset;
@@ -55,6 +58,7 @@ public class SwerveModule {
         mAngleMotor = new CANSparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
         mAngleMotor.setInverted(Constants.SwerveConstants.angleMotorInvert);
         mAngleMotor.setSmartCurrentLimit(Constants.SwerveConstants.angleCurrentThreshold);
+        mAngleMotor.setIdleMode(SwerveConstants.angleNeutralMode);
 
         /* Angle Motor PID Config */
         mAngleController = mAngleMotor.getPIDController();
@@ -75,6 +79,7 @@ public class SwerveModule {
         mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
         mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
         mDriveMotor.getConfigurator().setPosition(0.0);
+        mDriveMotor.setNeutralMode(SwerveConstants.driveNeutralMode);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){

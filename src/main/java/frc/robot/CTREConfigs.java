@@ -4,7 +4,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public final class CTREConfigs {
-    public TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
+    // public TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
     public TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
     public CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
 
@@ -15,22 +15,22 @@ public final class CTREConfigs {
         /** Swerve Angle Motor Configurations */
         /* Motor Inverts and Neutral Mode */
         //swerveAngleFXConfig.MotorOutput.Inverted = Constants.Swerve.angleMotorInvert;
-        swerveAngleFXConfig.MotorOutput.NeutralMode = Constants.SwerveConstants.angleNeutralMode;
+        // swerveAngleFXConfig.MotorOutput.NeutralMode = Constants.SwerveConstants.angleNeutralMode;
 
         /* Gear Ratio and Wrapping Config */
-        swerveAngleFXConfig.Feedback.SensorToMechanismRatio = Constants.SwerveConstants.angleGearRatio;
-        swerveAngleFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
+        // swerveAngleFXConfig.Feedback.SensorToMechanismRatio = Constants.SwerveConstants.angleGearRatio;
+        // swerveAngleFXConfig.ClosedLoopGeneral.ContinuousWrap = true;
         
         /* Current Limiting */
-        swerveAngleFXConfig.CurrentLimits.SupplyCurrentLimitEnable = Constants.SwerveConstants.angleEnableCurrentLimit;
-        swerveAngleFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.SwerveConstants.angleCurrentLimit;
-        swerveAngleFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.SwerveConstants.angleCurrentThreshold;
-        swerveAngleFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.SwerveConstants.angleCurrentThresholdTime;
+        // swerveAngleFXConfig.CurrentLimits.SupplyCurrentLimitEnable = Constants.SwerveConstants.angleEnableCurrentLimit;
+        // swerveAngleFXConfig.CurrentLimits.SupplyCurrentLimit = Constants.SwerveConstants.angleCurrentLimit;
+        // swerveAngleFXConfig.CurrentLimits.SupplyCurrentThreshold = Constants.SwerveConstants.angleCurrentThreshold;
+        // swerveAngleFXConfig.CurrentLimits.SupplyTimeThreshold = Constants.SwerveConstants.angleCurrentThresholdTime;
 
         /* PID Config */
-        swerveAngleFXConfig.Slot0.kP = Constants.SwerveConstants.angleKP;
-        swerveAngleFXConfig.Slot0.kI = Constants.SwerveConstants.angleKI;
-        swerveAngleFXConfig.Slot0.kD = Constants.SwerveConstants.angleKD;
+        // swerveAngleFXConfig.Slot0.kP = Constants.SwerveConstants.angleKP;
+        // swerveAngleFXConfig.Slot0.kI = Constants.SwerveConstants.angleKI;
+        // swerveAngleFXConfig.Slot0.kD = Constants.SwerveConstants.angleKD;
 
         /** Swerve Drive Motor Configuration */
         /* Motor Inverts and Neutral Mode */

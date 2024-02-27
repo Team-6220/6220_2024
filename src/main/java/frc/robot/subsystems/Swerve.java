@@ -92,6 +92,8 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber autoTkI = new TunableNumber("auto T kI", Constants.SwerveConstants.translation_kI);
     private final TunableNumber autoTkD = new TunableNumber("auto T kD", Constants.SwerveConstants.translation_kD);
 
+    private final double previousUpdateTime = 0;
+
     
     public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", .2);
 
@@ -397,6 +399,13 @@ public class Swerve extends SubsystemBase {
         if(gyro_timestamps.size() > 60){
             timestamp = gyro_timestamps.removeLast();
             gyro_headings.remove(timestamp);
+        }
+
+        if(timestamp - SwerveConstants.swerveAlignUpdateSecond >= lastTurnUpdate)
+        {
+            lastTurnUpdate = timestamp;
+            resetModulesToAbsolute();
+            System.out.println("update!");
         }
 
         

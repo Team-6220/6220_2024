@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.path.PathConstraints;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
@@ -282,8 +283,8 @@ public final class Constants {
 
         public static final Pose2d SPEAKER_POSE2D_BLUE = new Pose2d(new Translation2d(-.0381, 5.547868), new Rotation2d(0));
         public static final Pose2d SPEAKER_POSE2D_RED = new Pose2d(new Translation2d(16.5793, 5.547868), new Rotation2d(180));
-        public static final Pose2d AMP_POSE2D_RED = new Pose2d(new Translation2d(Units.inchesToMeters(580.77), Units.inchesToMeters(323-23.25)), new Rotation2d(270));
-        public static final Pose2d AMP_POSE2D_BLUE = new Pose2d(new Translation2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323-23.25)), new Rotation2d(270));
+        public static final Pose2d AMP_POSE2D_RED = new Pose2d(new Translation2d(Units.inchesToMeters(580.77), Units.inchesToMeters(323-22.25)), new Rotation2d(270));
+        public static final Pose2d AMP_POSE2D_BLUE = new Pose2d(new Translation2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323-22.25)), new Rotation2d(270));
 
         
         public static final Translation2d CENTER_OF_FIELD = new Translation2d(8.2706,4.105148);
@@ -325,6 +326,9 @@ public final class Constants {
     }
 
     public static final class SwerveConstants {
+
+        public static int swerveAlignUpdateSecond = 20;
+
         public static final int pigeonID = 1;
 
         public static final double translation_kP = 2.518;
@@ -409,7 +413,7 @@ public final class Constants {
         public static final double maxAngularVelocity = maxSpeed / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
 
         /* Neutral Modes */
-        public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
+        public static final IdleMode angleNeutralMode = IdleMode.kBrake;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
        /* Module Specific Constants */
@@ -428,7 +432,7 @@ public final class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 12;
             public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-151.435546875);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-148.8867);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

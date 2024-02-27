@@ -13,7 +13,9 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.AlienceColorCoordinateFlip;
+import frc.lib.util.RumbleManager;
 import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TriggerButton;
 import frc.lib.util.TunableNumber;
@@ -118,8 +121,7 @@ public class RobotContainer {
     autoChooser.addOption("fourNoteTesting", fourNoteAutoServite());
     autoChooser.addOption("pick up fartherst Note and Shoot", pickUpFarNoteAndShoot());
     // Another option that allows you to specify the default auto by its name
-    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");    
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
    
@@ -142,6 +144,12 @@ public class RobotContainer {
       ()->robotControlLeftTrigger.getAsBoolean()
       )
     );
+
+    if (zeroGyro.getAsBoolean()) {
+       driver.setRumble(RumbleType.kLeftRumble, 0.1);
+        Timer.delay(0.01);
+        driver.setRumble(RumbleType.kLeftRumble, 0);
+    }
 
     intake.whileTrue(new IntakeCommand(
       s_Swerve, 
