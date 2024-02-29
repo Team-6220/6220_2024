@@ -145,12 +145,11 @@ public class RobotContainer {
       )
     );
 
-    if (zeroGyro.getAsBoolean()) {
-       driver.setRumble(RumbleType.kLeftRumble, 0.1);
-        Timer.delay(0.01);
-        driver.setRumble(RumbleType.kLeftRumble, 0);
-    }
-
+    zeroGyro.whileTrue(
+      new InstantCommand(
+        () -> RumbleManager.rumble(driver, 0.2)
+      )
+    );
     intake.whileTrue(new IntakeCommand(
       s_Swerve, 
       driver,  

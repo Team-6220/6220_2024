@@ -169,7 +169,7 @@ public final class Constants {
             
         }
 
-        public static final double armOffset = -80-71.75641979391048+4+23.037368675934204; // arm up
+        public static final double armOffset = -202.719051; // arm up
 
         //FIXME: set setpoints
         public static final double intakeSetpoint = 82;
@@ -203,7 +203,7 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double transitDistance = 2;
+        public static final double transitDistance = 1.2;
     }
 
     public static final class ShooterConstants{
