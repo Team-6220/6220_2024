@@ -2,7 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,12 +16,12 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem INSTANCE = null;
 
-    private final TalonFX intakeMotor;
+    private final CANSparkMax intakeMotor;
 
-    private final DigitalInput intakeBreakBeam;
-    private boolean noteInTransit = false;
+    private final DigitalInput frontBreakBeam;
+    private final DigitalInput backBreakBeam;
 
-    private final PIDController intakeController;
+    private boolean noteInTransit;
 
     private final TunableNumber Kp = new TunableNumber("Intake kP", IntakeConstants.kP);
     private final TunableNumber Ki = new TunableNumber("Intake kI", IntakeConstants.kI);
@@ -28,10 +30,10 @@ public class IntakeSubsystem extends SubsystemBase{
     private final TunableNumber transDist = new TunableNumber("Intake Transit Distance", IntakeConstants.transitDistance);
 
     private IntakeSubsystem() {
-        intakeMotor  = new TalonFX(IntakeConstants.intakeMotorID);
+        intakeMotor  = new CANSparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
-        intakeBreakBeam = new DigitalInput(IntakeConstants.breakBeamPort);
-        intakeController = new PIDController(Kp.get(), Ki.get(), Kd.get());
+        frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
+        backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
     }
 
     public void simpleDrive(boolean reversed, double speed){
@@ -40,17 +42,16 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void driveToIntake(){
-        if(!noteInBeam() && !noteInTransit){
-            intakeMotor.setVoltage(IntakeConstants.intakeSpeed);
-        } else if (noteInBeam() && !noteInTransit) {
+        if(!getFrontBeam() && !getBackBeam()) {
+            //intakeMotor.set(IntakeConstants.intakeSpeed);
+            intakeMotor.set(0);
+        } else if(getFrontBeam() && !getBackBeam()) {
+            intakeMotor.set(IntakeConstants.intakeSpeed*.1);
             noteInTransit = true;
-            intakeMotor.setPosition(0);
-            
-        } else if(noteInTransit) {
-            intakeMotor.set(intakeController.calculate(intakeMotor.getPosition().getValueAsDouble(), transDist.get()));
-            SmartDashboard.putNumber("Intake Position", intakeMotor.getPosition().getValueAsDouble());
-        } else {
-            stop();
+        } else if(getBackBeam() && getFrontBeam()) {
+            intakeMotor.set(0);
+        } else{
+            intakeMotor.set(0);
         }
     }
 
@@ -65,15 +66,6 @@ public class IntakeSubsystem extends SubsystemBase{
         noteInTransit = false;
     }
 
-    public void hopperToShooter(){
-        if(noteInBeam()){
-            intakeMotor.set(IntakeConstants.intakeSpeed);
-        }
-        else{
-            stop();
-        }
-    }
-
     public void reset() {
         noteInTransit = false;
     }
@@ -82,27 +74,25 @@ public class IntakeSubsystem extends SubsystemBase{
         intakeMotor.set(0);
     }
 
-    public boolean noteInBeam(){
-        return !intakeBreakBeam.get();
-    }
     public boolean noteInTransit() {
         return noteInTransit;
     }
 
+    public boolean getFrontBeam() {
+        return !frontBreakBeam.get();
+    }
+    public boolean getBackBeam() {
+        return !backBreakBeam.get();
+    }
+
     public void setHasNote() {
         noteInTransit = true;
-        intakeMotor.setPosition(transDist.get());
     }
 
     @Override
     public void periodic(){
-        SmartDashboard.putBoolean("Beam In Note", noteInBeam());
-        if(Kp.hasChanged()
-        || Ki.hasChanged()
-        || Kd.hasChanged()) {
-            intakeController.setPID(Kp.get(), Ki.get(), Kd.get());
-        }
-        
+        SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
+        SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
     }
 
     public static IntakeSubsystem getInstance() {

@@ -165,7 +165,7 @@ public class ArmSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if(getArmPosition() > 87 || getArmPosition() < -10) {
+        if(getArmPosition() > 92 || getArmPosition() < -10) {
             stop();
             System.out.println("Arm Over Extend");
         }
@@ -189,7 +189,7 @@ public class ArmSubsystem extends SubsystemBase{
             m_Constraints = new TrapezoidProfile.Constraints(armMaxVel.get(), armMaxAccel.get());
             m_Controller.setConstraints(m_Constraints);
         }
-        SmartDashboard.putNumber("Arm Angle", getArmPosition());
+        SmartDashboard.putNumber("Arm Angle", armEncoder.get());
         //SmartDashboard.putNumber("Controller Setpoint", m_Controller.getSetpoint().position);
         //SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
         //SmartDashboard.putNumber("PID Controller Output", PIDOutput);

@@ -130,8 +130,8 @@ public class IntakeCommand extends Command{
     }
     @Override
     public boolean isFinished() {
-        if(intake.noteInBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
-            if(intake.noteInBeam())
+        if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
+            if(intake.getFrontBeam())
             {
                 RumbleManager.rumble(driver, 0.2);
             }

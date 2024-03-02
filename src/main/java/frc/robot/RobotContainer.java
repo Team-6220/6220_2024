@@ -63,7 +63,7 @@ public class RobotContainer {
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   //private final JoystickButton intakeTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
   //private final JoystickButton ampTemporary = new JoystickButton(driver, XboxController.Button.kB.value);
-  //private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
@@ -160,6 +160,7 @@ public class RobotContainer {
       s_Swerve, 
       driver)
     );
+    speakerTemporary.whileTrue(new ShootingTestCommand(s_Swerve, driver));
     climb.whileTrue(new ClimberTestCommand(operator));
     // speakerTemporary.whileTrue(new ShootingTestCommand());
   }

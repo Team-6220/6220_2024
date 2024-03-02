@@ -62,13 +62,14 @@ public class ShooterSubsystem extends SubsystemBase{
             m_controllerA.calculate(getVelocity(shooterMotorA), velocity) + feedforwardA.calculate(velocity),
             m_controllerB.calculate(getVelocity(shooterMotorB), velocity) + feedforwardB.calculate(velocity)
         };
+    
         return outputs;
     }
 
     public double[] calculate(double[] velocities){
         double[] outputs = {
             m_controllerA.calculate(getVelocity(shooterMotorA), velocities[0]) + feedforwardA.calculate(velocities[0]),
-            m_controllerB.calculate(getVelocity(shooterMotorB), velocities[1]) + feedforwardA.calculate(velocities[1])
+            m_controllerB.calculate(getVelocity(shooterMotorB), velocities[1]) + feedforwardB.calculate(velocities[1])
         };
         return outputs;
     }
@@ -79,8 +80,8 @@ public class ShooterSubsystem extends SubsystemBase{
         double motorBSpeed = motorOutputs[1];
         shooterMotorA.set(motorASpeed);
         shooterMotorB.set(motorBSpeed);
-        SmartDashboard.putNumber("Target Velocity A", velocity);
-        SmartDashboard.putNumber("Target Velocity B", velocity);
+        //SmartDashboard.putNumber("Target Velocity A", velocity);
+        //SmartDashboard.putNumber("Target Velocity B", velocity);
     }
 
     public void spinToVelocity(double[] velocities){
@@ -89,8 +90,8 @@ public class ShooterSubsystem extends SubsystemBase{
         double motorBSpeed = motorOutputs[1];
         shooterMotorA.set(motorASpeed);
         shooterMotorB.set(motorBSpeed);
-        SmartDashboard.putNumber("Target Velocity A", velocities[0]);
-        SmartDashboard.putNumber("Target Velocity B", velocities[1]);
+        //SmartDashboard.putNumber("Target Velocity A", velocities[0]);
+        //SmartDashboard.putNumber("Target Velocity B", velocities[1]);
     }
     public void spinToVelocity(Pair<Double, Double> velocities){
         double[] newVelocities = {velocities.getFirst(), velocities.getSecond()};

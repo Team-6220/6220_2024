@@ -169,8 +169,8 @@ public final class Constants {
             
         }
 
-        public static final double armOffset = -202.719051; // arm up
-
+        public static final double armOffset = 157.280949; // arm up
+        // -202.719051
         //FIXME: set setpoints
         public static final double intakeSetpoint = 82;
         public static final double hoverSetpoint = 0; //for like right above intake
@@ -179,7 +179,7 @@ public final class Constants {
         public static final double ampShooterSpeed = 0.6; // TODO: change this accordingly
 
         //FIXME: set actual port values and reversed for arm encoder
-        public static final int k_ENC_PORT = 0;
+        public static final int k_ENC_PORT = 2;
     }
 
     public static final class IntakeConstants{
@@ -187,10 +187,11 @@ public final class Constants {
         public static final int intakeMotorID = 15;
 
         //FIXME: set inverted
-        public static final boolean intakeMotorInverted = true;
+        public static final boolean intakeMotorInverted = false;
 
         //FIXME: set break beam port
-        public static final int breakBeamPort = 1;
+        public static final int frontBreakBeamPort = 9;
+        public static final int backBreakBeamPort = 1;
 
         //FIXME: set intake speed
         public static final double intakeSpeed = 4;
@@ -208,11 +209,14 @@ public final class Constants {
 
     public static final class ShooterConstants{
         //FIXME: set motor IDs
+        //Green
         public static final int shooterMotorAID = 16;
+
+        //Orange
         public static final int shooterMotorBID = 17;
 
         public static final boolean motorAInverted = false;
-        public static final boolean motorBInverted = false;
+        public static final boolean motorBInverted = true;
 
 
         public static final double idleOutput = .05;
@@ -227,7 +231,7 @@ public final class Constants {
         // public static final int breakBeamPort = 0;
 
         //FIXME: set shooter velocity pid
-        public static final double kP = 0.0007;
+        public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kFFkS = 0;
