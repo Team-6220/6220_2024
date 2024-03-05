@@ -204,7 +204,9 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double transitDistance = 1.2;
+        public static final double holdingPosition = .3;
+        public static final double distanceBetweenBreakBeamsInEncoderRotations = 3.6;
+        public static final double minSetOutput = .1;
     }
 
     public static final class ShooterConstants{
