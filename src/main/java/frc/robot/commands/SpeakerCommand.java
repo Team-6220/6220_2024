@@ -118,9 +118,6 @@ public class SpeakerCommand extends Command{
             } else if(!shooter.isAtSetpoint()) {
                 s_Blinkin.solid_blue();
             }
-            if(!hasFired) {
-                intake.driveToIntake();
-            }
             
         }
         

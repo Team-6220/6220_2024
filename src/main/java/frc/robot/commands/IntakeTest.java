@@ -30,14 +30,12 @@ public class IntakeTest extends Command {
   @Override
   public void execute() {
     double armPos = 0;
-    if(s_intakeSubsystem.noteInTransit()) {
+    if(s_intakeSubsystem.noteInIntake()) {
       armPos = 45;
     } else {
       armPos = IntakeConstants.armSetPointIntake;
     }
     s_armSubsystem.driveToGoal(armPos);
-    
-    s_intakeSubsystem.driveToIntake();
   }
 
   // Called once the command ends or is interrupted.

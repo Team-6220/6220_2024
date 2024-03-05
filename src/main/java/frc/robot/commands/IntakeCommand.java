@@ -122,9 +122,7 @@ public class IntakeCommand extends Command{
                 false, 
                 true
         );
-
-        intake.driveToIntake();
-
+        intake.feedIntake();
         arm.driveToGoal(ArmConstants.intakeSetpoint);
         
     }
