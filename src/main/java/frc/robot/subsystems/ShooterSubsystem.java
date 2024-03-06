@@ -12,8 +12,7 @@ import frc.robot.Constants.ShooterConstants;
 public class ShooterSubsystem extends SubsystemBase{
 
     private static ShooterSubsystem INSTANCE = null;
-    private TalonFX shooterMotorA;
-    private TalonFX shooterMotorB;
+    private TalonFX shooterMotorA, shooterMotorB;
 
     private final TunableNumber KpA = new TunableNumber("Shooter A kP", ShooterConstants.kP);
     private final TunableNumber KiA = new TunableNumber("Shooter A kI", ShooterConstants.kI);
@@ -42,6 +41,8 @@ public class ShooterSubsystem extends SubsystemBase{
 
         shooterMotorA.setInverted(ShooterConstants.motorAInverted);
         shooterMotorB.setInverted(ShooterConstants.motorBInverted);
+
+        
 
         m_controllerA = new PIDController(KpA.get(), KiA.get(), KdA.get());
         m_controllerB = new PIDController(KpB.get(), KiB.get(), KdB.get());
@@ -140,7 +141,7 @@ public class ShooterSubsystem extends SubsystemBase{
             feedforwardB = new SimpleMotorFeedforward(KsB.get(), KvB.get(), KaB.get());
         }
 
-        
+
         SmartDashboard.putNumber("Flywheel A Velocity", getVelocity(shooterMotorA));
         SmartDashboard.putNumber("Flywheel B Velocity", getVelocity(shooterMotorB));
     }

@@ -32,6 +32,7 @@ public class ShootingTestCommand extends Command {
   private final IntakeSubsystem intakeSubsystem;
   private final Swerve s_Swerve;
   private XboxController driverInputs;
+  private boolean hasFired;
   /** Creates a new ShootingTest. */
 
   private final ProfiledPIDController leftAndRightPID, fowardAndBackPID;
@@ -59,7 +60,7 @@ public class ShootingTestCommand extends Command {
     s_Swerve.resetTurnController();
     fowardAndBackPID.reset(s_Swerve.getPose().getX());
     leftAndRightPID.reset(s_Swerve.getPose().getY());
-
+    hasFired = false;
   }
   @Override
   public void execute() {
@@ -100,11 +101,15 @@ public class ShootingTestCommand extends Command {
       armSubsystem.driveToGoal(armSubsystem.armTestAngle.get());
       double[] velocities = {shooterSubsystem.shooterTestVelocityA.get(), shooterSubsystem.shooterTestVelocityB.get()};
       shooterSubsystem.spinToVelocity(velocities);
-      if(armSubsystem.isAtGoal() && shooterSubsystem.isAtSetpoint()){
+      if((armSubsystem.isAtGoal() && shooterSubsystem.isAtSetpoint() )|| hasFired){
         intakeSubsystem.feedShooter();
+        hasFired = true;
       }
     } else {
       shooterSubsystem.stop();
+    }
+    if(driverInputs.getAButton()) {
+      intakeSubsystem.feedShooter();
     }
   }
 

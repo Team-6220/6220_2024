@@ -156,7 +156,7 @@ public class ArmSubsystem extends SubsystemBase{
      * @returns the value in degrees of the arm    
      */
     public double getArmPosition(){
-        return convertEncoderValueToArmDegrees(armEncoder.get()) + ArmConstants.armOffset;
+        return convertEncoderValueToArmDegrees(armEncoder.get()) - ArmConstants.armOffset;
     }
 
     public boolean isAtGoal() {
@@ -189,7 +189,7 @@ public class ArmSubsystem extends SubsystemBase{
             m_Constraints = new TrapezoidProfile.Constraints(armMaxVel.get(), armMaxAccel.get());
             m_Controller.setConstraints(m_Constraints);
         }
-        SmartDashboard.putNumber("Arm Angle", armEncoder.get());
+        SmartDashboard.putNumber("Arm Angle", getArmPosition());
         //SmartDashboard.putNumber("Controller Setpoint", m_Controller.getSetpoint().position);
         //SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
         //SmartDashboard.putNumber("PID Controller Output", PIDOutput);

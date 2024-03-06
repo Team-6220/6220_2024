@@ -154,7 +154,7 @@ public class RobotContainer {
       s_Swerve, 
       driver,  
       () -> robotControlLeftTrigger.getAsBoolean())
-      .until(() -> s_IntakeSubsystem.noteInIntake()));
+    .until(() -> s_IntakeSubsystem.noteInIntake()));
 
     fireRightTrigger.whileTrue(new SpeakerCommand(
       s_Swerve, 

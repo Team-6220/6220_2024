@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -132,6 +133,7 @@ public class IntakeCommand extends Command{
             if(intake.getFrontBeam())
             {
                 RumbleManager.rumble(driver, 0.2);
+                swerve.drive(new Translation2d(), 0, true, true);
             }
             return true;
         }

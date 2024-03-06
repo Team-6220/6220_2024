@@ -169,10 +169,10 @@ public final class Constants {
             
         }
 
-        public static final double armOffset = 157.280949; // arm up
+        public static final double armOffset = 167.53781218844532; //157.280949; // arm up
         // -202.719051
         //FIXME: set setpoints
-        public static final double intakeSetpoint = 82;
+        public static final double intakeSetpoint = 86;
         public static final double hoverSetpoint = 0; //for like right above intake
         public static final double restingSetpoint = 70;
         public static final double ampSetPoint = -5;
@@ -198,13 +198,11 @@ public final class Constants {
         public static final double ejectSpeedSpeaker = 1;
         public static final double ejectSpeedAmp = 1;
 
-        public static final double armSetPointIntake = 81;
-
-        public static final double kP = 0.2;
+        public static final double kP = 0.1;
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double holdingPosition = .3;
+        public static final double holdingPosition = 0;
         public static final double distanceBetweenBreakBeamsInEncoderRotations = 3.6;
         public static final double minSetOutput = .1;
     }

@@ -108,15 +108,12 @@ public class IntakeSubsystem extends SubsystemBase{
         double output = 0;
         if(!noteAtBack && getBackBeam()) {
             noteAtBack = true;
-            encoder.setPosition(0);
+            encoder.setPosition( 0);
         }
         if(noteAtBack) {
             output = m_Controller.calculate(encoder.getPosition(), IntakeConstants.holdingPosition);
         } else {
-            output = m_Controller.calculate(encoder.getPosition(), IntakeConstants.holdingPosition);
-            if(output < IntakeConstants.minSetOutput) {
-                output = IntakeConstants.minSetOutput;
-            }
+            output = IntakeConstants.minSetOutput;
         }
 
         intakeMotor.set(output);
@@ -139,6 +136,7 @@ public class IntakeSubsystem extends SubsystemBase{
         
         SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
         SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
+        SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
         if(Kp.hasChanged()
         || Ki.hasChanged()
         || Kd.hasChanged())
