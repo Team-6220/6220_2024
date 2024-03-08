@@ -61,6 +61,7 @@ public class IntakeCommand extends Command{
 
     public IntakeCommand(Swerve swerve) {
         isAuto = true;
+        swerve.setIsAuto(true);
         timeWithoutTarget = 0;
         this.swerve = swerve;
         this.intake = IntakeSubsystem.getInstance();
@@ -116,13 +117,16 @@ public class IntakeCommand extends Command{
         }
 
 
-
-        swerve.drive(
-                new Translation2d(translation, strafeVal), 
-                rotationVal, 
-                false, 
-                true
-        );
+        if((swerve.getIsAuto() && !swerve.getIsAutoOverShoot()) || !swerve.getIsAuto())
+        {
+            swerve.drive(
+                    new Translation2d(translation, strafeVal), 
+                    rotationVal, 
+                    false, 
+                    true
+            );
+        }
+    
         intake.feedIntake();
         arm.driveToGoal(ArmConstants.intakeSetpoint);
         

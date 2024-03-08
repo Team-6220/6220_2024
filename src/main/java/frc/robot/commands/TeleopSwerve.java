@@ -29,6 +29,7 @@ public class TeleopSwerve extends Command {
 
     @Override
     public void initialize() {
+        s_Swerve.setIsAuto(false);
         s_Swerve.resetModulesToAbsolute();
     }
 

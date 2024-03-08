@@ -103,6 +103,7 @@ public class ShootingTestCommand extends Command {
       shooterSubsystem.spinToVelocity(velocities);
       if((armSubsystem.isAtGoal() && shooterSubsystem.isAtSetpoint() )|| hasFired){
         intakeSubsystem.feedShooter();
+        System.out.println("fire");
         hasFired = true;
       }
     } else {

@@ -19,7 +19,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -48,7 +51,7 @@ public final class Constants {
 
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
-        public static final double kDeadband = 0.08;
+        public static final double kDeadband = 0.065;
 
         public static final int translationAxis = XboxController.Axis.kLeftY.value;
         public static final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -198,12 +201,14 @@ public final class Constants {
         public static final double ejectSpeedSpeaker = 1;
         public static final double ejectSpeedAmp = 1;
 
-        public static final double kP = 0.1;
+        public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double holdingPosition = 0;
-        public static final double distanceBetweenBreakBeamsInEncoderRotations = 3.6;
+        public static final double holdingPosition = -.5;
+        public static final double transitDistance = 1.2;
+
+        public static final double distanceBetweenBreakBeamsInEncoderRotations = 4.8809452057;
         public static final double minSetOutput = .1;
     }
 
@@ -231,11 +236,13 @@ public final class Constants {
         // public static final int breakBeamPort = 0;
 
         //FIXME: set shooter velocity pid
-        public static final double kP = 0;
+        public static final double kPA = 0.0005;
+        public static final double kPB = 0.0005;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kFFkS = 0;
-        public static final double kFFkV = 0.00017;
+        public static final double kFFkVA = 0.000185;
+        public static final double kFFkVB = 0.00018;
         public static final double kFFkA = 0;
 
         //FIXME: create lookup table
@@ -297,7 +304,16 @@ public final class Constants {
         public static final double limelightAngleDegrees = 0;
 
         public static HashMap<Integer, Double> tagHeights = new HashMap<Integer, Double>();
-        
+
+        // public static final Transform3d camToCenterRobotZero = new Transform3d(new Translation3d(-.254, -.254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(50).getRadians(),0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
+        // public static final Transform3d camToCenterRobotOne = new Transform3d(new Translation3d(.254, .254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-50).getRadians(),0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
+
+        public static final Transform3d[] camerasToCenter = {
+            new Transform3d(new Translation3d(-.254, -.254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(50).getRadians(),0)),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero //TODO: need chagne
+            new Transform3d(new Translation3d(.254, .254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-50).getRadians(),0))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one//TODO: need change
+        };
+
+
         public static void setTagHeights(){
             tagHeights.put(1, 48.125);
             tagHeights.put(2, 48.125);
@@ -316,6 +332,26 @@ public final class Constants {
             tagHeights.put(15, 47.5);
             tagHeights.put(16, 47.5);
         }
+
+        public static final double[] aprilTagHeightInches = 
+        {
+            53.38,
+            53.38,
+            57.13,
+            57.13,
+            53.38,
+            53.38,
+            57.13,
+            57.13,
+            53.38,
+            53.38,
+            52.00,
+            52.00,
+            52.00,
+            52.00,
+            52.00,
+            52.00
+        };
 
         public static final double speakerTagID = ALLIANCE_COLOR.isPresent()
                                             ?
@@ -487,6 +523,8 @@ public final class Constants {
         public static final double kPThetaController = 3;
     
         public static final PathConstraints pathConstraints = new PathConstraints(autoMaxVelocityMps, kMaxAccelerationMetersPerSecondSquared, maxAngularVelocityRps, maxAngularAcceleratRpsSq);
+
+        public static final double maxXDistance = isRed ? 8.81 : 7.75;
 
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =

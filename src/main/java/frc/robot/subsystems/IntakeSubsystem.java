@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.commands.IntakeIdleCommand;
 
 public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem INSTANCE = null;
@@ -28,10 +29,10 @@ public class IntakeSubsystem extends SubsystemBase{
     private boolean noteInIntake;
     private boolean noteAtBack;
 
-    private final TunableNumber Kp = new TunableNumber("Intake kP", IntakeConstants.kP);
-    private final TunableNumber Ki = new TunableNumber("Intake kI", IntakeConstants.kI);
+    private final TunableNumber Kp = new TunableNumber("Intake Kp", IntakeConstants.kP);
+    private final TunableNumber Ki = new TunableNumber("Intake Ki", IntakeConstants.kI);
     private final TunableNumber Kd = new TunableNumber("Intake kD", IntakeConstants.kD);
-
+    private final TunableNumber holdingPosition = new TunableNumber("IntakeHoldingPose", IntakeConstants.holdingPosition);
     private IntakeSubsystem() {
         intakeMotor  = new CANSparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
@@ -39,6 +40,7 @@ public class IntakeSubsystem extends SubsystemBase{
         backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
         encoder = intakeMotor.getEncoder();
         m_Controller = new PIDController(Kp.get(), Ki.get(), Kd.get());
+
     }
 
     public void simpleDrive(boolean reversed, double speed){
@@ -101,19 +103,22 @@ public class IntakeSubsystem extends SubsystemBase{
     public void setHasNote() {
         noteInIntake = true;
         noteAtBack = true;
-        encoder.setPosition(IntakeConstants.holdingPosition);
+        encoder.setPosition(-IntakeConstants.distanceBetweenBreakBeamsInEncoderRotations);
     }
 
     public void driveNoteToSetpoint() {
         double output = 0;
         if(!noteAtBack && getBackBeam()) {
             noteAtBack = true;
-            encoder.setPosition( 0);
+            encoder.setPosition(0);
         }
         if(noteAtBack) {
-            output = m_Controller.calculate(encoder.getPosition(), IntakeConstants.holdingPosition);
+            output = m_Controller.calculate(encoder.getPosition(), holdingPosition.get());
         } else {
-            output = IntakeConstants.minSetOutput;
+            output = m_Controller.calculate(encoder.getPosition(), holdingPosition.get());
+            if(output < IntakeConstants.minSetOutput) {
+                output = IntakeConstants.minSetOutput;
+            }
         }
 
         intakeMotor.set(output);

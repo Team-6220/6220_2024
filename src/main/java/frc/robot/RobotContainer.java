@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -36,6 +38,7 @@ import frc.robot.commands.ArmIdleCommand;
 import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeIdleCommand;
+import frc.robot.commands.ManuelEjectNote;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.ShootingTestCommand;
 import frc.robot.commands.SpeakerCommand;
@@ -73,8 +76,9 @@ public class RobotContainer {
   /* Operator Buttons */
   private final Trigger intake = new Trigger(()->operator.getRawButton(5));
   private final Trigger amp = new Trigger(()->operator.getRawButton(2));
-  private final Trigger noNote = new Trigger(()->operator.getRawButton(12));
+  private final Trigger noNote = new Trigger(()->operator.getRawButton(11));
   private final Trigger climb = new Trigger(()->operator.getRawButton(4));
+  private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(10));
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -87,9 +91,12 @@ public class RobotContainer {
   private final blinkin s_Blinkin = blinkin.getInstance();
 
   public RobotContainer() {
+
     ShooterConfiguration.setupRadiusValues();   
     ShooterConfiguration.setupConfigurations();
     Constants.VisionConstants.setTagHeights();
+
+    // PhotonvisionCalculations.initPhoton();
 
     NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
     NamedCommands.registerCommand("pickup", new IntakeCommand(s_Swerve));
@@ -145,6 +152,8 @@ public class RobotContainer {
       )
     );
 
+    ejectNote.whileTrue(new ManuelEjectNote());
+
     zeroGyro.whileTrue(
       new InstantCommand(
         () -> RumbleManager.rumble(driver, 0.2)
@@ -187,6 +196,7 @@ public class RobotContainer {
 
   public SequentialCommandGroup pickUpFarNoteAndShoot()
   {
+      s_Swerve.setIsAuto(true);
     List<Translation2d> bezierPointToFar = PathPlannerPath.bezierFromPoses(
       new Pose2d(3.9, 6.15, Rotation2d.fromDegrees(0)),
       new Pose2d(7.55, 7.45, Rotation2d.fromDegrees(0))
@@ -199,11 +209,9 @@ public class RobotContainer {
       pathTofar.preventFlipping = false;
     return new SequentialCommandGroup(
       new SpeakerCommand(s_Swerve),
-      new ArmIdleCommand(),
       // AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(7.5), 7.5, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.PathConstraints),
       AutoBuilder.pathfindThenFollowPath(pathTofar, AutoConstants.pathConstraints),
       new IntakeCommand(s_Swerve),
-      new IntakeIdleCommand(),
       AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(4), 5.8, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
       new SpeakerCommand(s_Swerve)
       );

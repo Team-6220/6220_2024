@@ -8,6 +8,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.*;
+import frc.robot.commands.ArmIdleCommand;
 import frc.lib.util.TunableNumber;
 
 // import frc.robot.Constants.ArmConstants;
@@ -30,7 +31,7 @@ public class ArmSubsystem extends SubsystemBase{
     private final TunableNumber armMaxVel = new TunableNumber("ArmMaxVel", ArmConstants.armMaxVel);
     private final TunableNumber armMaxAccel = new TunableNumber("ArmMaxAccel", ArmConstants.armMaxAccel);
 
-    public final TunableNumber armTestAngle = new TunableNumber("Arm Degree Goal Set", 0);
+    public final TunableNumber armTestAngle = new TunableNumber("Arm Degree Goal Set", 75);
     //public final TunableNumber armAmpAngle = new TunableNumber("Amp Degree Set", ArmConstants.ampSetPoint);
     
     private final CANSparkMax armMotorA, armMotorB;
@@ -74,7 +75,18 @@ public class ArmSubsystem extends SubsystemBase{
         m_Controller.setIZone(3);
 
         //Setting Tolerance
-        m_Controller.setTolerance(1);
+        m_Controller.setTolerance(1.5);
+        
+        // setDefaultCommand(new ArmIdleCommand());
+        // initDefaultCommand();
+    }
+
+    /**
+     * Sets the default command of the bot to arm idle command
+     */
+    public void initDefaultCommand() {
+        // Set the default command for a subsystem here.
+        setDefaultCommand(new ArmIdleCommand());
     }
 
     /**

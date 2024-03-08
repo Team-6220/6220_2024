@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants;
 import frc.robot.LimelightCalculations;
+// import frc.robot.PhotonvisionCalculations;
 //import frc.robot.LimelightHelpers;
 import frc.robot.SwerveModule;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -91,6 +93,8 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber autoTkP = new TunableNumber("auto T kP", Constants.SwerveConstants.translation_kP);
     private final TunableNumber autoTkI = new TunableNumber("auto T kI", Constants.SwerveConstants.translation_kI);
     private final TunableNumber autoTkD = new TunableNumber("auto T kD", Constants.SwerveConstants.translation_kD);
+
+    private boolean autoIsOverShoot = false, isAuto = false;
 
     private final double previousUpdateTime = 0;
 
@@ -390,9 +394,26 @@ public class Swerve extends SubsystemBase {
         
     }
 
+    public void setIsAuto(boolean isAuto)
+    {
+        this.isAuto = isAuto;
+        if(!isAuto)
+        {
+            autoIsOverShoot = false;
+        }
+    }
+
+    public boolean getIsAuto(){
+        return isAuto;
+    }
+
+    public boolean getIsAutoOverShoot()
+    {
+        return autoIsOverShoot;
+    }
+
     @Override
     public void periodic(){
-
         Double timestamp = Timer.getFPGATimestamp();
         gyro_headings.put(timestamp, getHeading());
         gyro_timestamps.addFirst(timestamp);
@@ -409,11 +430,23 @@ public class Swerve extends SubsystemBase {
         }
 
         
-        LimelightCalculations.updatePoseEstimation(poseEstimator, this);
-        
-        poseEstimator.update(getGyroYaw(), getModulePositions());
+        // LimelightCalculations.updatePoseEstimation(poseEstimator, this);
+        double camStdDevConstants[]
+        PhotonvisionCalculations.updateCamerasPoseEstimation(poseEstimator, visionMeasurementStdDevConstant.get(), visionMeasurementStdDevConstant.get());
+
+       poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
         
+
+        if (field2d.getRobotPose().getX() > AutoConstants.maxXDistance && isAuto)
+        {
+            autoIsOverShoot = true;
+        }
+        else if(field2d.getRobotPose().getX() < AutoConstants.maxXDistance && isAuto)
+        {
+            autoIsOverShoot = false;
+        }
+
         if(turnKP.hasChanged()
         || turnKD.hasChanged()
         || turnKI.hasChanged()) {

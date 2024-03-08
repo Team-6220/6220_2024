@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.Pair;
@@ -9,25 +10,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.ShooterIdleCommand;
 public class ShooterSubsystem extends SubsystemBase{
 
     private static ShooterSubsystem INSTANCE = null;
     private TalonFX shooterMotorA, shooterMotorB;
 
-    private final TunableNumber KpA = new TunableNumber("Shooter A kP", ShooterConstants.kP);
+    private final TunableNumber KpA = new TunableNumber("Shooter A kP", ShooterConstants.kPA);
     private final TunableNumber KiA = new TunableNumber("Shooter A kI", ShooterConstants.kI);
     private final TunableNumber KdA = new TunableNumber("Shooter A kD", ShooterConstants.kD);
     private final TunableNumber KsA = new TunableNumber("Shooter A FF Ks", ShooterConstants.kFFkS);
-    private final TunableNumber KvA = new TunableNumber("Shooter A FF Kv", ShooterConstants.kFFkV);
+    private final TunableNumber KvA = new TunableNumber("Shooter A FF Kv", ShooterConstants.kFFkVA);
     private final TunableNumber KaA = new TunableNumber("Shooter A FF Ka", ShooterConstants.kFFkA);
 
-    private final TunableNumber KpB = new TunableNumber("Shooter B kP", ShooterConstants.kP);
+    private final TunableNumber KpB = new TunableNumber("Shooter B kP", ShooterConstants.kPB);
     private final TunableNumber KiB = new TunableNumber("Shooter B kI", ShooterConstants.kI);
     private final TunableNumber KdB = new TunableNumber("Shooter B kD", ShooterConstants.kD);
     private final TunableNumber KsB = new TunableNumber("Shooter B FF Ks", ShooterConstants.kFFkS);
-    private final TunableNumber KvB = new TunableNumber("Shooter B FF Kv", ShooterConstants.kFFkV);
+    private final TunableNumber KvB = new TunableNumber("Shooter B FF Kv", ShooterConstants.kFFkVB);
     private final TunableNumber KaB = new TunableNumber("Shooter B FF Ka", ShooterConstants.kFFkA);
     
+    private TalonFXConfiguration motorAConfig = new TalonFXConfiguration(), motorBConfig = new TalonFXConfiguration();
+
     public final TunableNumber shooterTestVelocityA = new TunableNumber("Shooter Test A Velocity Target", 3000);
     public final TunableNumber shooterTestVelocityB = new TunableNumber("Shooter Test B Velocity Target", 3000);
 
@@ -36,6 +40,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private SimpleMotorFeedforward feedforwardA, feedforwardB;
 
     private ShooterSubsystem() {
+        
         shooterMotorA = new TalonFX(ShooterConstants.shooterMotorAID);
         shooterMotorB = new TalonFX(ShooterConstants.shooterMotorBID);
 
@@ -52,7 +57,9 @@ public class ShooterSubsystem extends SubsystemBase{
 
         m_controllerA.setTolerance(100); //TODO: Add constants
         m_controllerB.setTolerance(100);
+
     }
+
 
     public double getVelocity(TalonFX motor){
         return motor.getVelocity().getValueAsDouble() * 60;
