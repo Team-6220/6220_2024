@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -13,6 +14,7 @@ public class ManuelEjectNote extends Command {
   private final IntakeSubsystem s_IntakeSubsystem = IntakeSubsystem.getInstance();
   private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
   public ManuelEjectNote() {
+    addRequirements(s_IntakeSubsystem,s_ShooterSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
