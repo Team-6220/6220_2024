@@ -205,11 +205,17 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
+        public static final double[] velocityPIDConstants = {0,0,0};
+
+        public static final double Ks = 0;
+        public static final double Kv = 0;
+
         public static final double holdingPosition = -.6;
         public static final double transitDistance = 1.2;
 
         public static final double distanceBetweenBreakBeamsInEncoderRotations = 4.8809452057;
-        public static final double minSetOutput = .1;
+
+        public static final double intakeRPMSpeed = 500;
     }
 
     public static final class ShooterConstants{

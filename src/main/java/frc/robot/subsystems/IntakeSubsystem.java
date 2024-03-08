@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,6 +26,8 @@ public class IntakeSubsystem extends SubsystemBase{
     private final DigitalInput backBreakBeam;
 
     private final PIDController m_Controller;
+    private final PIDController m_VelocityController;
+    private SimpleMotorFeedforward m_Feedforward; 
 
     private boolean firing;
 
@@ -33,15 +36,24 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private final TunableNumber Kp = new TunableNumber("Intake Kp", IntakeConstants.kP);
     private final TunableNumber Ki = new TunableNumber("Intake Ki", IntakeConstants.kI);
-    private final TunableNumber Kd = new TunableNumber("Intake kD", IntakeConstants.kD);
+    //private final TunableNumber Kd = new TunableNumber("Intake kD", IntakeConstants.kD);
     private final TunableNumber holdingPosition = new TunableNumber("IntakeHoldingPose", IntakeConstants.holdingPosition);
+    private final TunableNumber intakeSpeed = new TunableNumber("IntakeSpeed", IntakeConstants.intakeRPMSpeed);
+
+    private final TunableNumber Ks = new TunableNumber("IntakeKs", IntakeConstants.Ks);
+    private final TunableNumber Kv = new TunableNumber("IntakeKs", IntakeConstants.Kv);
+
     private IntakeSubsystem() {
         intakeMotor  = new CANSparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
+
         frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
         backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
+
         encoder = intakeMotor.getEncoder();
-        m_Controller = new PIDController(Kp.get(), Ki.get(), Kd.get());
+        m_Controller = new PIDController(Kp.get(), Ki.get(), IntakeConstants.kD);
+        m_VelocityController = new PIDController(IntakeConstants.velocityPIDConstants[0], IntakeConstants.velocityPIDConstants[1], IntakeConstants.velocityPIDConstants[2]);
+        m_Feedforward = new SimpleMotorFeedforward(Ks.get(), Kv.get());
         m_Controller.setTolerance(.2);
     }
 
@@ -49,20 +61,6 @@ public class IntakeSubsystem extends SubsystemBase{
         speed = reversed ? speed * -1 : speed;
         intakeMotor.set(speed);
     }
-
-    // public void driveToIntake(){
-    //     if(!getFrontBeam() && !getBackBeam()) {
-    //         //intakeMotor.set(IntakeConstants.intakeSpeed);
-    //         intakeMotor.set(0);
-    //     } else if(getFrontBeam() && !getBackBeam()) {
-    //         intakeMotor.set(IntakeConstants.intakeSpeed*.1);
-    //         noteInIntake = true;
-    //     } else if(getBackBeam() && getFrontBeam()) {
-    //         intakeMotor.set(0);
-    //     } else{
-    //         intakeMotor.set(0);
-    //     }
-    // }
 
     public void feedShooter() {
         simpleDrive(false, IntakeConstants.ejectSpeedSpeaker);
@@ -127,10 +125,7 @@ public class IntakeSubsystem extends SubsystemBase{
             output = m_Controller.calculate(encoder.getPosition(), holdingPosition.get());
 
         } else {
-            output = m_Controller.calculate(encoder.getPosition(), holdingPosition.get());
-            if(output < IntakeConstants.minSetOutput) {
-                output = IntakeConstants.minSetOutput;
-            }
+            output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
         }
         
         intakeMotor.set(output);
@@ -164,11 +159,16 @@ public class IntakeSubsystem extends SubsystemBase{
         SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
         SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
         SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
+        SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
         if(Kp.hasChanged()
-        || Ki.hasChanged()
-        || Kd.hasChanged())
+        || Ki.hasChanged())
         {
-            m_Controller.setPID(Kp.get(),Ki.get(),Kd.get());
+            m_Controller.setPID(Kp.get(),Ki.get(),IntakeConstants.kD);
+        }
+
+        if(Ks.hasChanged()
+        || Kv.hasChanged()) {
+            m_Feedforward = new SimpleMotorFeedforward(Ks.get(), Kv.get());
         }
     }
 
