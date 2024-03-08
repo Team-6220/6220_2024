@@ -76,7 +76,7 @@ public class PhotonvisionCalculations {
         // Shuffleboard.getTab("Photonvision").add("camera one latency in ms", camOneLatency);
     }
     
-    public static void updateCamerasPoseEstimation(SwerveDrivePoseEstimator poseEstimator, double[] camTrustValues)
+    public static void updateCamerasPoseEstimation(SwerveDrivePoseEstimator poseEstimator, double camTrustValues)
     {
         
         for(int i = 0; i < cameras.length; i ++)
@@ -96,7 +96,7 @@ public class PhotonvisionCalculations {
             // {
             //     Transform3d fieldToCamera = cameraResult.getMultiTagResult().estimatedPose.best;
             //     // Pose2d newPose = new Pose2d(new Translation2d(fieldToCamera.getX(), fieldToCamera.getY));
-                double visionStdDev = camTrustValues[i] * (1 + (range * range / 30));
+                double visionStdDev = camTrustValues * (1 + (range * range / 30));
                 poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
                 poseEstimator.addVisionMeasurement(new Pose2d(estimatedPhotonPose.getRobotToCameraTransform().getX(), estimatedPhotonPose.getRobotToCameraTransform().getY(), poseEstimator.getEstimatedPosition().getRotation()), Timer.getFPGATimestamp() - latencySec);
                 
