@@ -216,12 +216,27 @@ public final class Constants {
         //FIXME: set motor IDs
         //Green
         public static final int shooterMotorAID = 16;
-
         //Orange
         public static final int shooterMotorBID = 17;
 
+        /* Motor Inverts */
         public static final boolean motorAInverted = false;
         public static final boolean motorBInverted = true;
+
+        /* Motor Neutral Modes */
+        public static final NeutralModeValue MOTOR_A_NEUTRAL_MODE_VALUE = NeutralModeValue.Coast;//TODO: NEED CHANGE?
+        public static final NeutralModeValue MOTOR_B_NEUTRAL_MODE_VALUE = NeutralModeValue.Coast;//TODO: NEED CHANGE?
+        
+        /* Shooter Current Limits */
+        public static final boolean shooterAEnableCurrentLimit = true;
+        public static final double shooterACurrentLimit = 25; //TODO: NEED CHANGE
+        public static final int shooterACurrentThreshold = 40;//TODO: NEED CHANGE
+        public static final double shooterACurrentThresholdTime = 0.1;
+
+        public static final boolean shooterBEnableCurrentLimit = true;
+        public static final double shooterBCurrentLimit = 25; //TODO: NEED CHANGE
+        public static final int shooterBCurrentThreshold = 40;//TODO:NEED CHANGE
+        public static final double shooterBCurrentThresholdTime = 0.1;
 
 
         public static final double idleOutput = .05;
@@ -309,8 +324,8 @@ public final class Constants {
         // public static final Transform3d camToCenterRobotOne = new Transform3d(new Translation3d(.254, .254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-50).getRadians(),0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
 
         public static final Transform3d[] camerasToCenter = {
-            new Transform3d(new Translation3d(-.254, -.254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(50).getRadians(),0)),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero //TODO: need chagne
-            new Transform3d(new Translation3d(.254, .254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-50).getRadians(),0))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one//TODO: need change
+            new Transform3d(new Translation3d(0.252222, -0.258318, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(-24.12).getRadians())),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero, right //TODO: need chagne
+            new Transform3d(new Translation3d(.256032, 0.26035, 0.21209), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(16.90).getRadians()))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one, left//TODO: need change
         };
 
 
@@ -353,6 +368,11 @@ public final class Constants {
             52.00
         };
 
+        public static final double desiredDistanceToAprilTagY = 10; //DO NOT USE THIS BEFORE TUNE, DELTE AFTER TUNED TODO: CAD SPECS
+
+        public static final double limelightMountAngleDegrees = 0; //TODO: CAD SPECS.
+
+        public static final double heightOfCamAboveFloor = 2; //TODO: CAD SPECS
         public static final double speakerTagID = ALLIANCE_COLOR.isPresent()
                                             ?
                                                 ALLIANCE_COLOR.get() == DriverStation.Alliance.Red
@@ -523,6 +543,8 @@ public final class Constants {
         public static final double kPThetaController = 3;
     
         public static final PathConstraints pathConstraints = new PathConstraints(autoMaxVelocityMps, kMaxAccelerationMetersPerSecondSquared, maxAngularVelocityRps, maxAngularAcceleratRpsSq);
+
+        public static final Pose2d AMPP_POSE2D = isRed ? new Pose2d(14.65, 7.63, new Rotation2d(-90)) : new Pose2d(1.9, 7.63, new Rotation2d(-90));
 
         public static final double maxXDistance = isRed ? 8.81 : 7.75;
 

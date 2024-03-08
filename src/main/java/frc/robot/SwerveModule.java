@@ -79,7 +79,7 @@ public class SwerveModule {
         mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
         mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
         mDriveMotor.getConfigurator().setPosition(0.0);
-        mDriveMotor.setNeutralMode(SwerveConstants.driveNeutralMode);
+        // mDriveMotor.setNeutralMode(SwerveConstants.driveNeutralMode);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){

@@ -38,6 +38,8 @@ public class IntakeCommand extends Command{
     private boolean isAuto;
     private int timeWithoutTarget = 0, stopIntakeDelay = 20;
 
+    private boolean isFieldRelative = false;
+
     private final TunableNumber turnkP = new TunableNumber("intakeTurnkP", 4);
     private final TunableNumber turnkD = new TunableNumber("intakeTurnkD", 0.002);
     private final TunableNumber turnkI = new TunableNumber("intakeTurnkI", 0);
@@ -85,18 +87,18 @@ public class IntakeCommand extends Command{
     public void execute(){
         double[] driverInputs;
         double rotationVal = 0, translation = 0, strafeVal = 0;
-        if(!isAuto) {
+        if(!isAuto && autoControl.getAsBoolean()) {
             driverInputs = OIConstants.getDriverInputs(driver);
             translation = driverInputs[0];
             strafeVal = driverInputs[1];
             rotationVal = driverInputs[2];
+            isFieldRelative = true;
         }
 
-        if(autoControl.getAsBoolean()) {
+        if((!isAuto && !autoControl.getAsBoolean()) || isAuto) {
             if(vis.getHasTargets()) {
                 timeWithoutTarget = 0;
                 rotationVal = limelightPidController.calculate(vis.getTurnOffset());
-
                 rotationVal = (rotationVal > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(rotationVal< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:rotationVal;
                 // System.out.println("success!");
                 if(Math.abs(vis.getTurnOffset()) < turnTolerance.get()) {
@@ -106,13 +108,17 @@ public class IntakeCommand extends Command{
                     s_Blinkin.solid_red();
                 }
                 translation = -.5 * SwerveConstants.maxSpeed;
+                isFieldRelative = false;
             }
             else
             {
+                isFieldRelative = true;
                 timeWithoutTarget++;
             }
 
-        } else {
+        }
+        else 
+        {
             s_Blinkin.solid_gold();
         }
 
@@ -122,7 +128,7 @@ public class IntakeCommand extends Command{
             swerve.drive(
                     new Translation2d(translation, strafeVal), 
                     rotationVal, 
-                    false, 
+                    isFieldRelative, 
                     true
             );
         }

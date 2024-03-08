@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants;
 import frc.robot.LimelightCalculations;
+import frc.robot.PhotonvisionCalculations;
 // import frc.robot.PhotonvisionCalculations;
 //import frc.robot.LimelightHelpers;
 import frc.robot.SwerveModule;
@@ -431,8 +432,7 @@ public class Swerve extends SubsystemBase {
 
         
         // LimelightCalculations.updatePoseEstimation(poseEstimator, this);
-        //double camStdDevConstants[]
-        //PhotonvisionCalculations.updateCamerasPoseEstimation(poseEstimator, visionMeasurementStdDevConstant.get(), visionMeasurementStdDevConstant.get());
+        PhotonvisionCalculations.updateCamerasPoseEstimation(poseEstimator, visionMeasurementStdDevConstant.get());
 
        poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());

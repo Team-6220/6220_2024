@@ -144,13 +144,17 @@ public class RobotContainer {
 
     noNote.onTrue(new InstantCommand(() -> s_IntakeSubsystem.reset()));
 
-    amp.whileTrue(new AmpCommand(
-      s_Swerve,
-      driver,
-      () -> operator.getRawButton(1),
-      ()->robotControlLeftTrigger.getAsBoolean()
-      )
-    );
+    // amp.whileTrue(new AmpCommand(
+    //   s_Swerve,
+    //   driver,
+    //   () -> operator.getRawButton(1),
+    //   ()->robotControlLeftTrigger.getAsBoolean()
+    //   )
+    // );
+
+    amp.whileTrue(ampScoringTesting());
+
+    // amp.whileTrue(noteTesting());
 
     ejectNote.whileTrue(new ManuelEjectNote());
 
@@ -179,6 +183,7 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+  // All autos starts from here
   public SequentialCommandGroup fourNoteAutoServite()
   {
     return new SequentialCommandGroup(
@@ -216,5 +221,21 @@ public class RobotContainer {
       new SpeakerCommand(s_Swerve)
       );
   }
+  //All auto ends here
+
+  //All Paths starts here
+  public SequentialCommandGroup ampScoringTesting()
+  {
+    return new SequentialCommandGroup(
+      AutoBuilder.pathfindToPose(AutoConstants.AMPP_POSE2D, AutoConstants.pathConstraints),
+      new AmpCommand(
+      s_Swerve,
+      driver,
+      () -> operator.getRawButton(1),
+      ()->robotControlLeftTrigger.getAsBoolean()
+      )
+    );
+  }
+  //All Paths end here
 
 }
