@@ -1,7 +1,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
+import com.ctre.phoenix6.controls.CoastOut;
+import com.ctre.phoenix6.controls.ControlRequest;
+
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
@@ -30,10 +35,8 @@ public class ShooterSubsystem extends SubsystemBase{
     private final TunableNumber KvB = new TunableNumber("Shooter B FF Kv", ShooterConstants.kFFkVB);
     private final TunableNumber KaB = new TunableNumber("Shooter B FF Ka", ShooterConstants.kFFkA);
     
-    private TalonFXConfiguration motorAConfig = new TalonFXConfiguration(), motorBConfig = new TalonFXConfiguration();
-
-    public final TunableNumber shooterTestVelocityA = new TunableNumber("Shooter Test A Velocity Target", 3000);
-    public final TunableNumber shooterTestVelocityB = new TunableNumber("Shooter Test B Velocity Target", 3000);
+    public final TunableNumber shooterTestVelocityA = new TunableNumber("Shooter Test A Velocity Target", 3550);
+    public final TunableNumber shooterTestVelocityB = new TunableNumber("Shooter Test B Velocity Target", 4000);
 
     private PIDController m_controllerA, m_controllerB;
 
@@ -43,6 +46,10 @@ public class ShooterSubsystem extends SubsystemBase{
         
         shooterMotorA = new TalonFX(ShooterConstants.shooterMotorAID);
         shooterMotorB = new TalonFX(ShooterConstants.shooterMotorBID);
+        
+        shooterMotorA.setNeutralMode(NeutralModeValue.Coast);
+        shooterMotorB.setNeutralMode(NeutralModeValue.Coast);
+
 
         shooterMotorA.setInverted(ShooterConstants.motorAInverted);
         shooterMotorB.setInverted(ShooterConstants.motorBInverted);

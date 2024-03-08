@@ -26,6 +26,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private final PIDController m_Controller;
 
+    private boolean firing;
+
     private boolean noteInIntake;
     private boolean noteAtBack;
 
@@ -40,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase{
         backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
         encoder = intakeMotor.getEncoder();
         m_Controller = new PIDController(Kp.get(), Ki.get(), Kd.get());
-
+        m_Controller.setTolerance(.2);
     }
 
     public void simpleDrive(boolean reversed, double speed){
@@ -66,12 +68,14 @@ public class IntakeSubsystem extends SubsystemBase{
         simpleDrive(false, IntakeConstants.ejectSpeedSpeaker);
         noteInIntake = false;
         noteAtBack = false;
+        firing = true;
     }
 
     public void feedAmp() {
         simpleDrive(false, IntakeConstants.ejectSpeedAmp);
         noteInIntake = false;
         noteAtBack = false;
+        firing = true;
     }
 
     public void feedIntake() {
@@ -83,10 +87,12 @@ public class IntakeSubsystem extends SubsystemBase{
     public void reset() {
         noteInIntake = false;
         noteAtBack = false;
+        firing = false;
     }
 
     public void stop(){
         intakeMotor.set(0);
+        firing = false;
     }
 
     public boolean noteInIntake() {
@@ -113,20 +119,36 @@ public class IntakeSubsystem extends SubsystemBase{
             encoder.setPosition(0);
         }
         if(noteAtBack) {
+            if(m_Controller.atSetpoint()) {
+                output = 0;
+                intakeMotor.set(0);
+                return;
+            }
             output = m_Controller.calculate(encoder.getPosition(), holdingPosition.get());
+
         } else {
             output = m_Controller.calculate(encoder.getPosition(), holdingPosition.get());
             if(output < IntakeConstants.minSetOutput) {
                 output = IntakeConstants.minSetOutput;
             }
         }
-
+        
         intakeMotor.set(output);
+
+    }
+
+    public void setFiring(boolean newValue) {
+        firing = newValue;
     }
 
     public void newNoteDetected() {
         encoder.setPosition(IntakeConstants.distanceBetweenBreakBeamsInEncoderRotations);
+        m_Controller.reset();
         noteInIntake = true;
+    }
+
+    public boolean noteReady() {
+        return noteInIntake&&m_Controller.atSetpoint();
     }
 
     @Override
@@ -135,7 +157,7 @@ public class IntakeSubsystem extends SubsystemBase{
         if(!noteInIntake && getFrontBeam()) {
             newNoteDetected();
         }
-        if(noteInIntake) {
+        if(noteInIntake && !firing) {
             driveNoteToSetpoint();
         }
         

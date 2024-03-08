@@ -431,8 +431,8 @@ public class Swerve extends SubsystemBase {
 
         
         // LimelightCalculations.updatePoseEstimation(poseEstimator, this);
-        double camStdDevConstants[]
-        PhotonvisionCalculations.updateCamerasPoseEstimation(poseEstimator, visionMeasurementStdDevConstant.get(), visionMeasurementStdDevConstant.get());
+        //double camStdDevConstants[]
+        //PhotonvisionCalculations.updateCamerasPoseEstimation(poseEstimator, visionMeasurementStdDevConstant.get(), visionMeasurementStdDevConstant.get());
 
        poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
