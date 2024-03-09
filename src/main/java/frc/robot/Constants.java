@@ -328,6 +328,11 @@ public final class Constants {
             new Transform3d(new Translation3d(.256032, 0.26035, 0.21209), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(16.90).getRadians()))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one, left//TODO: need change
         };
 
+        public static final double leftArduCamPitchOffsetRad = Rotation2d.fromDegrees(35).getRadians();
+        public static final double rightArduCamPitchOffsetRad = Rotation2d.fromDegrees(35).getRadians();
+
+        /**Trust value of the vision */
+        public static final double visionStdDev = 0.2;
 
         public static void setTagHeights(){
             tagHeights.put(1, 48.125);
@@ -548,6 +553,7 @@ public final class Constants {
 
         public static final double maxXDistance = isRed ? 8.81 : 7.75;
 
+        
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(

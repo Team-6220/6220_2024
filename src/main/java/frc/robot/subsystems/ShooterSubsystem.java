@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.TunableNumber;
+import frc.robot.Robot;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ShooterIdleCommand;
 public class ShooterSubsystem extends SubsystemBase{
@@ -44,9 +45,12 @@ public class ShooterSubsystem extends SubsystemBase{
         shooterMotorA = new TalonFX(ShooterConstants.shooterMotorAID);
         shooterMotorB = new TalonFX(ShooterConstants.shooterMotorBID);
 
-        shooterMotorA.setInverted(ShooterConstants.motorAInverted);
-        shooterMotorB.setInverted(ShooterConstants.motorBInverted);
+        // shooterMotorA.setInverted(ShooterConstants.motorAInverted);
+        // shooterMotorB.setInverted(ShooterConstants.motorBInverted);
 
+        shooterMotorA.getConfigurator().apply(Robot.ctreConfigs.shooterAConfig);
+        shooterMotorB.getConfigurator().apply(Robot.ctreConfigs.shooterBConfig);
+        
         
 
         m_controllerA = new PIDController(KpA.get(), KiA.get(), KdA.get());
