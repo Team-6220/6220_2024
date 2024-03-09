@@ -75,7 +75,7 @@ public class ArmSubsystem extends SubsystemBase{
         m_Controller.setIZone(3);
 
         //Setting Tolerance
-        m_Controller.setTolerance(1.5);
+        m_Controller.setTolerance(1);
         
         // setDefaultCommand(new ArmIdleCommand());
         // initDefaultCommand();

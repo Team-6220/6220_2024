@@ -207,10 +207,10 @@ public final class Constants {
 
         public static final double[] velocityPIDConstants = {0,0,0};
 
-        public static final double Ks = 0;
+        public static final double Ks = 0.00009;
         public static final double Kv = 0;
 
-        public static final double holdingPosition = -.6;
+        public static final double holdingPosition = -.5;
         public static final double transitDistance = 1.2;
 
         public static final double distanceBetweenBreakBeamsInEncoderRotations = 4.8809452057;
@@ -330,8 +330,8 @@ public final class Constants {
         // public static final Transform3d camToCenterRobotOne = new Transform3d(new Translation3d(.254, .254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-50).getRadians(),0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
 
         public static final Transform3d[] camerasToCenter = {
-            new Transform3d(new Translation3d(0.252222, -0.258318, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(-24.12).getRadians())),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero, right //TODO: need chagne
-            new Transform3d(new Translation3d(.256032, 0.26035, 0.21209), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(16.90).getRadians()))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one, left//TODO: need change
+            new Transform3d(new Translation3d(-.256032, 0.26035, -0.21209), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(16.90).getRadians())),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one, left//TODO: need change
+            new Transform3d(new Translation3d(-.252222, -0.258318, -0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(-24.12).getRadians()))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero, right //TODO: need chagne
         };
 
         public static final double leftArduCamPitchOffsetRad = Rotation2d.fromDegrees(35).getRadians();
@@ -474,7 +474,7 @@ public final class Constants {
         public static final double turnKI = 1;
         public static final double turnMaxVel = 400;
         public static final double turnMaxAccel = 800;
-        public static final double turnTolerance = 3;
+        public static final double turnTolerance = 1.5;
         public static final double turnIZone = 1;
 
         /* Swerve Profiling Values */

@@ -87,7 +87,9 @@ public class ShootingTestCommand extends Command {
 
     s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker() + headingOffsetTest.get());
     rotationVal = s_Swerve.getTurnPidSpeed();
-  
+    if(driverInputs.getRightBumper()) {
+      intakeSubsystem.testRPMPID();
+    }
 
   
     s_Swerve.drive(

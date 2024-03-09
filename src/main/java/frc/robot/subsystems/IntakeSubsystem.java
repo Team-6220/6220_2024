@@ -41,7 +41,7 @@ public class IntakeSubsystem extends SubsystemBase{
     private final TunableNumber intakeSpeed = new TunableNumber("IntakeSpeed", IntakeConstants.intakeRPMSpeed);
 
     private final TunableNumber Ks = new TunableNumber("IntakeKs", IntakeConstants.Ks);
-    private final TunableNumber Kv = new TunableNumber("IntakeKs", IntakeConstants.Kv);
+    private final TunableNumber Kv = new TunableNumber("IntakeKv", IntakeConstants.Kv);
 
     private IntakeSubsystem() {
         intakeMotor  = new CANSparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
@@ -86,6 +86,9 @@ public class IntakeSubsystem extends SubsystemBase{
         noteInIntake = false;
         noteAtBack = false;
         firing = false;
+        m_Controller.reset();
+        m_VelocityController.reset();
+        encoder.setPosition(0);
     }
 
     public void stop(){
@@ -130,6 +133,12 @@ public class IntakeSubsystem extends SubsystemBase{
         
         intakeMotor.set(output);
 
+    }
+
+    public void testRPMPID() {
+        double output = 0;
+        output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
+        intakeMotor.set(output);
     }
 
     public void setFiring(boolean newValue) {

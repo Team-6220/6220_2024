@@ -96,7 +96,7 @@ public class AmpCommand extends Command {
   public void execute() {
     double[] driverInputs = OIConstants.getDriverInputs(driver);
     double xOutput = 0, yOutput = 0, rotationVal = 0;
-    if(autoControl.get()) { //Changed it so that autonomous doesn't start do wierd stuff becuase haven't tested yet.
+    if(!autoControl.get()) { //Changed it so that autonomous doesn't start do wierd stuff becuase haven't tested yet.
       xOutput = driverInputs[0];
       yOutput = driverInputs[1];
       rotationVal = driverInputs[2];
