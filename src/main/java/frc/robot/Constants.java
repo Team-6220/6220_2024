@@ -125,10 +125,10 @@ public final class Constants {
 
         //FIXME: set pid values
         public static final double kP = 0.25; //0.009
-        public static final double kI = 0.02;//0.0005
+        public static final double kI = 0.1;//0.0005
         public static final double kD = 0.005;//0.001
         public static final double kG = 0.37;
-        public static final double kV = 0.037;
+        public static final double kV = 0.025;
         public static final double kS = 0.45;
         public static final double armMaxVel = 200;
         public static final double armMaxAccel = 450;
@@ -205,11 +205,17 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double holdingPosition = -.5;
+        public static final double[] velocityPIDConstants = {0,0,0};
+
+        public static final double Ks = 0;
+        public static final double Kv = 0;
+
+        public static final double holdingPosition = -.6;
         public static final double transitDistance = 1.2;
 
         public static final double distanceBetweenBreakBeamsInEncoderRotations = 4.8809452057;
-        public static final double minSetOutput = .1;
+
+        public static final double intakeRPMSpeed = 500;
     }
 
     public static final class ShooterConstants{
@@ -256,8 +262,8 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kFFkS = 0;
-        public static final double kFFkVA = 0.000185;
-        public static final double kFFkVB = 0.00018;
+        public static final double kFFkVA = 0.00019;
+        public static final double kFFkVB = 0.000185;
         public static final double kFFkA = 0;
 
         //FIXME: create lookup table

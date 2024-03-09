@@ -46,7 +46,7 @@ public class ShootingTestCommand extends Command {
     shooterSubsystem = ShooterSubsystem.getInstance();
     intakeSubsystem = IntakeSubsystem.getInstance();
     this.driverInputs = driverInputs;
-    addRequirements(armSubsystem, shooterSubsystem);
+    addRequirements(armSubsystem, shooterSubsystem, intakeSubsystem);
 
     fowardAndBackPID = new ProfiledPIDController(kP, kI,kD, new TrapezoidProfile.Constraints(Vel, Accel));
     fowardAndBackPID.setTolerance(Tolerance);
@@ -65,13 +65,13 @@ public class ShootingTestCommand extends Command {
   @Override
   public void execute() {
 
-    //Pair<Double, Double> setPoint = ShooterConfiguration.polarToCartesian(ShooterConfiguration.radiusValues.get(currentRow.get()), (int)currentColumn.get());
+    Pair<Double, Double> setPoint = ShooterConfiguration.polarToCartesian(ShooterConfiguration.radiusValues.get((int)currentRow.get()), (int)currentColumn.get());
 
 
     double xOutput, yOutput, rotationVal;
 
-    //fowardAndBackPID.setGoal(setPoint.getFirst());
-    //leftAndRightPID.setGoal(setPoint.getSecond());
+    fowardAndBackPID.setGoal(setPoint.getFirst());
+    leftAndRightPID.setGoal(setPoint.getSecond());
     SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
     SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
     SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);
@@ -80,22 +80,22 @@ public class ShootingTestCommand extends Command {
 
     xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
     yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
-    //if(Math.abs(s_Swerve.getPose().getX() - setPoint.getFirst()) < .1 && Math.abs(s_Swerve.getPose().getY() - setPoint.getSecond()) < .1) {
-    //  xOutput = 0;
-    //  yOutput = 0;
-    //}
+    if(Math.abs(s_Swerve.getPose().getX() - setPoint.getFirst()) < .1 && Math.abs(s_Swerve.getPose().getY() - setPoint.getSecond()) < .1) {
+      xOutput = 0;
+      yOutput = 0;
+    }
 
     s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker() + headingOffsetTest.get());
     rotationVal = s_Swerve.getTurnPidSpeed();
   
 
   
-    // s_Swerve.drive(
-    //   new Translation2d(xOutput, yOutput),
-    // rotationVal,
-    // true,
-    // true
-    // );
+    s_Swerve.drive(
+      new Translation2d(xOutput, yOutput),
+    rotationVal,
+    true,
+    true
+    );
 
     if(driverInputs.getBButton()) {
       armSubsystem.driveToGoal(armSubsystem.armTestAngle.get());
