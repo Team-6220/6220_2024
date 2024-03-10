@@ -106,6 +106,11 @@ public class SwerveModule {
         }
     }
 
+    public void stopDriving()
+    {
+        mDriveMotor.set(0);
+    }
+
     public Rotation2d getCANcoder(){
         return Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValue());
     }

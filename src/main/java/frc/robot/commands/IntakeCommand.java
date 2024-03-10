@@ -96,7 +96,9 @@ public class IntakeCommand extends Command{
         }
 
         if((!isAuto && !autoControl.getAsBoolean()) || isAuto) {
+            // System.out.println("ISAUTO" + isAuto);
             if(vis.getHasTargets()) {
+                // System.out.println("let's see,,,");
                 timeWithoutTarget = 0;
                 rotationVal = limelightPidController.calculate(vis.getTurnOffset());
                 rotationVal = (rotationVal > SwerveConstants.maxAngularVelocity)?SwerveConstants.maxAngularVelocity:(rotationVal< -SwerveConstants.maxAngularVelocity)?-SwerveConstants.maxAngularVelocity:rotationVal;
@@ -123,7 +125,7 @@ public class IntakeCommand extends Command{
         }
 
 
-        if((swerve.getIsAuto() && !swerve.getIsAutoOverShoot()) || !swerve.getIsAuto())
+        if((isAuto && !swerve.getIsAutoOverShoot()) || !isAuto)
         {
             swerve.drive(
                     new Translation2d(translation, strafeVal), 
@@ -132,6 +134,13 @@ public class IntakeCommand extends Command{
                     true
             );
         }
+        else if(swerve.getIsAutoOverShoot())
+        {
+            swerve.stopDriving();
+        }
+        // else{
+        //     swerve.drive(new Translation2d(0,0), 0, false, true);
+        // }
     
         intake.feedIntake();
         arm.driveToGoal(ArmConstants.intakeSetpoint);

@@ -127,6 +127,7 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("fourNoteTesting", fourNoteAutoServite());
     autoChooser.addOption("pick up fartherst Note and Shoot", pickUpFarNoteAndShoot());
+    autoChooser.addOption("AA intake Test", intakeTest());
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");    
 
@@ -234,6 +235,13 @@ public class RobotContainer {
       () -> operator.getRawButton(1),
       ()->robotControlLeftTrigger.getAsBoolean()
       )
+    );
+  }
+
+  public SequentialCommandGroup intakeTest()
+  {
+    return new SequentialCommandGroup(
+      new IntakeCommand(s_Swerve)
     );
   }
   //All Paths end here

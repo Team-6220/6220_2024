@@ -163,6 +163,14 @@ public class Swerve extends SubsystemBase {
             //SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
         }
     }
+
+    public void stopDriving()
+    {
+        for(SwerveModule mod : mSwerveMods)
+        {
+            mod.stopDriving();
+        }
+    }
     public void configureAutoBuilder() {
         AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
@@ -438,13 +446,14 @@ public class Swerve extends SubsystemBase {
         field2d.setRobotPose(getPose());
         
 
-        if (field2d.getRobotPose().getX() > AutoConstants.maxXDistance && isAuto)
+        if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
         {
             autoIsOverShoot = true;
         }
-        else if(field2d.getRobotPose().getX() < AutoConstants.maxXDistance && isAuto)
+        else
         {
             autoIsOverShoot = false;
+            // System.out.println("TRUE, SO SAD " + field2d.getRobotPose().getX());
         }
 
         if(turnKP.hasChanged()

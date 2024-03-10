@@ -330,8 +330,8 @@ public final class Constants {
         // public static final Transform3d camToCenterRobotOne = new Transform3d(new Translation3d(.254, .254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-50).getRadians(),0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
 
         public static final Transform3d[] camerasToCenter = {
-            new Transform3d(new Translation3d(-.256032, 0.26035, -0.21209), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(16.90).getRadians())),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one, left//TODO: need change
-            new Transform3d(new Translation3d(-.252222, -0.258318, -0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(-24.12).getRadians()))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero, right //TODO: need chagne
+            new Transform3d(new Translation3d(.256032, 0.26035, 0.21209), new Rotation3d(0,Rotation2d.fromDegrees(35).getRadians(),Rotation2d.fromDegrees(24.12).getRadians())),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one, left//TODO: need change
+            new Transform3d(new Translation3d(.252222, -0.258318, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(35).getRadians(),Rotation2d.fromDegrees(16.90).getRadians()))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero, right //TODO: need chagne
         };
 
         public static final double leftArduCamPitchOffsetRad = Rotation2d.fromDegrees(35).getRadians();
@@ -557,7 +557,8 @@ public final class Constants {
 
         public static final Pose2d AMPP_POSE2D = isRed ? new Pose2d(14.65, 7.63, new Rotation2d(-90)) : new Pose2d(1.9, 7.63, new Rotation2d(-90));
 
-        public static final double maxXDistance = isRed ? 8.81 : 7.75;
+        // public static final double maxXDistance = isRed ? 8.81 : 7.75;
+        public static final double maxXDistance = isRed ? 12.5 : 2.45;
 
         
         /* Constraint for the motion profilied robot angle controller */
