@@ -175,7 +175,7 @@ public final class Constants {
         public static final double armOffset = 167.53781218844532; //157.280949; // arm up
         // -202.719051
         //FIXME: set setpoints
-        public static final double intakeSetpoint = 86;
+        public static final double intakeSetpoint = 83;
         public static final double hoverSetpoint = 0; //for like right above intake
         public static final double restingSetpoint = 70;
         public static final double ampSetPoint = -5;
@@ -205,17 +205,17 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double[] velocityPIDConstants = {0,0,0};
+        public static final double[] velocityPIDConstants = {0.00005,0,0};
 
         public static final double Ks = 0.00009;
-        public static final double Kv = 0;
+        public static final double Kv = 0.000184;
 
         public static final double holdingPosition = -.5;
         public static final double transitDistance = 1.2;
 
         public static final double distanceBetweenBreakBeamsInEncoderRotations = 4.8809452057;
 
-        public static final double intakeRPMSpeed = 500;
+        public static final double intakeRPMSpeed = 2000;
     }
 
     public static final class ShooterConstants{
@@ -330,8 +330,8 @@ public final class Constants {
         // public static final Transform3d camToCenterRobotOne = new Transform3d(new Translation3d(.254, .254, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-50).getRadians(),0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
 
         public static final Transform3d[] camerasToCenter = {
-            new Transform3d(new Translation3d(.256032, 0.26035, 0.21209), new Rotation3d(0,Rotation2d.fromDegrees(35).getRadians(),Rotation2d.fromDegrees(24.12).getRadians())),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one, left//TODO: need change
-            new Transform3d(new Translation3d(.252222, -0.258318, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(35).getRadians(),Rotation2d.fromDegrees(16.90).getRadians()))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero, right //TODO: need chagne
+            new Transform3d(new Translation3d(-.256032, -0.26035, 0.21209), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(-24.12).getRadians())),//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam one, left//TODO: need change
+            new Transform3d(new Translation3d(-.252222, 0.258318, 0.2159), new Rotation3d(0,Rotation2d.fromDegrees(-35).getRadians(),Rotation2d.fromDegrees(16.90).getRadians()))//Cam mounted facing forward, half a meter forward of center, half a meter up from center. Cam zero, right //TODO: need chagne
         };
 
         public static final double leftArduCamPitchOffsetRad = Rotation2d.fromDegrees(35).getRadians();
@@ -572,7 +572,7 @@ public final class Constants {
         public static final int climberDriverLeftID = 18;
         public static final int climberDriverRightID = 19;
 
-        public static final boolean motorAInverted = true;
+        public static final boolean motorAInverted = false;
         public static final boolean motorBInverted = false;
 
         //FIXME: set setpoints

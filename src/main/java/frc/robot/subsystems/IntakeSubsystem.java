@@ -33,6 +33,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private boolean noteInIntake;
     private boolean noteAtBack;
+    private boolean noteSecure;
+    private boolean hasExited;
 
     private final TunableNumber Kp = new TunableNumber("Intake Kp", IntakeConstants.kP);
     private final TunableNumber Ki = new TunableNumber("Intake Ki", IntakeConstants.kI);
@@ -42,6 +44,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private final TunableNumber Ks = new TunableNumber("IntakeKs", IntakeConstants.Ks);
     private final TunableNumber Kv = new TunableNumber("IntakeKv", IntakeConstants.Kv);
+    private final TunableNumber KpVel = new TunableNumber("IntakeKpVel", IntakeConstants.velocityPIDConstants[0]);
 
     private IntakeSubsystem() {
         intakeMotor  = new CANSparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
@@ -85,6 +88,8 @@ public class IntakeSubsystem extends SubsystemBase{
     public void reset() {
         noteInIntake = false;
         noteAtBack = false;
+        noteSecure = false;
+        hasExited = false;
         firing = false;
         m_Controller.reset();
         m_VelocityController.reset();
@@ -120,13 +125,23 @@ public class IntakeSubsystem extends SubsystemBase{
             encoder.setPosition(0);
         }
         if(noteAtBack) {
-            if(m_Controller.atSetpoint()) {
-                output = 0;
+            if(noteSecure) {
                 intakeMotor.set(0);
                 return;
+            } else {
+                if(hasExited) {
+                    output = .03;
+                } else {
+                    output = -.08;
+                }
+                
             }
-            output = m_Controller.calculate(encoder.getPosition(), holdingPosition.get());
-
+            if(!getBackBeam()) {
+                hasExited = true;
+            }
+            if(hasExited && getBackBeam()) {
+                noteSecure = true;
+            }
         } else {
             output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
         }
@@ -137,7 +152,9 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void testRPMPID() {
         double output = 0;
-        output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
+        double pidOut = m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
+        output = m_Feedforward.calculate(intakeSpeed.get()) + pidOut;
+        System.out.println("Output: " + output + " PID: " + pidOut);
         intakeMotor.set(output);
     }
 
@@ -152,7 +169,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public boolean noteReady() {
-        return noteInIntake&&m_Controller.atSetpoint();
+        return noteSecure;
     }
 
     @Override
@@ -178,6 +195,9 @@ public class IntakeSubsystem extends SubsystemBase{
         if(Ks.hasChanged()
         || Kv.hasChanged()) {
             m_Feedforward = new SimpleMotorFeedforward(Ks.get(), Kv.get());
+        }
+        if(KpVel.hasChanged()) {
+            m_VelocityController.setPID(KpVel.get(), 0 ,0);
         }
     }
 

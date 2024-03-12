@@ -191,10 +191,10 @@ public class RobotContainer {
       new SpeakerCommand(s_Swerve),
       new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.2), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(160))), AutoConstants.pathConstraints),
       new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.1), 4.4, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.pathConstraints),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.8), 4.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.pathConstraints),
       new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve)
     );

@@ -85,9 +85,11 @@ public class IntakeCommand extends Command{
 
     @Override
     public void execute(){
+        intake.feedIntake();
+        arm.driveToGoal(ArmConstants.intakeSetpoint);
         double[] driverInputs;
         double rotationVal = 0, translation = 0, strafeVal = 0;
-        if(!isAuto && autoControl.getAsBoolean()) {
+        if(!isAuto && !autoControl.getAsBoolean()) {
             driverInputs = OIConstants.getDriverInputs(driver);
             translation = driverInputs[0];
             strafeVal = driverInputs[1];
@@ -95,7 +97,7 @@ public class IntakeCommand extends Command{
             isFieldRelative = true;
         }
 
-        if((!isAuto && !autoControl.getAsBoolean()) || isAuto) {
+        if((!isAuto && autoControl.getAsBoolean()) || isAuto) {
             // System.out.println("ISAUTO" + isAuto);
             if(vis.getHasTargets()) {
                 // System.out.println("let's see,,,");
@@ -142,16 +144,16 @@ public class IntakeCommand extends Command{
         //     swerve.drive(new Translation2d(0,0), 0, false, true);
         // }
     
-        intake.feedIntake();
-        arm.driveToGoal(ArmConstants.intakeSetpoint);
         
     }
     @Override
     public boolean isFinished() {
         if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
             if(intake.getFrontBeam())
-            {
-                RumbleManager.rumble(driver, 0.2);
+            {  
+                if(!isAuto) {
+                    RumbleManager.rumble(driver, 0.2);
+                }
                 swerve.drive(new Translation2d(), 0, true, true);
             }
             return true;

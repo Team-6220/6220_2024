@@ -46,6 +46,7 @@ public class ClimberTestCommand extends Command {
     }
 
     if(drive) {
+      //System.out.println(outputLeft);
       s_ClimberSubsystem.simpleDriveRight(outputRight);
       s_ClimberSubsystem.simpleDriveLeft(outputLeft);
     } else {

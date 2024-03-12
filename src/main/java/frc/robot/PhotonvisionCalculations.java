@@ -123,7 +123,7 @@ public class PhotonvisionCalculations {
             //     Transform3d fieldToCamera = cameraResult.getMultiTagResult().estimatedPose.best;
             //     // Pose2d newPose = new Pose2d(new Translation2d(fieldToCamera.getX(), fieldToCamera.getY));
                 // double visionStdDev = camTrustValues * -(1 + (range * range / 30));
-                double visionStdDev = 10 - (1 + (distanceToTarget * distanceToTarget / 30));
+                double visionStdDev = 30 - (1 + (distanceToTarget * distanceToTarget / 30));
                 // if(estimatedPhotonPoses[i].getReferencePose() != null)
                 // {
                     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
