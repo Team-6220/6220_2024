@@ -31,6 +31,9 @@ import frc.lib.util.RumbleManager;
 import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TriggerButton;
 import frc.lib.util.TunableNumber;
+import frc.robot.AutoCmd.ListOfAllAutos;
+import frc.robot.AutoCmd.fourNoteAutoServite;
+import frc.robot.AutoCmd.test;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AmpCommand;
@@ -125,9 +128,18 @@ public class RobotContainer {
     
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
-    autoChooser.addOption("fourNoteTesting", fourNoteAutoServite());
-    autoChooser.addOption("pick up fartherst Note and Shoot", pickUpFarNoteAndShoot());
-    autoChooser.addOption("AA intake Test", intakeTest());
+    // if(ListOfAllAutos.getTotalAutoNumbers() >= 0)
+    // {
+      for(int i = 0; i < ListOfAllAutos.getTotalAutoNumbers(); i ++)
+      {
+        System.out.println("success");
+        autoChooser.addOption(ListOfAllAutos.getAutoName(i), ListOfAllAutos.getAutoCommand(i));
+      }
+    // }
+    autoChooser.addOption("Serite fourNoteTesting", new fourNoteAutoServite(s_Swerve));
+    // autoChooser.addOption("pick up fartherst Note and Shoot", pickUpFarNoteAndShoot());
+    // autoChooser.addOption("AA intake Test", intakeTest());
+    // autoChooser.addOption("testtest", new test());
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");    
 
@@ -185,20 +197,20 @@ public class RobotContainer {
   }
 
   // All autos starts from here
-  public SequentialCommandGroup fourNoteAutoServite()
-  {
-    return new SequentialCommandGroup(
-      new SpeakerCommand(s_Swerve),
-      new IntakeCommand(s_Swerve),
-      new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(160))), AutoConstants.pathConstraints),
-      new IntakeCommand(s_Swerve),
-      new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.8), 4.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.pathConstraints),
-      new IntakeCommand(s_Swerve),
-      new SpeakerCommand(s_Swerve)
-    );
-  }
+  // public SequentialCommandGroup fourNoteAutoServite()
+  // {
+  //   return new SequentialCommandGroup(
+  //     new SpeakerCommand(s_Swerve),
+  //     new IntakeCommand(s_Swerve),
+  //     new SpeakerCommand(s_Swerve),
+  //     AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.2), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
+  //     new IntakeCommand(s_Swerve),
+  //     new SpeakerCommand(s_Swerve),
+  //     AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.1), 4.4, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.pathConstraints),
+  //     new IntakeCommand(s_Swerve),
+  //     new SpeakerCommand(s_Swerve)
+  //   );
+  // }
 
   public SequentialCommandGroup pickUpFarNoteAndShoot()
   {
@@ -244,6 +256,10 @@ public class RobotContainer {
       new IntakeCommand(s_Swerve)
     );
   }
+
+  // public SequentialCommandGroup test(){
+
+  // }
   //All Paths end here
 
 }

@@ -41,6 +41,7 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.VisionConstants;
@@ -54,6 +55,10 @@ public class PhotonvisionCalculations {
     // public static Transform3d camToCenterRobotZero = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
     // public static Transform3d camToCenterRobotOne = new Transform3d(new Translation3d(0.5,0.0,0.5), new Rotation3d(0,0,0));
     // public static PhotonPoseEstimator photonPoseEstimatorOne  = new PhotonPoseEstimator(aprilFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameras[1], VisionConstants.camToCenterRobotOne);
+    public static final Field2d[] theField = {
+        new Field2d(),
+        new Field2d()
+    };
     public static PhotonPoseEstimator[] estimatedPhotonPoses  = 
     {
         new PhotonPoseEstimator(aprilFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameras[0], VisionConstants.camerasToCenter[0]),
@@ -70,6 +75,7 @@ public class PhotonvisionCalculations {
         cameras[1].setPipelineIndex(0);
         estimatedPhotonPoses[0].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         estimatedPhotonPoses[1].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        
         // Pose2d botPose2d = updatePhotonRobotPose(cameras[0].getLatestResult(), cameras[1].getLatestResult(), poseEstimator, s_Swerve.visionMeasurementStdDevConstant.get());
         // if(botPose2d == null)
         // {
@@ -123,13 +129,15 @@ public class PhotonvisionCalculations {
             //     Transform3d fieldToCamera = cameraResult.getMultiTagResult().estimatedPose.best;
             //     // Pose2d newPose = new Pose2d(new Translation2d(fieldToCamera.getX(), fieldToCamera.getY));
                 // double visionStdDev = camTrustValues * -(1 + (range * range / 30));
-                double visionStdDev = 30 - (1 + (distanceToTarget * distanceToTarget / 30));
+                double visionStdDev = 10 - (1 + (distanceToTarget * distanceToTarget / 30));
                 // if(estimatedPhotonPoses[i].getReferencePose() != null)
                 // {
                     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
                     if(estimatedPoses.get(i).isPresent())
                     {
                         poseEstimator.addVisionMeasurement(new Pose2d(estimatedPoses.get(i).get().estimatedPose.getX(), estimatedPoses.get(i).get().estimatedPose.getY(), poseEstimator.getEstimatedPosition().getRotation()), Timer.getFPGATimestamp() - latencySec);
+                        theField[i].setRobotPose(new Pose2d(estimatedPoses.get(i).get().estimatedPose.getX(), estimatedPoses.get(i).get().estimatedPose.getY(), poseEstimator.getEstimatedPosition().getRotation()));
+                        SmartDashboard.putData("Pose for " + i, theField[i]);
                     }
                     //System.out.println("Pose estimate updated for :" + i + " and it's visionStdDev Value is : " + visionStdDev + " range = " + distanceToTarget);
                     

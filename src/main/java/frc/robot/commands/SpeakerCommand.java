@@ -106,7 +106,7 @@ public class SpeakerCommand extends Command{
             //armAngle = ArmConstants.getArmAngleFromDistance(distanceToSpeaker);
             arm.driveToGoal(currentShooterConfiguration.getArmAngle());
             
-            if((shooter.isAtSetpoint() && swerve.isFacingTurnTarget() && arm.isAtGoal()) || hasFired){
+            if((shooter.isAtSetpoint() && swerve.isFacingTurnTarget() && arm.isAtGoal() && intake.noteReady()) || hasFired){
                 intake.feedShooter();
                 hasFired = true;
                 shotClock++;

@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 //import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -453,7 +454,6 @@ public class Swerve extends SubsystemBase {
         else
         {
             autoIsOverShoot = false;
-            // System.out.println("TRUE, SO SAD " + field2d.getRobotPose().getX());
         }
 
         if(turnKP.hasChanged()
@@ -486,5 +486,19 @@ public class Swerve extends SubsystemBase {
         Shuffleboard.getTab(title).addNumber("Turn Controller Setpoint", ()->turnPidController.getSetpoint().position);
 
         
+    }
+
+    /**
+     * Gets the
+     */
+    public int getClosestNotePosition()
+    {
+        Pose2d rightPose = poseEstimator.getEstimatedPosition().nearest(Arrays.asList(AutoConstants.CENTERNOTE_POSE2DS));
+        for(int i = 0; i < AutoConstants.CENTERNOTE_POSE2DS.length; i++)
+        {
+            if(AutoConstants.CENTERNOTE_POSE2DS[i].equals(rightPose))
+            return i;
+        }
+        return -1;        
     }
 }
