@@ -4,17 +4,19 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
-public class IntakeIdleCommand extends Command {
-  /** Creates a new IntakeIdleCommand. */
-  private final IntakeSubsystem s_IntakeSubsystem;
-
-  public IntakeIdleCommand() {
+public class Tuning_Arm extends Command {
+  /** Creates a new Tuning_Arm. */
+  private final ArmSubsystem s_ArmSubsystem;
+  private final XboxController driver;
+  public Tuning_Arm(XboxController driver) {
     // Use addRequirements() here to declare subsystem dependencies.
-    s_IntakeSubsystem = IntakeSubsystem.getInstance();
-    addRequirements(s_IntakeSubsystem);
+    this.driver = driver;
+    s_ArmSubsystem = ArmSubsystem.getInstance();
+    addRequirements(s_ArmSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +26,15 @@ public class IntakeIdleCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    if(driver.getXButton()) {
+      s_ArmSubsystem.driveToGoal(s_ArmSubsystem.armTestAngle.get());
+    } else if(driver.getLeftBumper()) {
+      s_ArmSubsystem.simpleDrive(.1);
+    } else if(driver.getRightBumper()) {
+      s_ArmSubsystem.simpleDrive(-.1);
+    } else {
+      s_ArmSubsystem.stop();
+    }
   }
 
   // Called once the command ends or is interrupted.

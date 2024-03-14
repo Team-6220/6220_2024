@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,14 +31,12 @@ public class IntakeTest extends Command {
   @Override
   public void execute() {
     double armPos = 0;
-    if(s_intakeSubsystem.noteInTransit()) {
+    if(s_intakeSubsystem.noteInIntake()) {
       armPos = 45;
     } else {
-      armPos = IntakeConstants.armSetPointIntake;
+      armPos = ArmConstants.intakeSetpoint;
     }
     s_armSubsystem.driveToGoal(armPos);
-    
-    s_intakeSubsystem.driveToIntake();
   }
 
   // Called once the command ends or is interrupted.
