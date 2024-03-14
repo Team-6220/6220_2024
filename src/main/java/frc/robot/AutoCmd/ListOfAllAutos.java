@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 /** Add your docs here. */
 public class ListOfAllAutos {
     public static ArrayList<Pair<String, Command>> allAutos = new ArrayList<Pair<String, Command>>();
+    public ListOfAllAutos()
+    {
+        
+    }
     public static void addNewAuto(String commandName, SequentialCommandGroup newAuto)
     {
         allAutos.add(Pair.of(commandName, newAuto));

@@ -16,11 +16,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -145,7 +147,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
    
-
+    
     configureButtonBindings();
     
   }
@@ -239,8 +241,13 @@ public class RobotContainer {
   //All Paths starts here
   public SequentialCommandGroup ampScoringTesting()
   {
+    // AutoBuilder.
     return new SequentialCommandGroup(
-      AutoBuilder.pathfindToPose(AutoConstants.AMPP_POSE2D, AutoConstants.pathConstraints),
+      Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.AMPP_POSE2D, AutoConstants.pathConstraints), new AmpCommand(
+        s_Swerve,
+        () -> operator.getRawButton(1),
+        driver)),
+      // AutoBuilder.pathfindToPose(AutoConstants.AMPP_POSE2D, AutoConstants.pathConstraints),
       new AmpCommand(
       s_Swerve,
       driver,

@@ -31,15 +31,14 @@ public class fourNoteAutoServite extends SequentialCommandGroup {
     
     addCommands(
       new SpeakerCommand(s_Swerve),
-      new IntakeCommand(s_Swerve),
+      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(s_Swerve.getPose().getX(),s_Swerve.getPose().getY(), new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(-155))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
       new SpeakerCommand(s_Swerve),
-      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.2), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints), new InstantCommand(()-> s_ArmSubsystem.driveToGoal(ArmConstants.intakeSetpoint))),
-      new IntakeCommand(s_Swerve),
+      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.2), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
       new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.1), 4.4, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.pathConstraints),
-      new IntakeCommand(s_Swerve),
+      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.1), 4.4, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
       new SpeakerCommand(s_Swerve)
     );
     ListOfAllAutos.addNewAuto("four note auto servite", this);
+    // AutoBuilder.buildAuto(fourNoteAutoServite(s_Swerve));
   }
 }

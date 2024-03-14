@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.lib.util.RumbleManager;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants;
@@ -41,7 +42,8 @@ public class IntakeCommand extends Command{
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
     private boolean isAuto;
-    private int timeWithoutTarget = 0, stopIntakeDelay = 20;
+    private int timeWithoutTarget = 0, stopIntakeDelay = 20, counterForFrontIntake = 0;
+    private boolean isParallelingWithAutobuilder = false;
 
     private boolean isFieldRelative = false;
 
@@ -52,6 +54,7 @@ public class IntakeCommand extends Command{
 
     public IntakeCommand(Swerve swerve, XboxController driver, BooleanSupplier autoControl) {
         isAuto = false;
+        isParallelingWithAutobuilder = false;
         this.swerve = swerve;
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
@@ -63,10 +66,32 @@ public class IntakeCommand extends Command{
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
         timeWithoutTarget = 0;
+        counterForFrontIntake = 0;
         addRequirements(this.swerve, arm, intake, vis);
     }
 
     public IntakeCommand(Swerve swerve) {
+        isAuto = true;
+        isParallelingWithAutobuilder = false;
+        swerve.setIsAuto(true);
+        timeWithoutTarget = 0;
+        this.swerve = swerve;
+        this.intake = IntakeSubsystem.getInstance();
+        this.arm = ArmSubsystem.getInstance();
+        this.vis = PhotonVisionSubsystem.getInstance();
+        this.s_Blinkin = blinkin.getInstance();
+        this.autoControl = ()-> true;
+        this.driver = null;
+        limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
+        limelightPidController.setTolerance(turnTolerance.get());
+        limelightPidController.setIZone(.5);
+        counterForFrontIntake = 0;
+        addRequirements(this.swerve, arm, intake, vis);
+    }
+
+    public IntakeCommand(Swerve swerve, boolean isParallelingWithAutobuilder)
+    {
+        this.isParallelingWithAutobuilder = isParallelingWithAutobuilder;
         isAuto = true;
         swerve.setIsAuto(true);
         timeWithoutTarget = 0;
@@ -80,6 +105,7 @@ public class IntakeCommand extends Command{
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
+        counterForFrontIntake = 0;
         addRequirements(this.swerve, arm, intake, vis);
     }
 
@@ -92,6 +118,7 @@ public class IntakeCommand extends Command{
     public void execute(){
         intake.feedIntake();
         arm.driveToGoal(ArmConstants.intakeSetpoint);
+        counterForFrontIntake = 0;
         double[] driverInputs;
         double rotationVal = 0, translation = 0, strafeVal = 0;
         if(!isAuto && !autoControl.getAsBoolean()) {
@@ -102,7 +129,7 @@ public class IntakeCommand extends Command{
             isFieldRelative = true;
         }
 
-        if((!isAuto && autoControl.getAsBoolean()) || isAuto) {
+        if((!isAuto && autoControl.getAsBoolean()) || isAuto || !isParallelingWithAutobuilder) {
             // System.out.println("ISAUTO" + isAuto);
             if(vis.getHasTargets()) {
                 // System.out.println("let's see,,,");
@@ -132,7 +159,7 @@ public class IntakeCommand extends Command{
         }
 
 
-        if((isAuto && !swerve.getIsAutoOverShoot()) || !isAuto)
+        if((isAuto && !swerve.getIsAutoOverShoot()) || !isAuto && !isParallelingWithAutobuilder)
         {
             swerve.drive(
                     new Translation2d(translation, strafeVal), 
@@ -154,7 +181,8 @@ public class IntakeCommand extends Command{
     @Override
     public boolean isFinished() {
         if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
-            if(intake.getFrontBeam())
+            counterForFrontIntake ++;
+            if(intake.getFrontBeam() && counterForFrontIntake > 10)
             {  
                 if(!isAuto) {
                     RumbleManager.rumble(driver, 0.2);
