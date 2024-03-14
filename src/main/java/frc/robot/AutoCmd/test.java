@@ -28,7 +28,7 @@ public class test extends SequentialCommandGroup {
      *  public SequentialCommandGroup ampScoringTesting()
   {
     return new SequentialCommandGroup(
-      AutoBuilder.pathfindToPose(AutoConstants.AMPP_POSE2D, AutoConstants.pathConstraints),
+      AutoBuilder.pathfindToPose(AutoConstants.AMP_POSE2D, AutoConstants.pathConstraints),
       new AmpCommand(
       s_Swerve,
       driver,

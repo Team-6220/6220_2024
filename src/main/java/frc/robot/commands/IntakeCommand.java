@@ -106,7 +106,7 @@ public class IntakeCommand extends Command{
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
         counterForFrontIntake = 0;
-        addRequirements(this.swerve, arm, intake, vis);
+        addRequirements(arm, intake, vis);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class IntakeCommand extends Command{
             isFieldRelative = true;
         }
 
-        if((!isAuto && autoControl.getAsBoolean()) || isAuto || !isParallelingWithAutobuilder) {
+        if((!isAuto && autoControl.getAsBoolean() && !isParallelingWithAutobuilder) || isAuto) {
             // System.out.println("ISAUTO" + isAuto);
             if(vis.getHasTargets()) {
                 // System.out.println("let's see,,,");
@@ -159,7 +159,7 @@ public class IntakeCommand extends Command{
         }
 
 
-        if((isAuto && !swerve.getIsAutoOverShoot()) || !isAuto && !isParallelingWithAutobuilder)
+        if((isAuto && !swerve.getIsAutoOverShoot()) || !isAuto && !isParallelingWithAutobuilder && arm.getArmPosition() > 80)
         {
             swerve.drive(
                     new Translation2d(translation, strafeVal), 

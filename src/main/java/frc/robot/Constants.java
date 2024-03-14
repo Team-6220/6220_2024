@@ -316,8 +316,8 @@ public final class Constants {
 
         public static final Pose2d SPEAKER_POSE2D_BLUE = new Pose2d(new Translation2d(-.0381, 5.547868), new Rotation2d(0));
         public static final Pose2d SPEAKER_POSE2D_RED = new Pose2d(new Translation2d(16.5793, 5.547868), new Rotation2d(180));
-        public static final Pose2d AMP_POSE2D_RED = new Pose2d(new Translation2d(Units.inchesToMeters(580.77), Units.inchesToMeters(323-22.25)), new Rotation2d(270));
-        public static final Pose2d AMP_POSE2D_BLUE = new Pose2d(new Translation2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323-22.25)), new Rotation2d(270));
+        public static final Pose2d AMP_POSE2D_RED = new Pose2d(new Translation2d(Units.inchesToMeters(580.77), Units.inchesToMeters(323-7.25)), new Rotation2d(270));
+        public static final Pose2d AMP_POSE2D_BLUE = new Pose2d(new Translation2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323-7.25)), new Rotation2d(270));
 
         
         public static final Translation2d CENTER_OF_FIELD = new Translation2d(8.2706,4.105148);
@@ -556,8 +556,8 @@ public final class Constants {
     
         public static final PathConstraints pathConstraints = new PathConstraints(autoMaxVelocityMps, kMaxAccelerationMetersPerSecondSquared, maxAngularVelocityRps, maxAngularAcceleratRpsSq);
 
-        public static final Pose2d AMPP_POSE2D = isRed ? new Pose2d(14.65, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians())) : new Pose2d(1.9, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
-
+        // public static final Pose2d AMP_POSE2D = isRed ? new Pose2d(14.65, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians())) : new Pose2d(1.9, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
+        public static final Pose2d AMP_POSE2D = new Pose2d(AlienceColorCoordinateFlip.flip(2.0), 7.67, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         // public static final double maxXDistance = isRed ? 8.81 : 7.75;
         public static final double maxXDistance = isRed ? 12.5 : 2.45; // maximum x distance during auto so that it doesn't cross the middle of the field
 

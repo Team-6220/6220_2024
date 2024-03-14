@@ -159,15 +159,15 @@ public class RobotContainer {
 
     noNote.onTrue(new InstantCommand(() -> s_IntakeSubsystem.reset()));
 
-    // amp.whileTrue(new AmpCommand(
-    //   s_Swerve,
-    //   driver,
-    //   () -> operator.getRawButton(1),
-    //   ()->robotControlLeftTrigger.getAsBoolean()
-    //   )
-    // );
+    amp.whileTrue(new AmpCommand(
+      s_Swerve,
+      driver,
+      () -> operator.getRawButton(1),
+      ()->robotControlLeftTrigger.getAsBoolean()
+      )
+    );
 
-    amp.whileTrue(ampScoringTesting());
+    // amp.whileTrue(ampScoringTesting());
 
     // amp.whileTrue(noteTesting());
 
@@ -239,23 +239,23 @@ public class RobotContainer {
   //All auto ends here
 
   //All Paths starts here
-  public SequentialCommandGroup ampScoringTesting()
-  {
-    // AutoBuilder.
-    return new SequentialCommandGroup(
-      Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.AMPP_POSE2D, AutoConstants.pathConstraints), new AmpCommand(
-        s_Swerve,
-        () -> operator.getRawButton(1),
-        driver)),
-      // AutoBuilder.pathfindToPose(AutoConstants.AMPP_POSE2D, AutoConstants.pathConstraints),
-      new AmpCommand(
-      s_Swerve,
-      driver,
-      () -> operator.getRawButton(1),
-      ()->robotControlLeftTrigger.getAsBoolean()
-      )
-    );
-  }
+  // public SequentialCommandGroup ampScoringTesting()
+  // {
+  //   // AutoBuilder.
+  //   return new SequentialCommandGroup(
+  //     Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.AMP_POSE2D, AutoConstants.pathConstraints), new AmpCommand(
+  //       s_Swerve,
+  //       () -> operator.getRawButton(1),
+  //       driver)),
+  //     // AutoBuilder.pathfindToPose(AutoConstants.AMP_POSE2D, AutoConstants.pathConstraints),
+  //     new AmpCommand(
+  //     s_Swerve,
+  //     driver,
+  //     () -> operator.getRawButton(1),
+  //     ()->robotControlLeftTrigger.getAsBoolean()
+  //     )
+  //   );
+  // }
 
   public SequentialCommandGroup intakeTest()
   {
