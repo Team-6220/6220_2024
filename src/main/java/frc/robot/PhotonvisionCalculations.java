@@ -73,8 +73,8 @@ public class PhotonvisionCalculations {
     {
         cameras[0].setPipelineIndex(0);
         cameras[1].setPipelineIndex(0);
-        estimatedPhotonPoses[0].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        estimatedPhotonPoses[1].setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        estimatedPhotonPoses[0].setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+        estimatedPhotonPoses[1].setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
         
         // Pose2d botPose2d = updatePhotonRobotPose(cameras[0].getLatestResult(), cameras[1].getLatestResult(), poseEstimator, s_Swerve.visionMeasurementStdDevConstant.get());
         // if(botPose2d == null)
