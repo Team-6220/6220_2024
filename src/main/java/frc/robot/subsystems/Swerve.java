@@ -98,8 +98,6 @@ public class Swerve extends SubsystemBase {
 
     private boolean autoIsOverShoot = false, isAuto = false;
 
-    private final double previousUpdateTime = 0;
-
     
     public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", 1);
 
@@ -425,12 +423,12 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic(){
         Double timestamp = Timer.getFPGATimestamp();
-        gyro_headings.put(timestamp, getHeading());
-        gyro_timestamps.addFirst(timestamp);
-        if(gyro_timestamps.size() > 60){
-            timestamp = gyro_timestamps.removeLast();
-            gyro_headings.remove(timestamp);
-        }
+        // gyro_headings.put(timestamp, getHeading());
+        // gyro_timestamps.addFirst(timestamp);
+        // if(gyro_timestamps.size() > 60){
+        //     timestamp = gyro_timestamps.removeLast();
+        //     gyro_headings.remove(timestamp);
+        // }
 
         if(timestamp - SwerveConstants.swerveAlignUpdateSecond >= lastTurnUpdate)
         {
@@ -441,8 +439,8 @@ public class Swerve extends SubsystemBase {
 
         
         // LimelightCalculations.updatePoseEstimation(poseEstimator, this);
-        PhotonvisionCalculations.updateCamerasPoseEstimation(poseEstimator, visionMeasurementStdDevConstant.get());
-
+        // PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
+        PhotonvisionCalculations.samsupdatecamerasposeestimation(poseEstimator, visionMeasurementStdDevConstant.get());
        poseEstimator.update(getGyroYaw(), getModulePositions());
         field2d.setRobotPose(getPose());
         

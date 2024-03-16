@@ -45,8 +45,8 @@ public class ShooterSubsystem extends SubsystemBase{
 
     private ShooterSubsystem() {
         
-        shooterMotorA = new TalonFX(ShooterConstants.shooterMotorAID);
-        shooterMotorB = new TalonFX(ShooterConstants.shooterMotorBID);
+        shooterMotorA = new TalonFX(ShooterConstants.shooterMotorAID); //Green/right
+        shooterMotorB = new TalonFX(ShooterConstants.shooterMotorBID); //Oragne/left
         
         shooterMotorA.setNeutralMode(NeutralModeValue.Coast);
         shooterMotorB.setNeutralMode(NeutralModeValue.Coast);

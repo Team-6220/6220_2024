@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -31,11 +32,17 @@ public class fourNoteAutoServite extends SequentialCommandGroup {
     
     addCommands(
       new SpeakerCommand(s_Swerve),
-      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(s_Swerve.getPose().getX(),s_Swerve.getPose().getY(), new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(-155))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
+      // Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.80),4.35, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(-156.97))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
+      Commands.race(new IntakeBuffer(), AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.80),4.35, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(-156.97))), AutoConstants.pathConstraints)),
+      new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve),
-      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.2), 5.6, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
+      // Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.85), 4.85, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(-90))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
+      Commands.race(new IntakeBuffer(), AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.85), 4.85, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(-90))), AutoConstants.pathConstraints)),
+      new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve),
-      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.1), 4.4, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(155))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
+      // Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.9), 6.3, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(-90))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
+      Commands.race(new IntakeBuffer(), AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.85), 6.3, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(-90))), AutoConstants.pathConstraints)),
+      new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve)
     );
     ListOfAllAutos.addNewAuto("four note auto servite", this);

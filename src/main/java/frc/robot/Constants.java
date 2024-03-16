@@ -129,7 +129,7 @@ public final class Constants {
         public static final double kI = 0.1;//0.0005
         public static final double kD = 0.005;//0.001
         public static final double kG = 0.37;
-        public static final double kV = 0.025;
+        public static final double kV = 0.020;
         public static final double kS = 0.45;
         public static final double armMaxVel = 200;
         public static final double armMaxAccel = 450;
@@ -236,13 +236,13 @@ public final class Constants {
         
         /* Shooter Current Limits */
         public static final boolean shooterAEnableCurrentLimit = true;
-        public static final double shooterACurrentLimit = 25; //TODO: NEED CHANGE
-        public static final int shooterACurrentThreshold = 40;//TODO: NEED CHANGE
+        public static final double shooterACurrentLimit = 10; //TODO: NEED CHANGE
+        public static final int shooterACurrentThreshold = 10;//TODO: NEED CHANGE
         public static final double shooterACurrentThresholdTime = 0.1;
 
         public static final boolean shooterBEnableCurrentLimit = true;
-        public static final double shooterBCurrentLimit = 25; //TODO: NEED CHANGE
-        public static final int shooterBCurrentThreshold = 40;//TODO:NEED CHANGE
+        public static final double shooterBCurrentLimit = 10; //TODO: NEED CHANGE
+        public static final int shooterBCurrentThreshold = 10;//TODO:NEED CHANGE
         public static final double shooterBCurrentThresholdTime = 0.1;
 
 

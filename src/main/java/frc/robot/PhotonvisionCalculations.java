@@ -29,6 +29,7 @@ import edu.wpi.first.math.VecBuilder;
 // import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
@@ -46,6 +47,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.VisionConstants;
 // import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Swerve;
 
 /** Add your docs here. */
 public class PhotonvisionCalculations {
@@ -75,7 +77,6 @@ public class PhotonvisionCalculations {
         cameras[1].setPipelineIndex(0);
         estimatedPhotonPoses[0].setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
         estimatedPhotonPoses[1].setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
-        
         // Pose2d botPose2d = updatePhotonRobotPose(cameras[0].getLatestResult(), cameras[1].getLatestResult(), poseEstimator, s_Swerve.visionMeasurementStdDevConstant.get());
         // if(botPose2d == null)
         // {
@@ -95,31 +96,90 @@ public class PhotonvisionCalculations {
         // Shuffleboard.getTab("Photonvision").add("camera one latency in ms", camOneLatency);
     }
     
-    public static void updateCamerasPoseEstimation(SwerveDrivePoseEstimator poseEstimator, double 
+    public static void updateCamerasPoseEstimation(Swerve s_Swerve, SwerveDrivePoseEstimator poseEstimator, double 
     camTrustValues)
     {
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+        Optional<EstimatedRobotPose> closestPose = null;
+        double closetDistanceToPrevTarget = Double.MAX_VALUE;
+        Pose2d prevPose = poseEstimator.getEstimatedPosition();
+        boolean hasTarget = false;
         for(int i = 0; i < cameras.length; i ++)
         {
-            // estimatedPhotonPoses[i].setLastPose(poseEstimator.getEstimatedPosition());
             
-            PhotonPipelineResult cameraResult = cameras[i].getLatestResult();
-            double latencySec = cameraResult.getLatencyMillis() /1000;
-            
+            estimatedPhotonPoses[i].setReferencePose(prevPose);
+            Optional<EstimatedRobotPose> estimatedRobotPose = estimatedPhotonPoses[i].update();
 
-            // double range =
-            //             cameraResult.hasTargets() ?
-            //             PhotonUtils.calculateDistanceToTargetMeters(
-            //                     (i == 1) ? 0.2159 :0.21209, //set to left if id is 1, set to right if id is 0
-            //                     Units.inchesToMeters(VisionConstants.aprilTagHeightInches[cameraResult.getBestTarget().getFiducialId() - 1]),
-                                
-            //                     Rotation2d.fromDegrees(i == 1 ? VisionConstants.leftArduCamPitchOffsetRad : VisionConstants.rightArduCamPitchOffsetRad).getRadians(),
-            //                     Rotation2d.fromDegrees(cameraResult.getBestTarget().getPitch()).getRadians())
-            //                     :
-            //                     Double.MAX_VALUE;
             double distanceToTarget = Double.MAX_VALUE;
-            if(cameraResult.getBestTarget() != null) {
-                distanceToTarget = cameraResult.hasTargets() ? PhotonUtils.getDistanceToPose(poseEstimator.getEstimatedPosition(), new Pose2d(cameraResult.getBestTarget().getBestCameraToTarget().getX(), cameraResult.getBestTarget().getBestCameraToTarget().getY(), poseEstimator.getEstimatedPosition().getRotation())) : Double.MAX_VALUE;
+            if(estimatedRobotPose.isPresent()) {
+                double estimatedX = estimatedRobotPose.get().estimatedPose.getX();
+                double estimatedY = estimatedRobotPose.get().estimatedPose.getY();
+                double latency = estimatedRobotPose.get().timestampSeconds;
+                if(closestPose != null) {
+                    
+                    double distanceToPrevPose = PhotonUtils.getDistanceToPose(prevPose, new Pose2d(estimatedX, estimatedY, new Rotation2d()));
+                    System.out.println("distanceTo prevpose: " + distanceToPrevPose);
+                    if(distanceToPrevPose < closetDistanceToPrevTarget) {
+                        System.out.println("CLOSEST POSE UPDATE!");
+                        closestPose = estimatedRobotPose;
+                        closetDistanceToPrevTarget = distanceToPrevPose;
+                        
+                    }
+                } else {
+                    closestPose = estimatedRobotPose;
+                }
+                theField[i].setRobotPose(new Pose2d(estimatedX, estimatedY, new Rotation2d()));
+                SmartDashboard.putData("Pose for " + i, theField[i]);
+                poseEstimator.addVisionMeasurement(new Pose2d(estimatedX, estimatedY, poseEstimator.getEstimatedPosition().getRotation()), Timer.getFPGATimestamp() - latency);
+                hasTarget = true;
+            }
+            
+        }
+        double visionStdDev = 0;
+        double minDev = 0;
+        double maxDev = 40;
+        if((s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1) || s_Swerve.getIsAuto()) {
+            minDev = 0.002;
+        }
+        
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));
+        if(hasTarget) {
+            poseEstimator.addVisionMeasurement(new Pose2d(closestPose.get().estimatedPose.getX(), closestPose.get().estimatedPose.getY(), poseEstimator.getEstimatedPosition().getRotation()), Timer.getFPGATimestamp() - closestPose.get().timestampSeconds);//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
+            System.out.println(closestPose.get().estimatedPose.toString());
+            // System.out.println("has target");
+        }
+    }
+
+    public static void samsupdatecamerasposeestimation(SwerveDrivePoseEstimator poseEstimator, double camTrustValue)
+    {
+        ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+        PhotonPipelineResult cameraResult[] = {cameras[0].getLatestResult(), cameras[1].getLatestResult()};
+        // if(cameraResult[0].getBestTarget() != null && cameraResult[1].getBestTarget() != null)
+        // {
+        //     if((Math.abs(cameraResult[0].getBestTarget().getBestCameraToTarget().getX() - cameraResult[1].getBestTarget().getBestCameraToTarget().getX())> 0.5) && (Math.abs(cameraResult[0].getBestTarget().getBestCameraToTarget().getY() - cameraResult[1].getBestTarget().getBestCameraToTarget().getY())> 0.5))
+        //     {
+        //         PhotonPipelineResult temp = cameraResult[0];
+        //         cameraResult[0] = cameraResult[1];
+        //         cameraResult[1] = temp;
+        //     }
+        // }
+        if(estimatedPoses.get(0).isPresent() && estimatedPoses.get(1).isPresent() && (Math.abs(estimatedPoses.get(0).get().estimatedPose.getX() - estimatedPoses.get(1).get().estimatedPose.getX()) > 0.5) && (Math.abs(estimatedPoses.get(0).get().estimatedPose.getY() - estimatedPoses.get(1).get().estimatedPose.getY()) > 0.5))
+        {
+            // Optional<EstimatedRobotPose> temp = estimatedPoses.get(1);
+            System.out.println("hi");
+            estimatedPoses.add(estimatedPoses.remove(0));
+        }
+        for(int i = 0; i < cameras.length; i ++)
+        {
+             // estimatedPhotonPoses[i].setLastPose(poseEstimator.getEstimatedPosition());
+            
+             double latencySec = cameraResult[i].getLatencyMillis() /1000; 
+             double distanceToTarget = Double.MAX_VALUE;
+            //  if(cameraResult.getBestTarget() != null) {
+            //      distanceToTarget = cameraResult.hasTargets() ? PhotonUtils.getDistanceToPose(poseEstimator.getEstimatedPosition(), new Pose2d(cameraResult.getBestTarget().getBestCameraToTarget().getX(), cameraResult.getBestTarget().getBestCameraToTarget().getY(), poseEstimator.getEstimatedPosition().getRotation())) : Double.MAX_VALUE;
+            //  }
+             if(cameraResult[i].getBestTarget() != null) {
+                
+                distanceToTarget = cameraResult[i].hasTargets() ? PhotonUtils.getDistanceToPose(poseEstimator.getEstimatedPosition(), new Pose2d(cameraResult[i].getBestTarget().getBestCameraToTarget().getX(), cameraResult[i].getBestTarget().getBestCameraToTarget().getY(), poseEstimator.getEstimatedPosition().getRotation())) : Double.MAX_VALUE;
             }
 
             // range = Math.abs(range);
@@ -141,45 +201,7 @@ public class PhotonvisionCalculations {
                         SmartDashboard.putData("Pose for " + i, theField[i]);
                     }
                     //System.out.println("Pose estimate updated for :" + i + " and it's visionStdDev Value is : " + visionStdDev + " range = " + distanceToTarget);
-                    
-                    // poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
-                    // poseEstimator.addVisionMeasurement(new Pose2d(estimatedPoses.get(i)., estimatedPhotonPoses[i].getRobotToCameraTransform().getY(), poseEstimator.getEstimatedPosition().getRotation()), Timer.getFPGATimestamp() - latencySec);
-                    // System.out.println("Pose estimate updated for :" + i + " and it's visionStdDev Value is : " + visionStdDev + " est.x pose = " + estimatedPhotonPoses[i].getRobotToCameraTransform().getX());
-                    // }
-            // }
-            // else if(cameraResult.hasTargets())
-            // {
-            //     PhotonTrackedTarget fieldToCamera = cameraResult.getBestTarget();
-            //     double distanceToTarget = fieldToCamera.
-            // }
-            SmartDashboard.putNumber("visionStdDev: " + i, visionStdDev);
         }
-        
-
-        // PhotonPipelineResult camZeroResult = cameras[0].getLatestResult();
-        // PhotonPipelineResult camOneResult = cameras[1].getLatestResult();
-
-        // camZeroLatency = camZeroResult.getLatencyMillis();
-        // camOneLatency = camOneResult.getLatencyMillis();
-        
-        // Pose2d cameraZeroPose = updateCamPoseMultiTag(camZeroResult, poseEstimator);
-        // Pose2d cameraOnePose = updateCamPoseMultiTag(camOneResult, poseEstimator);
-        
-        // if(cameraZeroPose != null)
-        // {
-        //     // poseEstimator.setVisionMeasurementStdDevs(null);
-        //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.2, 0.2, Double.MAX_VALUE));
-        //     poseEstimator.addVisionMeasurement(cameraZeroPose, Timer.getFPGATimestamp() - (camZeroLatency/1000));
-        //     //System.out.println("Added vision measurement to camera 0 : " + cameraZeroPose.getX());
-        // }
-        // if (cameraOnePose != null)
-        // {
-        //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.2, 0.2, Double.MAX_VALUE));
-        //     poseEstimator.addVisionMeasurement(cameraOnePose, Timer.getFPGATimestamp() - (camOneLatency/1000));
-        //     //System.out.println("Added vision measurement to camera 1 : " + cameraOnePose.getX());
-        // }
-        
-        // Shuffleboard.getTab("Photonvision").add("average camera latency in ms", averageCamLatency);
     }
 
     public static ArrayList<Optional<EstimatedRobotPose>> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {

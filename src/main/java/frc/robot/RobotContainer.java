@@ -199,7 +199,7 @@ public class RobotContainer {
   }
 
   // All autos starts from here
-  // public SequentialCommandGroup fourNoteAutoServite()
+  // public SequentialCommandGroup fourNoteAuto ()
   // {
   //   return new SequentialCommandGroup(
   //     new SpeakerCommand(s_Swerve),

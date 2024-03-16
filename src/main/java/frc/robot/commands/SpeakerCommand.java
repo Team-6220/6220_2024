@@ -74,7 +74,7 @@ public class SpeakerCommand extends Command{
         }
         
         if(currentShooterConfiguration != null) {
-
+            System.out.println("Is not null!");
             double[] driverInputs;
             if(!isAuto)
             {
@@ -128,6 +128,9 @@ public class SpeakerCommand extends Command{
         if(shotClock > ShooterConstants.fireTime*50) {
             return true;
         }
+    // if(!intake.noteInIntake()) {
+    //     end(true);
+    // }
         return false;
     }
 
