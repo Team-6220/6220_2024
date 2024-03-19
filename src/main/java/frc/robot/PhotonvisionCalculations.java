@@ -52,7 +52,7 @@ import frc.robot.subsystems.Swerve;
 /** Add your docs here. */
 public class PhotonvisionCalculations {
     public static AprilTagFieldLayout aprilFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    public static PhotonCamera[] cameras = {new PhotonCamera("Arducam_OV2311_USB_Camera_0"), new PhotonCamera("Arducam_OV2311_USB_Camera_1")}; //LEFT IS ID 0, RIGHT IS ID 1
+    public static PhotonCamera[] cameras = {new PhotonCamera("Right_Ardu_Cam"), new PhotonCamera("Left_Ardu_cam")}; //LEFT IS ID 0, RIGHT IS ID 1
     // public PhotonPipelineResult cameraZeroResults, cameraOneResults;
     // public static Transform3d camToCenterRobotZero = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
     // public static Transform3d camToCenterRobotOne = new Transform3d(new Translation3d(0.5,0.0,0.5), new Rotation3d(0,0,0));

@@ -37,8 +37,8 @@ public class ShootingTestCommand extends Command {
 
   private final ProfiledPIDController leftAndRightPID, fowardAndBackPID;
 
-  private TunableNumber currentRow = new TunableNumber("Current Row", 0);
-  private TunableNumber currentColumn = new TunableNumber("Current Column", 0);
+  private TunableNumber currentRow = new TunableNumber("Current Row", 3);
+  private TunableNumber currentColumn = new TunableNumber("Current Column", 4);
   private TunableNumber headingOffsetTest = new TunableNumber("Heading Offset Test", 0);
   public ShootingTestCommand(Swerve s_Swerve, XboxController driverInputs) {
     this.s_Swerve = s_Swerve;
@@ -107,6 +107,7 @@ public class ShootingTestCommand extends Command {
         intakeSubsystem.feedShooter();
         System.out.println("fire");
         hasFired = true;
+        shooterSubsystem.isFiring = true;
       }
     } else {
       shooterSubsystem.stop();

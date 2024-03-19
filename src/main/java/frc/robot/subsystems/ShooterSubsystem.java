@@ -41,8 +41,9 @@ public class ShooterSubsystem extends SubsystemBase{
 
     private PIDController m_controllerA, m_controllerB;
 
+    public boolean isFiring = false;
     private SimpleMotorFeedforward feedforwardA, feedforwardB;
-
+    private double currentMaxOutA, currentMaxOutB;
     private ShooterSubsystem() {
         
         shooterMotorA = new TalonFX(ShooterConstants.shooterMotorAID); //Green/right
@@ -66,8 +67,8 @@ public class ShooterSubsystem extends SubsystemBase{
         feedforwardA = new SimpleMotorFeedforward(KsA.get(), KvA.get(), KaA.get());
         feedforwardB = new SimpleMotorFeedforward(KsB.get(), KvB.get(), KaB.get());
 
-        m_controllerA.setTolerance(100); //TODO: Add constants
-        m_controllerB.setTolerance(100);
+        m_controllerA.setTolerance(200); //TODO: Add constants
+        m_controllerB.setTolerance(200);
 
     }
 
@@ -97,6 +98,16 @@ public class ShooterSubsystem extends SubsystemBase{
         double [] motorOutputs = calculate(velocity);
         double motorASpeed = motorOutputs[0];
         double motorBSpeed = motorOutputs[1];
+        if(isFiring) {
+            if(motorASpeed > currentMaxOutA) {
+                motorASpeed = currentMaxOutA;
+            }
+            if(motorBSpeed > currentMaxOutB) {
+                motorBSpeed = currentMaxOutB;
+            }
+        }
+        currentMaxOutA = motorASpeed;
+        currentMaxOutB = motorBSpeed;
         shooterMotorA.set(motorASpeed);
         shooterMotorB.set(motorBSpeed);
         //SmartDashboard.putNumber("Target Velocity A", velocity);
@@ -107,6 +118,16 @@ public class ShooterSubsystem extends SubsystemBase{
         double [] motorOutputs = calculate(velocities);
         double motorASpeed = motorOutputs[0];
         double motorBSpeed = motorOutputs[1];
+        if(isFiring) {
+            if(motorASpeed > currentMaxOutA) {
+                motorASpeed = currentMaxOutA;
+            }
+            if(motorBSpeed > currentMaxOutB) {
+                motorBSpeed = currentMaxOutB;
+            }
+        }
+        currentMaxOutA = motorASpeed;
+        currentMaxOutB = motorBSpeed;
         shooterMotorA.set(motorASpeed);
         shooterMotorB.set(motorBSpeed);
         //SmartDashboard.putNumber("Target Velocity A", velocities[0]);
@@ -114,6 +135,8 @@ public class ShooterSubsystem extends SubsystemBase{
     }
     public void spinToVelocity(Pair<Double, Double> velocities){
         double[] newVelocities = {velocities.getFirst(), velocities.getSecond()};
+        SmartDashboard.putNumber("a velocity", newVelocities[0]);
+        SmartDashboard.putNumber("b velocity", newVelocities[1]);
         spinToVelocity(newVelocities);
     }
 
@@ -126,8 +149,8 @@ public class ShooterSubsystem extends SubsystemBase{
     public void stop(){
         shooterMotorA.set(0);
         shooterMotorB.set(0);
+        isFiring = false;
     }
-
     public boolean isAtSetpoint() {
       return (m_controllerA.atSetpoint() && m_controllerB.atSetpoint());
     }

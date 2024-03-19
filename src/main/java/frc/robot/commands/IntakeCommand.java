@@ -131,7 +131,7 @@ public class IntakeCommand extends Command{
 
         if((!isAuto && autoControl.getAsBoolean() && !isParallelingWithAutobuilder) || isAuto) {
             // System.out.println("ISAUTO" + isAuto);
-            if(vis.getHasTargets()) {
+            if(vis.getHasTargets() && arm.isAtGoal()) {
                 // System.out.println("let's see,,,");
                 timeWithoutTarget = 0;
                 rotationVal = limelightPidController.calculate(vis.getTurnOffset());

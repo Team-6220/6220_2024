@@ -109,6 +109,7 @@ public class SpeakerCommand extends Command{
             if((shooter.isAtSetpoint() && swerve.isFacingTurnTarget() && arm.isAtGoal()) || hasFired){
                 intake.feedShooter();
                 hasFired = true;
+                shooter.isFiring = true;
                 shotClock++;
                 s_Blinkin.solid_green();
             } else if(!swerve.isFacingTurnTarget()) {

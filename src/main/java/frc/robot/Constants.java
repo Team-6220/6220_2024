@@ -176,7 +176,7 @@ public final class Constants {
         public static final double armOffset = 167.53781218844532; //157.280949; // arm up
         // -202.719051
         //FIXME: set setpoints
-        public static final double intakeSetpoint = 83;
+        public static final double intakeSetpoint = 84;
         public static final double hoverSetpoint = 0; //for like right above intake
         public static final double restingSetpoint = 70;
         public static final double ampSetPoint = -8;
@@ -237,13 +237,13 @@ public final class Constants {
         /* Shooter Current Limits */
         public static final boolean shooterAEnableCurrentLimit = true;
         public static final double shooterACurrentLimit = 10; //TODO: NEED CHANGE
-        public static final int shooterACurrentThreshold = 10;//TODO: NEED CHANGE
-        public static final double shooterACurrentThresholdTime = 0.1;
+        public static final int shooterACurrentThreshold = 15;//TODO: NEED CHANGE
+        public static final double shooterACurrentThresholdTime = 0.2;
 
         public static final boolean shooterBEnableCurrentLimit = true;
         public static final double shooterBCurrentLimit = 10; //TODO: NEED CHANGE
-        public static final int shooterBCurrentThreshold = 10;//TODO:NEED CHANGE
-        public static final double shooterBCurrentThresholdTime = 0.1;
+        public static final int shooterBCurrentThreshold = 15;//TODO:NEED CHANGE
+        public static final double shooterBCurrentThresholdTime = 0.2;
 
 
         public static final double idleOutput = .05;

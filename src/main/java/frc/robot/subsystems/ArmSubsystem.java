@@ -141,7 +141,7 @@ public class ArmSubsystem extends SubsystemBase{
         double calculatedSpeed = PIDOutput + feedForwardOutput;
 
         
-
+        SmartDashboard.putNumber("Arm Goal", goal);
         armMotorA.setVoltage(calculatedSpeed);
         //+90 because feed forward want the angle to be 0 at horizontal for gravity calculations
     }
@@ -207,6 +207,7 @@ public class ArmSubsystem extends SubsystemBase{
         //SmartDashboard.putNumber("PID Controller Output", PIDOutput);
         //SmartDashboard.putNumber("Feed Forward Output", feedForwardOutput);
         //System.out.println(getArmPosition());
+        SmartDashboard.putBoolean("arm at goal", isAtGoal());
     }
 
     /**
