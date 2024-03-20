@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.ShooterConfiguration;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.VisionConstants;
@@ -64,6 +65,10 @@ public class SpeakerCommand extends Command{
     @Override
     public void execute(){
 
+        if(isAuto && AutoConstants.currentCenterNotePos >= AutoConstants.centerNoteLimit)
+        {
+            end(true);
+        }
         
         try {
             currentShooterConfiguration = ShooterConfiguration.getShooterConfiguration(swerve.getPose());

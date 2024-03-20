@@ -45,7 +45,7 @@ public class fourNoteAutoServite extends SequentialCommandGroup {
       new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve)
     );
-    ListOfAllAutos.addNewAuto("four note auto servite", this);
+    // ListOfAllAutos.addNewAuto("four note auto servite", this);
     // AutoBuilder.buildAuto(fourNoteAutoServite(s_Swerve));
   }
 }
