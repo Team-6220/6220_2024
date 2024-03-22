@@ -21,6 +21,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 // import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 // import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -101,6 +102,7 @@ public class PhotonvisionCalculations {
     {
         Optional<EstimatedRobotPose> closestPose = null;
         double closetDistanceToPrevTarget = Double.MAX_VALUE;
+        double closestCameraLatency;
         Pose2d prevPose = poseEstimator.getEstimatedPosition();
         boolean hasTarget = false;
         for(int i = 0; i < cameras.length; i ++)
@@ -109,17 +111,16 @@ public class PhotonvisionCalculations {
             estimatedPhotonPoses[i].setReferencePose(prevPose);
             Optional<EstimatedRobotPose> estimatedRobotPose = estimatedPhotonPoses[i].update();
 
-            double distanceToTarget = Double.MAX_VALUE;
+            
             if(estimatedRobotPose.isPresent()) {
                 double estimatedX = estimatedRobotPose.get().estimatedPose.getX();
                 double estimatedY = estimatedRobotPose.get().estimatedPose.getY();
-                double latency = estimatedRobotPose.get().timestampSeconds;
                 if(closestPose != null) {
                     
                     double distanceToPrevPose = PhotonUtils.getDistanceToPose(prevPose, new Pose2d(estimatedX, estimatedY, new Rotation2d()));
                     System.out.println("distanceTo prevpose: " + distanceToPrevPose);
                     if(distanceToPrevPose < closetDistanceToPrevTarget) {
-                        System.out.println("CLOSEST POSE UPDATE!");
+                        //System.out.println("CLOSEST POSE UPDATE!");
                         closestPose = estimatedRobotPose;
                         closetDistanceToPrevTarget = distanceToPrevPose;
                         
@@ -129,27 +130,33 @@ public class PhotonvisionCalculations {
                 }
                 theField[i].setRobotPose(new Pose2d(estimatedX, estimatedY, new Rotation2d()));
                 SmartDashboard.putData("Pose for " + i, theField[i]);
-                poseEstimator.addVisionMeasurement(new Pose2d(estimatedX, estimatedY, poseEstimator.getEstimatedPosition().getRotation()), Timer.getFPGATimestamp() - latency);
+                //poseEstimator.addVisionMeasurement(new Pose2d(estimatedX, estimatedY, poseEstimator.getEstimatedPosition().getRotation()), Timer.getFPGATimestamp() - latency);
                 hasTarget = true;
             }
             
         }
-        double visionStdDev = 0;
-        double minDev = 0;
-        double maxDev = 40;
-        if((s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1) || s_Swerve.getIsAuto()) {
-            minDev = 0.002;
-        }
+        double visionStdDev = 1;
+        double movementAddition = 10;
+        double nonMultiAddition = 20;
         
-        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));
         if(hasTarget) {
-            poseEstimator.addVisionMeasurement(new Pose2d(closestPose.get().estimatedPose.getX(), closestPose.get().estimatedPose.getY(), poseEstimator.getEstimatedPosition().getRotation()), Timer.getFPGATimestamp() - closestPose.get().timestampSeconds);//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
-            System.out.println(closestPose.get().estimatedPose.toString());
-            // System.out.println("has target");
+            
+            
+            if((s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1) || s_Swerve.getIsAuto()) {
+                visionStdDev += movementAddition;
+            }
+            if(closestPose.get().strategy != PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR) {
+                visionStdDev += nonMultiAddition;
+            }
+            //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));
+            poseEstimator.addVisionMeasurement(new Pose2d(closestPose.get().estimatedPose.getX(), closestPose.get().estimatedPose.getY(), poseEstimator.getEstimatedPosition().getRotation()), closestPose.get().timestampSeconds);//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
+            System.out.println("X: " + closestPose.get().estimatedPose.getX() + " Y: " + closestPose.get().estimatedPose.getY() + " VisionStdDev: " + visionStdDev);
+            //System.out.println("Added Measurement with deviation: " + visionStdDev + "Closest Pose X" + closestPose.get().estimatedPose.getX());
         }
     }
 
-    public static void samsupdatecamerasposeestimation(SwerveDrivePoseEstimator poseEstimator, double camTrustValue)
+    public static void updateCamerasPoseEstimation(SwerveDrivePoseEstimator poseEstimator, double camTrustValue)
     {
         ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
         PhotonPipelineResult cameraResult[] = {cameras[0].getLatestResult(), cameras[1].getLatestResult()};
@@ -190,7 +197,7 @@ public class PhotonvisionCalculations {
             //     Transform3d fieldToCamera = cameraResult.getMultiTagResult().estimatedPose.best;
             //     // Pose2d newPose = new Pose2d(new Translation2d(fieldToCamera.getX(), fieldToCamera.getY));
                 // double visionStdDev = camTrustValues * -(1 + (range * range / 30));
-                double visionStdDev = 10 + (10 - (1 + (distanceToTarget * distanceToTarget / 30)));
+                double visionStdDev = 0.1;
                 // if(estimatedPhotonPoses[i].getReferencePose() != null)
                 // {
                     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
