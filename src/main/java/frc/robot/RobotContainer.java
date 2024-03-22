@@ -33,8 +33,9 @@ import frc.lib.util.RumbleManager;
 import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TriggerButton;
 import frc.lib.util.TunableNumber;
-import frc.robot.AutoCmd.ListOfAllAutos;
+// import frc.robot.AutoCmd.ListOfAllAutos;
 import frc.robot.AutoCmd.fourNoteAutoServite;
+import frc.robot.AutoCmd.pickUpFarNoteTesting;
 import frc.robot.AutoCmd.test;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
@@ -132,14 +133,14 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     // if(ListOfAllAutos.getTotalAutoNumbers() >= 0)
     // {
-      for(int i = 0; i < ListOfAllAutos.getTotalAutoNumbers(); i ++)
-      {
-        System.out.println("success");
-        autoChooser.addOption(ListOfAllAutos.getAutoName(i), ListOfAllAutos.getAutoCommand(i));
-      }
+      // for(int i = 0; i < ListOfAllAutos.getTotalAutoNumbers(); i ++)
+      // {
+      //   System.out.println("success");
+      //   autoChooser.addOption(ListOfAllAutos.getAutoName(i), ListOfAllAutos.getAutoCommand(i));
+      // }
     // }
     autoChooser.addOption("Serite fourNoteTesting", new fourNoteAutoServite(s_Swerve));
-    // autoChooser.addOption("pick up fartherst Note and Shoot", pickUpFarNoteAndShoot());
+    autoChooser.addOption("pick up fartherst Note and Shoot", new pickUpFarNoteTesting(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
     // autoChooser.addOption("testtest", new test());
     // Another option that allows you to specify the default auto by its name

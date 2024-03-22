@@ -4,23 +4,18 @@
 
 package frc.robot.AutoCmd;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.PhotonvisionCalculations;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.PhotonVisionSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import org.photonvision.proto.Photon;
 
-public class IntakeBuffer extends Command {
-  /** Creates a new IntakeBuffer. */
-  ArmSubsystem arm = ArmSubsystem.getInstance();
-  IntakeSubsystem intake = IntakeSubsystem.getInstance();
-  PhotonVisionSubsystem photonVisionSubsystem = PhotonVisionSubsystem.getInstance();
-  public IntakeBuffer() {
-    addRequirements(arm, intake);
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.PhotonVisionSubsystem;
+
+public class CheckEmptyCenterNote extends Command {
+  /** Creates a new CheckEmptyCenterNote. */
+  PhotonVisionSubsystem vis = PhotonVisionSubsystem.getInstance();
+  public CheckEmptyCenterNote() {
     // Use addRequirements() here to declare subsystem dependencies.
+    // addRequirements(vis);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +25,11 @@ public class IntakeBuffer extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.driveToGoal(ArmConstants.intakeSetpoint);
+    if (!vis.getHasTargets()) {
+      AutoConstants.currentCenterNotePos ++;   
+      System.out.println("no note!");   
+    }
+    end(false);
   }
 
   // Called once the command ends or is interrupted.
@@ -40,11 +39,6 @@ public class IntakeBuffer extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(photonVisionSubsystem.getHasTargets())
-    {
-      System.out.println("Has target!");
-      return true;
-    }
     return false;
   }
 }
