@@ -98,6 +98,7 @@ public class RobotContainer {
 
   public RobotContainer() {
 
+    
     ShooterConfiguration.setupRadiusValues();   
     ShooterConfiguration.setupConfigurations();
     Constants.VisionConstants.setTagHeights();

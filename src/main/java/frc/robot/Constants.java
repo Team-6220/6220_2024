@@ -49,6 +49,11 @@ public final class Constants {
 
     public static boolean isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
 
+    public static void updateAllianceColor(){
+        Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
+        Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
+    }
+
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
 
@@ -477,7 +482,7 @@ public final class Constants {
         public static final double turnKI = 1;
         public static final double turnMaxVel = 400;
         public static final double turnMaxAccel = 800;
-        public static final double turnTolerance = 1.5;
+        public static final double turnTolerance = 1;
         public static final double turnIZone = 1;
 
         /* Swerve Profiling Values */

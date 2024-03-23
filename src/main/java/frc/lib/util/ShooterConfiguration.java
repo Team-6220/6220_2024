@@ -45,9 +45,9 @@ public class ShooterConfiguration {
     public static void setupRadiusValues(){
         radiusValues.put(1, 1.330325);
         radiusValues.put(2, 2.0);
-        radiusValues.put(3, 3.0);
-        radiusValues.put(4, 4.0);
-        radiusValues.put(5, 5.0);
+        radiusValues.put(3, 2.5);
+        radiusValues.put(4, 3.0);
+        radiusValues.put(5, 3.5);
     }
 
     public static void setupKeys(){
@@ -68,35 +68,35 @@ public class ShooterConfiguration {
         shooterConfigurations.put(keys.get(1).get(2), new ShooterConfiguration(Pair.of(3400d,3600d), 67d, 0d));
         shooterConfigurations.put(keys.get(1).get(3), new ShooterConfiguration(Pair.of(3600d,3400d), 69d, 0d));
         shooterConfigurations.put(keys.get(1).get(4), new ShooterConfiguration(Pair.of(3600d,3200d), 70d, 0d));
-        shooterConfigurations.put(keys.get(2).get(0), new ShooterConfiguration(Pair.of(3600d,3400d), 60d, 0)); //fails
+        shooterConfigurations.put(keys.get(2).get(0), new ShooterConfiguration(Pair.of(3600d,3400d), 60d, 0d)); //fails
         shooterConfigurations.put(keys.get(2).get(1), new ShooterConfiguration(Pair.of(3600d,3500d), 60d, 0d));
         shooterConfigurations.put(keys.get(2).get(2), new ShooterConfiguration(Pair.of(3600d,3400d), 60d, 0d));
         shooterConfigurations.put(keys.get(2).get(3), new ShooterConfiguration(Pair.of(3600d,3300d), 60d, 0d));
         shooterConfigurations.put(keys.get(2).get(4), new ShooterConfiguration(Pair.of(3600d,3300d), 60d, 0d));
         shooterConfigurations.put(keys.get(2).get(5), new ShooterConfiguration(Pair.of(3600d,3300d), 61d, 5d));
         // shooterConfigurations.put(keys.get(2).get(6), new ShooterConfiguration(Pair.of(2600d,3400d), 60d, 8d));//fails
-        shooterConfigurations.put(keys.get(3).get(0), new ShooterConfiguration(Pair.of(3650d,3400d), 54d, 2d)); //fails
-        shooterConfigurations.put(keys.get(3).get(1), new ShooterConfiguration(Pair.of(3650d,3400d), 54d, 2d));
-        shooterConfigurations.put(keys.get(3).get(2), new ShooterConfiguration(Pair.of(3650d,3400d), 55.5d, 0d));
-        shooterConfigurations.put(keys.get(3).get(3), new ShooterConfiguration(Pair.of(3650d,3400d), 55.5d, -0d));
-        shooterConfigurations.put(keys.get(3).get(4), new ShooterConfiguration(Pair.of(3650d,3300d), 55.5d, -0d));
-        shooterConfigurations.put(keys.get(3).get(5), new ShooterConfiguration(Pair.of(3650d,3300d), 55.5d, 0d));
-        shooterConfigurations.put(keys.get(3).get(6), new ShooterConfiguration(Pair.of(3650d,3300d), 55.5d, 0d));
-        shooterConfigurations.put(keys.get(3).get(7), new ShooterConfiguration(Pair.of(3650d,3300d), 55.5d, -0d));
-        shooterConfigurations.put(keys.get(3).get(8), new ShooterConfiguration(Pair.of(3650d,3300d), 55.5d, -0d));//fails
-        shooterConfigurations.put(keys.get(4).get(0), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -00d)); //fails   
-        shooterConfigurations.put(keys.get(4).get(1), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -00d));
-        shooterConfigurations.put(keys.get(4).get(2), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -00d));
-        shooterConfigurations.put(keys.get(4).get(3), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -0d));
-        shooterConfigurations.put(keys.get(4).get(4), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -0d));
-        shooterConfigurations.put(keys.get(4).get(5), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -0d));
-        shooterConfigurations.put(keys.get(4).get(6), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -0d));
-        shooterConfigurations.put(keys.get(4).get(7), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -0d));
-        shooterConfigurations.put(keys.get(4).get(8), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -0d));
-        shooterConfigurations.put(keys.get(4).get(9), new ShooterConfiguration(Pair.of(3000d,3400d), 46d, -0d));
-        shooterConfigurations.put(keys.get(4).get(10), new ShooterConfiguration(Pair.of(3000d,3400d), 48d, -0));//fails
+        shooterConfigurations.put(keys.get(3).get(0), new ShooterConfiguration(Pair.of(3650d,3400d), 58d, 4d)); //fails
+        shooterConfigurations.put(keys.get(3).get(1), new ShooterConfiguration(Pair.of(3650d,3400d), 58d, 4d));
+        shooterConfigurations.put(keys.get(3).get(2), new ShooterConfiguration(Pair.of(3650d,3400d), 58d, 4d));
+        shooterConfigurations.put(keys.get(3).get(3), new ShooterConfiguration(Pair.of(3650d,3400d), 58d, 4d));
+        shooterConfigurations.put(keys.get(3).get(4), new ShooterConfiguration(Pair.of(3650d,3300d), 58d, 4d));
+        shooterConfigurations.put(keys.get(3).get(5), new ShooterConfiguration(Pair.of(3650d,3300d), 58d, 4d));
+        shooterConfigurations.put(keys.get(3).get(6), new ShooterConfiguration(Pair.of(3650d,3300d), 58d, 4d));
+        shooterConfigurations.put(keys.get(3).get(7), new ShooterConfiguration(Pair.of(3650d,3300d), 58d, 4d));
+        shooterConfigurations.put(keys.get(3).get(8), new ShooterConfiguration(Pair.of(3650d,3300d), 58d, 4d));//fails
+        shooterConfigurations.put(keys.get(4).get(0), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d)); //fails   
+        shooterConfigurations.put(keys.get(4).get(1), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(2), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(3), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(4), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(5), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(6), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(7), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(8), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(9), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));
+        shooterConfigurations.put(keys.get(4).get(10), new ShooterConfiguration(Pair.of(3650d,3300d), 52d, 4d));//fails
 
-        shooterConfigurations.put(keys.get(5).get(0), new ShooterConfiguration(Pair.of(3000d,3400d), 50d, -0d)); //fails or couldnt test
+        shooterConfigurations.put(keys.get(5).get(0), new ShooterConfiguration(Pair.of(3000d,3400d), 50d, 4d)); //fails or couldnt test
         shooterConfigurations.put(keys.get(5).get(1), new ShooterConfiguration(Pair.of(3000d,3400d), 50d, -0d)); //fails or couldnt test
         shooterConfigurations.put(keys.get(5).get(2), new ShooterConfiguration(Pair.of(3000d,3400d), 50d, -0d)); //couldnt test
         shooterConfigurations.put(keys.get(5).get(3), new ShooterConfiguration(Pair.of(3000d,3400d), 50, -0d));
@@ -144,8 +144,8 @@ public class ShooterConfiguration {
         if(polar.getSecond() <= -(GRID_WIDTH / 2) || polar.getSecond() >= (GRID_WIDTH / 2)){
             throw new IllegalPositionException("Robot is too far to the side");
         }
-        else if(polar.getFirst() < 1 || polar.getFirst() > 5){
-            throw new IllegalPositionException("Robot is too far to the side");
+        else if(polar.getFirst() < 1 || polar.getFirst() > 3.5){
+            throw new IllegalPositionException("Robot is too far away");
         }
 
         // System.out.println(innerRow + " " + outerRow);

@@ -102,7 +102,6 @@ public class PhotonvisionCalculations {
     {
         Optional<EstimatedRobotPose> closestPose = null;
         double closetDistanceToPrevTarget = Double.MAX_VALUE;
-        double closestCameraLatency;
         Pose2d prevPose = poseEstimator.getEstimatedPosition();
         boolean hasTarget = false;
         for(int i = 0; i < cameras.length; i ++)
@@ -118,7 +117,7 @@ public class PhotonvisionCalculations {
                 if(closestPose != null) {
                     
                     double distanceToPrevPose = PhotonUtils.getDistanceToPose(prevPose, new Pose2d(estimatedX, estimatedY, new Rotation2d()));
-                    System.out.println("distanceTo prevpose: " + distanceToPrevPose);
+                    //System.out.println("distanceTo prevpose: " + distanceToPrevPose);
                     if(distanceToPrevPose < closetDistanceToPrevTarget) {
                         //System.out.println("CLOSEST POSE UPDATE!");
                         closestPose = estimatedRobotPose;
@@ -135,13 +134,11 @@ public class PhotonvisionCalculations {
             }
             
         }
-        double visionStdDev = 1;
+        double visionStdDev = .5;
         double movementAddition = 10;
         double nonMultiAddition = 20;
         
         if(hasTarget) {
-            
-            
             if((s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1) || s_Swerve.getIsAuto()) {
                 visionStdDev += movementAddition;
             }
@@ -151,7 +148,7 @@ public class PhotonvisionCalculations {
             //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));
             poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Double.MAX_VALUE));
             poseEstimator.addVisionMeasurement(new Pose2d(closestPose.get().estimatedPose.getX(), closestPose.get().estimatedPose.getY(), poseEstimator.getEstimatedPosition().getRotation()), closestPose.get().timestampSeconds);//Change If needed//Double.max_value for the last parameter because we don't want to believe the camera on rotation at all
-            System.out.println("X: " + closestPose.get().estimatedPose.getX() + " Y: " + closestPose.get().estimatedPose.getY() + " VisionStdDev: " + visionStdDev);
+            //System.out.println("X: " + closestPose.get().estimatedPose.getX() + " Y: " + closestPose.get().estimatedPose.getY() + " VisionStdDev: " + visionStdDev);
             //System.out.println("Added Measurement with deviation: " + visionStdDev + "Closest Pose X" + closestPose.get().estimatedPose.getX());
         }
     }

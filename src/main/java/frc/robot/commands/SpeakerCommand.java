@@ -4,12 +4,12 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.ShooterConfiguration;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.VisionConstants;
@@ -27,9 +27,10 @@ public class SpeakerCommand extends Command{
     private final XboxController driver;
     private double[] velocities  = {0, 0};
     private double armAngle = ArmConstants.restingSetpoint;
-    private boolean isAuto, hasFired;
+    private boolean isAuto, hasFired, armReady, shooterReady, aimingReady, noteReady;
     private blinkin s_Blinkin;
-    private double shotClock;
+    private double startShotTimeStamp, fireShotTimeStamp, armTime, shooterTime, aimingTime, noteTime;
+    private static int shotCount = 0;
     private ShooterConfiguration currentShooterConfiguration;
 
     public SpeakerCommand(Swerve swerve, XboxController driver){
@@ -57,18 +58,20 @@ public class SpeakerCommand extends Command{
 
     @Override
     public void initialize() {
-        hasFired = false;
-        shotClock = 0;
-        
+        startShotTimeStamp = Timer.getFPGATimestamp();
+        resetStatusBooleans();
     } 
 
+    private void resetStatusBooleans() {
+        armReady = false;
+        shooterReady = false;
+        aimingReady = false;
+        noteReady = false;
+        hasFired = false;
+    }
     @Override
     public void execute(){
 
-        if(isAuto && AutoConstants.currentCenterNotePos >= AutoConstants.centerNoteLimit)
-        {
-            end(true);
-        }
         
         try {
             currentShooterConfiguration = ShooterConfiguration.getShooterConfiguration(swerve.getPose());
@@ -79,7 +82,7 @@ public class SpeakerCommand extends Command{
         }
         
         if(currentShooterConfiguration != null) {
-            System.out.println("Is not null!");
+
             double[] driverInputs;
             if(!isAuto)
             {
@@ -111,11 +114,8 @@ public class SpeakerCommand extends Command{
             //armAngle = ArmConstants.getArmAngleFromDistance(distanceToSpeaker);
             arm.driveToGoal(currentShooterConfiguration.getArmAngle());
             
-            if((shooter.isAtSetpoint() && swerve.isFacingTurnTarget() && arm.isAtGoal()) || hasFired){
+            if(conditionsMet() || hasFired){
                 intake.feedShooter();
-                hasFired = true;
-                shooter.isFiring = true;
-                shotClock++;
                 s_Blinkin.solid_green();
             } else if(!swerve.isFacingTurnTarget()) {
                 s_Blinkin.solid_red();
@@ -125,18 +125,51 @@ public class SpeakerCommand extends Command{
                 s_Blinkin.solid_blue();
             }
             
+        } else {
+            end(false);
         }
         
     }
-
-    @Override
-    public boolean isFinished() {
-        if(shotClock > ShooterConstants.fireTime*50) {
+    private boolean conditionsMet() {
+        if(shooter.isAtSetpoint() && !shooterReady) {
+            shooterReady = true;
+            shooterTime = Timer.getFPGATimestamp();
+        }
+        if(arm.isAtGoal() && !armReady) {
+            armReady = true;
+            armTime = Timer.getFPGATimestamp();
+        }
+        if(intake.noteReady() && !noteReady) {
+            noteReady = true;
+            noteTime = Timer.getFPGATimestamp();
+        }
+        if(swerve.isFacingTurnTarget() && !aimingReady) {
+            aimingReady = true;
+            aimingTime = Timer.getFPGATimestamp();
+        }
+        if((shooterReady && armReady && noteReady && aimingReady) || hasFired) {
+            if(!hasFired) {
+                hasFired = true;
+                fireShotTimeStamp = Timer.getFPGATimestamp();
+            } 
             return true;
         }
-    // if(!intake.noteInIntake()) {
-    //     end(true);
-    // }
+        return false;
+    }
+    @Override
+    public boolean isFinished() {
+        double currentTime = Timer.getFPGATimestamp();
+        if(hasFired && currentTime-fireShotTimeStamp > ShooterConstants.fireTime) {
+            String shotLog = 
+                "Shot #" + shotCount + 
+                "\nTime To Shot: " + (startShotTimeStamp - startShotTimeStamp) + 
+                "\nArm Time: " + (armTime  - startShotTimeStamp) + 
+                "\nShooter Time: " + (shooterTime  - startShotTimeStamp) + 
+                "\nAiming Time: " + (aimingTime - startShotTimeStamp) +
+                "\nIntakeSet Time: " + (noteTime - startShotTimeStamp);
+            System.out.println(shotLog);
+            return true;
+        }
         return false;
     }
 

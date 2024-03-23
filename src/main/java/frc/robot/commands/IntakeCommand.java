@@ -42,7 +42,7 @@ public class IntakeCommand extends Command{
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
     private boolean isAuto;
-    private int timeWithoutTarget = 0, stopIntakeDelay = 20, counterForFrontIntake = 0;
+    private int timeWithoutTarget = 0, stopIntakeDelay = 400, counterForFrontIntake = 0;
     private boolean isParallelingWithAutobuilder = false;
 
     private boolean isFieldRelative = false;
