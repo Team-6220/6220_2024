@@ -129,7 +129,7 @@ public class IntakeCommand extends Command{
             isFieldRelative = true;
         }
 
-        if((!isAuto && autoControl.getAsBoolean() && !isParallelingWithAutobuilder) || isAuto && AutoConstants.currentCenterNotePos < AutoConstants.centerNoteLimit) {
+        if((!isAuto && autoControl.getAsBoolean() && !isParallelingWithAutobuilder)) {
             // System.out.println("ISAUTO" + isAuto);
             if(vis.getHasTargets() && arm.isAtGoal()) {
                 // System.out.println("let's see,,,");
@@ -156,10 +156,6 @@ public class IntakeCommand extends Command{
         else 
         {
             s_Blinkin.solid_gold();
-            if(isAuto && AutoConstants.currentCenterNotePos >= AutoConstants.centerNoteLimit)
-            {
-                end(true);
-            }
         }
 
 
@@ -184,6 +180,10 @@ public class IntakeCommand extends Command{
     }
     @Override
     public boolean isFinished() {
+        if(isAuto && (AutoConstants.currentCenterNotePos > AutoConstants.centerNoteMax || AutoConstants.currentCenterNotePos < AutoConstants.centerNoteMin))
+        {
+            return true;
+        }
         if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
             counterForFrontIntake ++;
             if(intake.getFrontBeam() && counterForFrontIntake > 10)

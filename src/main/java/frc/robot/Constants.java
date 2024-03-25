@@ -592,8 +592,31 @@ public final class Constants {
             new Pose2d(AlienceColorCoordinateFlip.flip(7.6), 2.45, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(90))),
             new Pose2d(AlienceColorCoordinateFlip.flip(7.6), 0.75, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(90)))
         };
-        public static int currentCenterNotePos = 0;
-        public static final int centerNoteLimit = 1;
+
+
+        //CONFIGS TO CHANGE DYNAMICALLY DURING COMP
+
+        // public static double firstShootDelayInSeconds = 0.2;
+
+        public static int howManyNotesAreWeAttempting = 1;
+
+        public static int[] notePoseIDForAttempting = 
+        {
+            0
+        };
+
+        /**
+         * Starting index for the pose that the robot will attempt
+         * @IMPORTANT If go from BOTTOM to TOP, set this NO LOWER THAN MIN, if from TOP to BOTTOM, NO HIGHER THAN MAX
+         */
+        public static int currentCenterNotePos = 0;//Starting index for the pose that the robot will attempt
+
+        public static final int centerNoteMax = 4; //from 0 to 4, 0 is top
+        public static final int centerNoteMin = 0;//from 0 to 4
+
+
+        /**This value is increasement of currentcenternotepos, positive for it to go from top of the field in pathplanner, negative for it to go from the bottom to the top*/
+        public static final int centernoteIncrementVal = 1;
     }
 
     public static final class ClimberConstants{
