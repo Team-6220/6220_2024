@@ -315,7 +315,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroHeading(){
-        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d(Math.PI)));
     }
 
     public Rotation2d getGyroYaw() {
@@ -441,7 +441,9 @@ public class Swerve extends SubsystemBase {
         // LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         // PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
         poseEstimator.update(getGyroYaw(), getModulePositions());
-        PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
+        if(!isAuto) {
+            PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
+        }
         field2d.setRobotPose(getPose());
         
 

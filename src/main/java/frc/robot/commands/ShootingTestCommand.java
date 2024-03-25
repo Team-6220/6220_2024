@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TunableNumber;
+import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -84,8 +85,9 @@ public class ShootingTestCommand extends Command {
       xOutput = 0;
       yOutput = 0;
     }
+    double teamOffset = Constants.isRed ? 0 + headingOffsetTest.get() : 180 + headingOffsetTest.get();
 
-    s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker() + headingOffsetTest.get());
+    s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker() + teamOffset);
     rotationVal = s_Swerve.getTurnPidSpeed();
     if(driverInputs.getRightBumper()) {
       intakeSubsystem.testRPMPID();

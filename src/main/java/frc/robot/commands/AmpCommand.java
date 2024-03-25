@@ -179,7 +179,7 @@ public class AmpCommand extends Command {
     
     
     if(shootSupplier.get()) {
-      shooterSubsystem.spinManually(ArmConstants.ampShooterSpeed);
+      shooterSubsystem.fireAmp();
       intakeSubsystem.feedAmp();
       s_Blinkin.solid_green();
     } else {

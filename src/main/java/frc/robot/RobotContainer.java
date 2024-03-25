@@ -142,6 +142,7 @@ public class RobotContainer {
     // }
     autoChooser.addOption("Serite fourNoteTesting", new fourNoteAutoServite(s_Swerve));
     autoChooser.addOption("pick up fartherst Note and Shoot", new pickUpFarNoteTesting(s_Swerve));
+    autoChooser.addOption("At Code Orange", new test(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
     // autoChooser.addOption("testtest", new test());
     // Another option that allows you to specify the default auto by its name

@@ -187,7 +187,7 @@ public final class Constants {
         public static final double hoverSetpoint = 0; //for like right above intake
         public static final double restingSetpoint = 70;
         public static final double ampSetPoint = -8;
-        public static final double ampShooterSpeed = 0.6; // TODO: change this accordingly
+        public static final double ampShooterSpeed = 0.75; // TODO: change this accordingly
 
         //FIXME: set actual port values and reversed for arm encoder
         public static final int k_ENC_PORT = 2;
@@ -207,7 +207,7 @@ public final class Constants {
         //FIXME: set intake speed
         public static final double intakeSpeed = 4;
         public static final double ejectSpeedSpeaker = 1;
-        public static final double ejectSpeedAmp = 1;
+        public static final double ejectSpeedAmp = .5;
 
         public static final double kP = 0.2;
         public static final double kI = 0;
@@ -270,8 +270,8 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kFFkS = 0;
-        public static final double kFFkVA = 0.00019;
-        public static final double kFFkVB = 0.000185;
+        public static final double kFFkVA = 0.00018;
+        public static final double kFFkVB = 0.000175;
         public static final double kFFkA = 0;
 
         //FIXME: create lookup table
@@ -479,11 +479,11 @@ public final class Constants {
         //Turning Pid Constants
         public static final double turnKP = 6;
         public static final double turnKD = 0;
-        public static final double turnKI = 1;
+        public static final double turnKI = 2.5;
         public static final double turnMaxVel = 400;
         public static final double turnMaxAccel = 800;
         public static final double turnTolerance = 1;
-        public static final double turnIZone = 1;
+        public static final double turnIZone = .5;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
