@@ -180,7 +180,7 @@ public class IntakeCommand extends Command{
     }
     @Override
     public boolean isFinished() {
-        if(isAuto && (AutoConstants.currentCenterNotePos > AutoConstants.centerNoteMax || AutoConstants.currentCenterNotePos < AutoConstants.centerNoteMin))
+        if(isAuto && AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
         {
             return true;
         }

@@ -38,12 +38,12 @@ public class CenterNoteCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(AutoConstants.currentCenterNotePos > AutoConstants.centerNoteMax || AutoConstants.currentCenterNotePos < AutoConstants.centerNoteMin)
+    if(AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
     {
       isFinished = true;
     }
     // AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.currentCenterNotePos], AutoConstants.pathConstraints); //Enable this line only if the commands.race doesn't work, which most likely mean that something with intake buffer is wrong.
-    Commands.race(AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.currentCenterNotePos], AutoConstants.pathConstraints, 0, 1.5), new IntakeBuffer());
+    Commands.race(AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.notePoseIDForAttempting[AutoConstants.currentCenterNotePos]], AutoConstants.pathConstraints, 0, 1.5), new IntakeBuffer());
     if(!photon.getHasTargets())
     {
       AutoConstants.currentCenterNotePos += AutoConstants.centernoteIncrementVal;

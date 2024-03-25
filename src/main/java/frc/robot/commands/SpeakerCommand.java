@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.ShooterConfiguration;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.VisionConstants;
@@ -168,6 +169,10 @@ public class SpeakerCommand extends Command{
                 "\nAiming Time: " + (aimingTime - startShotTimeStamp) +
                 "\nIntakeSet Time: " + (noteTime - startShotTimeStamp);
             System.out.println(shotLog);
+            return true;
+        }
+        else if(isAuto && AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
+        {
             return true;
         }
         return false;
