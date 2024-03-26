@@ -223,7 +223,7 @@ public final class Constants {
 
         public static final double distanceBetweenBreakBeamsInEncoderRotations = 4.8809452057;
 
-        public static final double intakeRPMSpeed = 800;
+        public static final double intakeRPMSpeed = 1400;
     }
 
     public static final class ShooterConstants{
@@ -479,7 +479,7 @@ public final class Constants {
         //Turning Pid Constants
         public static final double turnKP = 6;
         public static final double turnKD = 0;
-        public static final double turnKI = 2.5;
+        public static final double turnKI = 1.7;
         public static final double turnMaxVel = 400;
         public static final double turnMaxAccel = 800;
         public static final double turnTolerance = 1;
@@ -552,8 +552,8 @@ public final class Constants {
         public static final double rotationMaxAccel = 120;
         public static final double rotationMaxVel = 240;
 
-        public static final double autoMaxVelocityMps = 3;
-        public static final double autoMaxAcceleratMpsSq = 5;
+        public static final double autoMaxVelocityMps = 5;
+        public static final double autoMaxAcceleratMpsSq = 15;
         public static final double maxAngularVelocityRps = Rotation2d.fromDegrees(240).getRadians();
         public static final double maxAngularAcceleratRpsSq = Rotation2d.fromDegrees(480).getRadians();
 
@@ -576,11 +576,11 @@ public final class Constants {
 
         public static final Pose2d[] CENTERNOTE_POSE2DS =
         {
-            new Pose2d(AlienceColorCoordinateFlip.flip(7.6), 7.45, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),//Top one
-            new Pose2d(AlienceColorCoordinateFlip.flip(7.6),5.8, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
-            new Pose2d(AlienceColorCoordinateFlip.flip(7.6), 4.1, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
-            new Pose2d(AlienceColorCoordinateFlip.flip(7.6), 2.45, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
-            new Pose2d(AlienceColorCoordinateFlip.flip(7.6), 0.75, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180)))
+            new Pose2d(AlienceColorCoordinateFlip.flip(7), 7.45, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),//Top one
+            new Pose2d(AlienceColorCoordinateFlip.flip(7),5.7, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
+            new Pose2d(AlienceColorCoordinateFlip.flip(7), 4.1, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
+            new Pose2d(AlienceColorCoordinateFlip.flip(7), 2.45, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
+            new Pose2d(AlienceColorCoordinateFlip.flip(7), 0.75, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180)))
         };
 
         /**These are specially for the bezier points, as their rotation 2d is the heading of the curve, not the robot base itself. */
@@ -600,11 +600,12 @@ public final class Constants {
 
         // public static double firstShootDelayInSeconds = 0.2;
 
-        public static int howManyNotesAreWeAttempting = 1;
+        public static int howManyNotesAreWeAttempting = 2;
 
         public static int[] notePoseIDForAttempting = 
         {
-            0
+            0,
+            1
         };
 
         /**

@@ -4,6 +4,14 @@
 
 package frc.robot.AutoCmd;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 // import java.util.ArrayList;
 // import java.util.Collections;
 // import java.util.List;
@@ -20,12 +28,16 @@ package frc.robot.AutoCmd;
 // import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.lib.util.AlienceColorCoordinateFlip;
+import frc.robot.Constants.AutoConstants;
 // import frc.lib.util.Auto_GetMostRecentPoses;
 // import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.IntakeCommand;
 // import frc.robot.commands.IntakeFarNoteCmd;
 import frc.robot.commands.SpeakerCommand;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.VisionSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -33,6 +45,7 @@ import frc.robot.subsystems.Swerve;
 public class pickUpFarNoteTesting extends SequentialCommandGroup {
   /** Creates a new pickUpFarNoteTesting. */
   // List<RotationTarget> holonomicRotations = new ArrayList<RotationTarget>();
+  private PhotonVisionSubsystem s_VisionSubsystem = PhotonVisionSubsystem.getInstance();
   public pickUpFarNoteTesting(Swerve s_Swerve) {
       // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -53,21 +66,39 @@ public class pickUpFarNoteTesting extends SequentialCommandGroup {
       // new FarNoteCommand(s_Swerve),
       // new IntakeCommand(s_Swerve),
       // new SpeakerCommand(s_Swerve)
-      new CenterNoteCmd(s_Swerve),
-      new IntakeCommand(s_Swerve),
       new SpeakerCommand(s_Swerve),
-      new CenterNoteCmd(s_Swerve),
-      new IntakeCommand(s_Swerve),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.90), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 1),
+      Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.notePoseIDForAttempting[AutoConstants.currentCenterNotePos]], AutoConstants.pathConstraints, 2, 1), Commands.waitSeconds(.5).andThen(new IntakeBuffer())),
+      Commands.waitSeconds(.1),
+      isThereNote(s_Swerve),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 1),
       new SpeakerCommand(s_Swerve),
-      new CenterNoteCmd(s_Swerve),
-      new IntakeCommand(s_Swerve),
-      new SpeakerCommand(s_Swerve),
-      new CenterNoteCmd(s_Swerve),
-      new IntakeCommand(s_Swerve),
-      new SpeakerCommand(s_Swerve),
-      new CenterNoteCmd(s_Swerve),
-      new IntakeCommand(s_Swerve),
+      Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.notePoseIDForAttempting[AutoConstants.currentCenterNotePos]], AutoConstants.pathConstraints, 2, 1), Commands.waitSeconds(.5).andThen(new IntakeBuffer())),
+      Commands.waitSeconds(.1),
+      isThereNote(s_Swerve),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 1),
       new SpeakerCommand(s_Swerve)
     );
+  }
+
+  private Command isThereNote(Swerve s_Swerve) {
+    //s_VisionSubsystem.getHasTargets()
+    if(s_VisionSubsystem.getHasTargets()) {
+      AutoConstants.currentCenterNotePos ++;
+      System.out.println("Auto Sees note");
+      return new IntakeCommand(s_Swerve);
+    } else {
+            System.out.println("Auto does not see note");
+      AutoConstants.currentCenterNotePos ++;
+      if(AutoConstants.currentCenterNotePos < AutoConstants.howManyNotesAreWeAttempting){
+        return new SequentialCommandGroup(AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.notePoseIDForAttempting[AutoConstants.currentCenterNotePos]], AutoConstants.pathConstraints, 0, 1.5),Commands.waitSeconds(.4), isThereNote(s_Swerve));
+      }
+      else
+      {
+        AutoConstants.currentCenterNotePos --;
+        return AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.notePoseIDForAttempting[AutoConstants.currentCenterNotePos]], AutoConstants.pathConstraints);
+      }
+    }
+    
   }
 }

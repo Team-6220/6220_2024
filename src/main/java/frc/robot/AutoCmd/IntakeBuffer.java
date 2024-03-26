@@ -42,7 +42,7 @@ public class IntakeBuffer extends Command {
   public boolean isFinished() {
     if(photonVisionSubsystem.getHasTargets())
     {
-      System.out.println("Has target!");
+      // System.out.println("Has target!");
       return false;
     }
     return false;

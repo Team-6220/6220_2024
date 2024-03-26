@@ -48,6 +48,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   private boolean hasTargets;
   private List<PhotonTrackedTarget> targets;
   private PhotonTrackedTarget bestTarget;
+  private double timeCountDown;
+  private boolean seenNoteRecently;
   private double pitch, yaw, skew, area, latency, filteredYaw;
   // private Swerve s_Swerve;
   private LinearFilter linearFilter;
@@ -107,7 +109,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public boolean getHasTargets()
   {
-    return hasTargets;
+
+    return seenNoteRecently;
   }
 
   public double getTurnOffset()
@@ -121,6 +124,16 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     filteredYaw = linearFilter.calculate(yaw);
     updateValues();
+    if(hasTargets && (!seenNoteRecently||timeCountDown!=50)) {
+      seenNoteRecently = true;
+      timeCountDown = 50;
+    }
+    if(seenNoteRecently && !hasTargets) {
+      if(timeCountDown < 0) {
+        seenNoteRecently = false;
+      }
+      timeCountDown--;
+    }
   }
 
   public static synchronized PhotonVisionSubsystem getInstance(){

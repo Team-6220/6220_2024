@@ -129,7 +129,7 @@ public class IntakeCommand extends Command{
             isFieldRelative = true;
         }
 
-        if((!isAuto && autoControl.getAsBoolean() && !isParallelingWithAutobuilder)) {
+        if((!isAuto && autoControl.getAsBoolean() && !isParallelingWithAutobuilder)|| isAuto) {
             // System.out.println("ISAUTO" + isAuto);
             if(vis.getHasTargets() && arm.isAtGoal()) {
                 // System.out.println("let's see,,,");
@@ -184,7 +184,8 @@ public class IntakeCommand extends Command{
         {
             return true;
         }
-        if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
+        // || (timeWithoutTarget > stopIntakeDelay && isAuto)
+        if(intake.getFrontBeam()) {
             counterForFrontIntake ++;
             if(intake.getFrontBeam() && counterForFrontIntake > 10)
             {  

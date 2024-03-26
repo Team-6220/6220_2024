@@ -315,7 +315,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroHeading(){
-        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d(Math.PI)));
+        double offset = Constants.isRed ? 0 : Math.PI;
+        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d(offset)));
     }
 
     public Rotation2d getGyroYaw() {
@@ -417,7 +418,7 @@ public class Swerve extends SubsystemBase {
 
     public boolean getIsAutoOverShoot()
     {
-        return autoIsOverShoot;
+        return false;
     }
 
     @Override
@@ -441,20 +442,20 @@ public class Swerve extends SubsystemBase {
         // LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         // PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
         poseEstimator.update(getGyroYaw(), getModulePositions());
-        if(!isAuto) {
-            PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
-        }
+    
+                PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
+        
         field2d.setRobotPose(getPose());
         
 
-        if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
-        {
-            autoIsOverShoot = true;
-        }
-        else
-        {
-            autoIsOverShoot = false;
-        }
+        // if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance)))
+        // {
+        //     autoIsOverShoot = true;
+        // }
+        // else
+        // {
+        //     autoIsOverShoot = false;
+        // }
 
         if(turnKP.hasChanged()
         || turnKD.hasChanged()
