@@ -206,7 +206,7 @@ public final class Constants {
 
         //FIXME: set intake speed
         public static final double intakeSpeed = 4;
-        public static final double ejectSpeedSpeaker = 1;
+        public static final double ejectSpeedSpeaker = .8;
         public static final double ejectSpeedAmp = .5;
 
         public static final double kP = 0.2;
@@ -243,18 +243,18 @@ public final class Constants {
         
         /* Shooter Current Limits */
         public static final boolean shooterAEnableCurrentLimit = true;
-        public static final double shooterACurrentLimit = 18; //TODO: NEED CHANGE
-        public static final int shooterACurrentThreshold = 18;//TODO: NEED CHANGE
+        public static final double shooterACurrentLimit = 25; //TODO: NEED CHANGE
+        public static final int shooterACurrentThreshold = 25;//TODO: NEED CHANGE
         public static final double shooterACurrentThresholdTime = 0;
 
         public static final boolean shooterBEnableCurrentLimit = true;
-        public static final double shooterBCurrentLimit = 18; //TODO: NEED CHANGE
-        public static final int shooterBCurrentThreshold = 18;//TODO:NEED CHANGE
+        public static final double shooterBCurrentLimit = 25; //TODO: NEED CHANGE
+        public static final int shooterBCurrentThreshold = 25;//TODO:NEED CHANGE
         public static final double shooterBCurrentThresholdTime = 0;
 
 
         public static final double idleOutput = .05;
-        public static final double fireTime = .75;
+        public static final double fireTime = 1;
 
         public static final double minShooterVelA = 2800;
         public static final double minShooterVelB = 2800;
@@ -265,8 +265,8 @@ public final class Constants {
         // public static final int breakBeamPort = 0;
 
         //FIXME: set shooter velocity pid
-        public static final double kPA = 0.0005;
-        public static final double kPB = 0.0005;
+        public static final double kPA = 0.000;
+        public static final double kPB = 0.000;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kFFkS = 0;
@@ -477,13 +477,13 @@ public final class Constants {
 
 
         //Turning Pid Constants
-        public static final double turnKP = 6;
+        public static final double turnKP = 5;
         public static final double turnKD = 0;
-        public static final double turnKI = 1.7;
+        public static final double turnKI = 1.5;
         public static final double turnMaxVel = 400;
         public static final double turnMaxAccel = 800;
-        public static final double turnTolerance = 1;
-        public static final double turnIZone = .5;
+        public static final double turnTolerance = 1.5;
+        public static final double turnIZone = .4;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
@@ -576,11 +576,11 @@ public final class Constants {
 
         public static final Pose2d[] CENTERNOTE_POSE2DS =
         {
-            new Pose2d(AlienceColorCoordinateFlip.flip(7), 7.45, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),//Top one
-            new Pose2d(AlienceColorCoordinateFlip.flip(7),5.7, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
-            new Pose2d(AlienceColorCoordinateFlip.flip(7), 4.1, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
-            new Pose2d(AlienceColorCoordinateFlip.flip(7), 2.45, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
-            new Pose2d(AlienceColorCoordinateFlip.flip(7), 0.75, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180)))
+            new Pose2d(AlienceColorCoordinateFlip.flip(6.5), 7.7, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),//Top one
+            new Pose2d(AlienceColorCoordinateFlip.flip(6.5),5.7, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
+            new Pose2d(AlienceColorCoordinateFlip.flip(6.5), 4.1, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
+            new Pose2d(AlienceColorCoordinateFlip.flip(6.5), 2.45, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180))),
+            new Pose2d(AlienceColorCoordinateFlip.flip(6.5), 0.75, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(180)))
         };
 
         /**These are specially for the bezier points, as their rotation 2d is the heading of the curve, not the robot base itself. */
@@ -626,7 +626,7 @@ public final class Constants {
         public static final int climberDriverRightID = 19;
 
         public static final boolean motorAInverted = false;
-        public static final boolean motorBInverted = false;
+        public static final boolean motorBInverted = true;
 
         //FIXME: set setpoints
         public static final double topSetpoint = 0;

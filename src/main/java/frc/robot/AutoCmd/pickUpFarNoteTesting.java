@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.lib.util.AlienceColorCoordinateFlip;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.commands.ArmIdleCommand;
 // import frc.lib.util.Auto_GetMostRecentPoses;
 // import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.IntakeCommand;
@@ -67,16 +68,17 @@ public class pickUpFarNoteTesting extends SequentialCommandGroup {
       // new IntakeCommand(s_Swerve),
       // new SpeakerCommand(s_Swerve)
       new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.90), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 1),
-      Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.notePoseIDForAttempting[AutoConstants.currentCenterNotePos]], AutoConstants.pathConstraints, 2, 1), Commands.waitSeconds(.5).andThen(new IntakeBuffer())),
-      Commands.waitSeconds(.1),
-      isThereNote(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 1),
+      //AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.90), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 2),
+      //AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.90), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 2),
+      AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[0], AutoConstants.pathConstraints, 2, 1),
+      new IntakeCommand(s_Swerve),
+      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 2), new ArmIdleCommand()),
       new SpeakerCommand(s_Swerve),
-      Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[AutoConstants.notePoseIDForAttempting[AutoConstants.currentCenterNotePos]], AutoConstants.pathConstraints, 2, 1), Commands.waitSeconds(.5).andThen(new IntakeBuffer())),
-      Commands.waitSeconds(.1),
-      isThereNote(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 1),
+      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.90), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 2),
+      AutoBuilder.pathfindToPose(AutoConstants.CENTERNOTE_POSE2DS[1], AutoConstants.pathConstraints, 2, 1),
+      //Commands.waitSeconds(.1),
+      new IntakeCommand(s_Swerve),
+      Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 2), new ArmIdleCommand()),
       new SpeakerCommand(s_Swerve)
     );
   }

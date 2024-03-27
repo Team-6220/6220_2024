@@ -42,7 +42,7 @@ public class IntakeCommand extends Command{
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
     private boolean isAuto;
-    private int timeWithoutTarget = 0, stopIntakeDelay = 400, counterForFrontIntake = 0;
+    private int timeWithoutTarget = 0, stopIntakeDelay = 100, counterForFrontIntake = 0;
     private boolean isParallelingWithAutobuilder = false;
 
     private boolean isFieldRelative = false;
@@ -184,8 +184,9 @@ public class IntakeCommand extends Command{
         {
             return true;
         }
-        // || (timeWithoutTarget > stopIntakeDelay && isAuto)
-        if(intake.getFrontBeam()) {
+        // 
+        if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
+            timeWithoutTarget = 0;
             counterForFrontIntake ++;
             if(intake.getFrontBeam() && counterForFrontIntake > 10)
             {  
@@ -202,5 +203,6 @@ public class IntakeCommand extends Command{
     public void end(boolean interrupted){
         arm.stop();
         intake.stop();
+        
     }
 }

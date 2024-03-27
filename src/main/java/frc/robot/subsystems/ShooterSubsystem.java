@@ -67,8 +67,8 @@ public class ShooterSubsystem extends SubsystemBase{
         feedforwardA = new SimpleMotorFeedforward(KsA.get(), KvA.get(), KaA.get());
         feedforwardB = new SimpleMotorFeedforward(KsB.get(), KvB.get(), KaB.get());
 
-        m_controllerA.setTolerance(300); //TODO: Add constants
-        m_controllerB.setTolerance(300);
+        m_controllerA.setTolerance(500); //TODO: Add constants
+        m_controllerB.setTolerance(500);
 
     }
 

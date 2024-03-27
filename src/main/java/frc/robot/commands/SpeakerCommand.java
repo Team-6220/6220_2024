@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -69,6 +70,11 @@ public class SpeakerCommand extends Command{
         aimingReady = false;
         noteReady = false;
         hasFired = false;
+        armTime = 0;
+        aimingTime = 0;
+        shooterTime = 0;
+        noteTime = 0;
+    
     }
     @Override
     public void execute(){
@@ -94,7 +100,7 @@ public class SpeakerCommand extends Command{
                 driverInputs = new double[] {0,0,0};
             }
             double teamOffset = Constants.isRed ? 0 + currentShooterConfiguration.getHeadingOffset() : 180 + currentShooterConfiguration.getHeadingOffset();
-            swerve.setAutoTurnHeading(swerve.getHeadingToSpeaker() +teamOffset);
+            swerve.setAutoTurnHeading(MathUtil.clamp((swerve.getHeadingToSpeaker() +teamOffset), -180, 180));
             double rotationVal = swerve.getTurnPidSpeed();
             swerve.drive(
                     new Translation2d(driverInputs[0], driverInputs[1]), 
@@ -140,10 +146,11 @@ public class SpeakerCommand extends Command{
             armReady = true;
             armTime = Timer.getFPGATimestamp();
         }
-        if(intake.noteReady() && !noteReady) {
-            noteReady = true;
-            noteTime = Timer.getFPGATimestamp();
-        }
+        // if(intake.noteReady() && !noteReady) {
+        //     noteReady = true;
+        //     noteTime = Timer.getFPGATimestamp();
+        // }
+        noteReady = true;
         if(swerve.isFacingTurnTarget() && !aimingReady) {
             aimingReady = true;
             aimingTime = Timer.getFPGATimestamp();
@@ -161,14 +168,7 @@ public class SpeakerCommand extends Command{
     public boolean isFinished() {
         double currentTime = Timer.getFPGATimestamp();
         if(hasFired && currentTime-fireShotTimeStamp > ShooterConstants.fireTime) {
-            String shotLog = 
-                "Shot #" + shotCount + 
-                "\nTime To Shot: " + (startShotTimeStamp - startShotTimeStamp) + 
-                "\nArm Time: " + (armTime  - startShotTimeStamp) + 
-                "\nShooter Time: " + (shooterTime  - startShotTimeStamp) + 
-                "\nAiming Time: " + (aimingTime - startShotTimeStamp) +
-                "\nIntakeSet Time: " + (noteTime - startShotTimeStamp);
-            System.out.println(shotLog);
+            
             return true;
         }
         else if(isAuto && AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
@@ -183,6 +183,15 @@ public class SpeakerCommand extends Command{
         arm.stop();
         intake.stop();
         shooter.stop();
+        String shotLog = 
+                "Shot #" + shotCount + 
+                "\nTime To Shot: " + (startShotTimeStamp - startShotTimeStamp) + 
+                "\nArm Time: " + (armTime  - startShotTimeStamp) + 
+                "\nShooter Time: " + (shooterTime  - startShotTimeStamp) + 
+                "\nAiming Time: " + (aimingTime - startShotTimeStamp) +
+                "\nIntakeSet Time: " + (noteTime - startShotTimeStamp);
+            System.out.println(shotLog);
+        resetStatusBooleans();
     }
 
 }

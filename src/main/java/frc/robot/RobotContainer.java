@@ -98,7 +98,7 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    
+    s_Swerve.zeroHeading();
     ShooterConfiguration.setupRadiusValues();   
     ShooterConfiguration.setupConfigurations();
     Constants.VisionConstants.setTagHeights();
