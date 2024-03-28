@@ -33,6 +33,9 @@ import frc.lib.util.RumbleManager;
 import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TriggerButton;
 import frc.lib.util.TunableNumber;
+import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmd;
+import frc.robot.AutoCmd.ShootAndPickUpFarNoteTesting;
+import frc.robot.AutoCmd.ShootAndTwoMiddle;
 // import frc.robot.AutoCmd.ListOfAllAutos;
 import frc.robot.AutoCmd.fourNoteAutoServite;
 import frc.robot.AutoCmd.pickUpFarNoteTesting;
@@ -141,8 +144,11 @@ public class RobotContainer {
       // }
     // }
     autoChooser.addOption("Serite fourNoteTesting", new fourNoteAutoServite(s_Swerve));
-    autoChooser.addOption("pick up fartherst Note and Shoot", new pickUpFarNoteTesting(s_Swerve));
-    autoChooser.addOption("At Code Orange", new test(s_Swerve));
+    autoChooser.addOption("Open side two notes", new OpenSideTwoNotesSeqCmd(s_Swerve));
+    autoChooser.addOption("pick up far note testing", new pickUpFarNoteTesting(s_Swerve));
+    autoChooser.addOption("Shoot and pick up far note testing", new ShootAndPickUpFarNoteTesting(s_Swerve));
+    autoChooser.addOption("Shoot and Two middle", new ShootAndTwoMiddle(s_Swerve));
+    // autoChooser.addOption("At Code Orange", new test(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
     // autoChooser.addOption("testtest", new test());
     // Another option that allows you to specify the default auto by its name
