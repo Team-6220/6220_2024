@@ -37,7 +37,7 @@ public class SimpleShootCmd extends Command {
   @Override
   public void execute() {
             // shooterConfigurations.put(keys.get(1).get(2), new ShooterConfiguration(Pair.of(3700d,3900d), 68d, 0d));
-    s_ArmSubsystem.driveToGoal(69 + ArmConstants.armDegreesOffset);
+    s_ArmSubsystem.driveToGoal(71 + ArmConstants.armDegreesOffset);
     s_ShooterSubsystem.spinToVelocity(Pair.of(3700d,3900d));
     if(s_ArmSubsystem.isAtGoal() && s_ShooterSubsystem.isAtSetpoint() || hasFired)
     {

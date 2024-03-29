@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -27,6 +28,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.blinkin;
 
@@ -36,6 +38,7 @@ public class IntakeCommand extends Command{
     private final Swerve swerve;
     private final IntakeSubsystem intake;
     private final ArmSubsystem arm;
+    private final ShooterSubsystem shooter;
     private final PhotonVisionSubsystem vis;
     private final blinkin s_Blinkin;
     private final BooleanSupplier autoControl;
@@ -58,6 +61,7 @@ public class IntakeCommand extends Command{
         this.swerve = swerve;
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
+        shooter = ShooterSubsystem.getInstance();
         this.vis = PhotonVisionSubsystem.getInstance();
         this.s_Blinkin = blinkin.getInstance();
         this.autoControl = autoControl;
@@ -82,6 +86,7 @@ public class IntakeCommand extends Command{
         this.s_Blinkin = blinkin.getInstance();
         this.autoControl = ()-> true;
         this.driver = null;
+        shooter = ShooterSubsystem.getInstance();
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
@@ -92,6 +97,7 @@ public class IntakeCommand extends Command{
     public IntakeCommand(Swerve swerve, boolean isParallelingWithAutobuilder)
     {
         this.isParallelingWithAutobuilder = isParallelingWithAutobuilder;
+        shooter = ShooterSubsystem.getInstance();
         isAuto = true;
         swerve.setIsAuto(true);
         timeWithoutTarget = 0;
@@ -175,17 +181,18 @@ public class IntakeCommand extends Command{
         // else{
         //     swerve.drive(new Translation2d(0,0), 0, false, true);
         // }
-    
-        
+        shooter.spinManually(-0.1);
+        SmartDashboard.putNumber("Intake Motor Current Draw", intake.intakeMotor.getOutputCurrent());
     }
     @Override
     public boolean isFinished() {
         // if(isAuto && AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
         // {
+            
         //     return true;
         // }
         // 
-        if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
+        if((timeWithoutTarget > stopIntakeDelay && isAuto)) {
             timeWithoutTarget = 0;
             counterForFrontIntake ++;
             if(intake.getFrontBeam() && counterForFrontIntake > 10)
@@ -203,6 +210,7 @@ public class IntakeCommand extends Command{
     public void end(boolean interrupted){
         arm.stop();
         intake.stop();
+        swerve.stopDriving();
         
     }
 }

@@ -34,10 +34,11 @@ import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TriggerButton;
 import frc.lib.util.TunableNumber;
 import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmd;
+import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmdRed;
 import frc.robot.AutoCmd.ShootAndPickUpFarNoteTesting;
 import frc.robot.AutoCmd.ShootAndTwoMiddle;
 // import frc.robot.AutoCmd.ListOfAllAutos;
-import frc.robot.AutoCmd.fourNoteAutoServite;
+import frc.robot.AutoCmd.fourNoteAutoBlue;
 import frc.robot.AutoCmd.pickUpFarNoteTesting;
 import frc.robot.AutoCmd.test;
 import frc.robot.Constants.ArmConstants;
@@ -51,6 +52,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeIdleCommand;
 import frc.robot.commands.ManueIntakeNote;
 import frc.robot.commands.ManuelEjectNote;
+import frc.robot.commands.ManuelMoveNoteBack;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.ShootingTestCommand;
 import frc.robot.commands.SimpleShootCmd;
@@ -90,13 +92,15 @@ public class RobotContainer {
   /* Operator Buttons */
   private final Trigger intake = new Trigger(()->operator.getRawButton(5));
   private final Trigger amp = new Trigger(()->operator.getRawButton(2));
-  private final Trigger noNote = new Trigger(()->operator.getRawButton(11));
+  private final Trigger trueEject = new Trigger(()->operator.getRawButton(9));
   private final Trigger climb = new Trigger(()->operator.getRawButton(4));
-  private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(10));
+  private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(12));
   private final Trigger increaseArmOffset = new Trigger(() -> operator.getRawButton(8));
   private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7));
-  private final Trigger changeIntakeMode = new Trigger(() -> operator.getRawButton(8));
-  private final Trigger manuelIntake = new Trigger(() -> operator.getRawButton(9));
+  private final Trigger increaseIntakeMode = new Trigger(() -> operator.getRawButton(6));
+  private final Trigger decreaseIntakeMode = new Trigger(() -> operator.getRawButton(3));
+  private final Trigger manuelIntake = new Trigger(() -> operator.getRawButton(11));
+  private final Trigger testing = new Trigger(()-> operator.getRawButton(10));
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -152,8 +156,9 @@ public class RobotContainer {
       //   autoChooser.addOption(ListOfAllAutos.getAutoName(i), ListOfAllAutos.getAutoCommand(i));
       // }
     // }
-    autoChooser.addOption("Four note", new fourNoteAutoServite(s_Swerve));
+    autoChooser.addOption("BLUE 4 NOTE", new fourNoteAutoBlue(s_Swerve));
     autoChooser.addOption("Open side two notes", new OpenSideTwoNotesSeqCmd(s_Swerve));
+    autoChooser.addOption("RED OPEN SIDE TWO NOTES", new OpenSideTwoNotesSeqCmdRed(s_Swerve));
     autoChooser.addOption("pick up far note testing", new pickUpFarNoteTesting(s_Swerve));
     autoChooser.addOption("Shoot and pick up far note testing", new ShootAndPickUpFarNoteTesting(s_Swerve));
     autoChooser.addOption("Shoot and Two middle", new ShootAndTwoMiddle(s_Swerve));
@@ -175,8 +180,10 @@ public class RobotContainer {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0))))); //Red side
     // zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(1.33, 5.60), new Rotation2d(0))))); //Blue Side
-
-    noNote.onTrue(new InstantCommand(() -> s_IntakeSubsystem.reset()));
+    testing.onTrue(Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
+      Commands.deadline(
+        Commands.waitSeconds(.1), 
+        new ManuelMoveNoteBack())));
 
     amp.whileTrue(new AmpCommand(
       s_Swerve,
@@ -191,8 +198,10 @@ public class RobotContainer {
     // amp.whileTrue(ampScoringTesting());
 
     // amp.whileTrue(noteTesting());
-    changeIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
-    ejectNote.whileTrue(new ManuelEjectNote());
+    increaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
+    decreaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount --));
+    trueEject.whileTrue(new ManuelEjectNote());
+    ejectNote.whileTrue(new ManuelMoveNoteBack());
     manuelIntake.whileTrue(new ManueIntakeNote());
     zeroGyro.whileTrue(
       new InstantCommand(
@@ -202,8 +211,7 @@ public class RobotContainer {
     intake.whileTrue(new IntakeCommand(
       s_Swerve, 
       driver,  
-      () -> robotControlLeftTrigger.getAsBoolean())
-    .until(() -> s_IntakeSubsystem.getFrontBeam()));
+      () -> robotControlLeftTrigger.getAsBoolean()));
 
     fireRightTrigger.whileTrue(new SpeakerCommand(
       s_Swerve, 

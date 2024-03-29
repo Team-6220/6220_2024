@@ -47,11 +47,12 @@ public final class Constants {
 
     public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
 
-    public static boolean isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
+    public static boolean isRed = false;
 
     public static void updateAllianceColor(){
         Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
         Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
+        Constants.isRed = false;
     }
 
     public static final class OIConstants {
@@ -200,7 +201,7 @@ public final class Constants {
         //FIXME: set id
         public static final int intakeMotorID = 15;
 
-        public static int backupModeCount;
+        public static int backupModeCount = 0;
         //FIXME: set inverted
         public static final boolean intakeMotorInverted = false;
 
@@ -595,6 +596,12 @@ public final class Constants {
         };
 
         public static final Pose2d[] MULTITARGETPOSES_FORINTAKECAMERA =
+        {
+            new Pose2d(6.00, 6.75, new Rotation2d(Rotation2d.fromDegrees(-170).getRadians())),
+            new Pose2d(6.00, 4.00, new Rotation2d(Rotation2d.fromDegrees(-161.98).getRadians())),
+            new Pose2d(6.00, 1.45, new Rotation2d((-170)))
+        };
+        public static final Pose2d[] MULTITARGETPOSES_FORINTAKECAMERA_RED =
         {
             new Pose2d(AlienceColorCoordinateFlip.flip(6.00), 6.75, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(-170))),
             new Pose2d(AlienceColorCoordinateFlip.flip(6.00), 4.00, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(-161.98))),

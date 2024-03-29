@@ -15,6 +15,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 //import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import static frc.robot.Constants.isRed;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -95,6 +97,7 @@ public class Swerve extends SubsystemBase {
     private final TunableNumber autoTkP = new TunableNumber("auto T kP", Constants.SwerveConstants.translation_kP);
     private final TunableNumber autoTkI = new TunableNumber("auto T kI", Constants.SwerveConstants.translation_kI);
     private final TunableNumber autoTkD = new TunableNumber("auto T kD", Constants.SwerveConstants.translation_kD);
+
 
     private boolean autoIsOverShoot = false, isAuto = false;
 
@@ -423,6 +426,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
+        SmartDashboard.putBoolean("is Red", isRed);
         Double timestamp = Timer.getFPGATimestamp();
         // gyro_headings.put(timestamp, getHeading());
         // gyro_timestamps.addFirst(timestamp);

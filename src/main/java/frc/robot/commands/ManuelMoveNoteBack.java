@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ManueIntakeNote extends Command {
+public class ManuelMoveNoteBack extends Command {
   /** Creates a new ManuelEjectNote. */
   private final IntakeSubsystem s_IntakeSubsystem = IntakeSubsystem.getInstance();
   private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
-  public ManueIntakeNote() {
+  public ManuelMoveNoteBack() {
     addRequirements(s_IntakeSubsystem,s_ShooterSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -28,7 +28,9 @@ public class ManueIntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_IntakeSubsystem.simpleDrive(false, 0.15);
+    s_IntakeSubsystem.simpleDrive(true, 0.15);
+    s_ShooterSubsystem.spinManually(-0.1);
+
     // s_ShooterSubsystem.spinManually(-0.5);
   }
 

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -13,6 +14,7 @@ public class ManuelEjectNote extends Command {
   /** Creates a new ManuelEjectNote. */
   private final IntakeSubsystem s_IntakeSubsystem = IntakeSubsystem.getInstance();
   private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
+  private double speed = 0.25;
   public ManuelEjectNote() {
     addRequirements(s_IntakeSubsystem,s_ShooterSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,8 +30,10 @@ public class ManuelEjectNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_IntakeSubsystem.simpleDrive(true, 0.5);
-    s_ShooterSubsystem.spinManually(-0.5);
+    
+      s_IntakeSubsystem.simpleDrive(true, 0.5);
+      s_ShooterSubsystem.spinManually(-0.3);
+    
   }
 
   // Called once the command ends or is interrupted.

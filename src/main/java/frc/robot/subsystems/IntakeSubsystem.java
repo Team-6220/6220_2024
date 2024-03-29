@@ -19,7 +19,7 @@ import frc.robot.commands.IntakeIdleCommand;
 public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem INSTANCE = null;
 
-    private final CANSparkMax intakeMotor;
+    public final CANSparkMax intakeMotor;
     private final RelativeEncoder encoder;
 
     private final DigitalInput frontBreakBeam;
@@ -80,9 +80,9 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void feedIntake() {
-        if(!noteInIntake) {
+
             simpleDrive(false, IntakeConstants.intakeSpeed);
-        }
+        
     }
 
     public void reset() {
@@ -149,28 +149,28 @@ public class IntakeSubsystem extends SubsystemBase{
         intakeMotor.set(output);
 
     }
-    private void driveWithBackup() {
-        double output = 0;
-        if(!noteAtBack && !getFrontBeam()) {
-            noteAtBack = true;
-            hasExited = true;
-            encoder.setPosition(0);
-        }
-        if(noteAtBack) {
-            if(noteSecure) {
-                intakeMotor.set(0);
-                return;
-            } else if(hasExited && !getFrontBeam()) {
-                 output = -.1;
-            }
-            if(!noteSecure && getFrontBeam()) {
-                noteSecure = true;
-            }
-        } else {
-            output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
-        }
-        intakeMotor.set(output);
-    }
+    // private void driveWithBackup() {
+    //     double output = 0;
+    //     if(!noteAtBack && !getFrontBeam()) {
+    //         noteAtBack = true;
+    //         hasExited = true;
+    //         encoder.setPosition(0);
+    //     }
+    //     if(noteAtBack) {
+    //         if(noteSecure) {
+    //             intakeMotor.set(0);
+    //             return;
+    //         } else if(hasExited && !getFrontBeam()) {
+    //              output = .1;
+    //         }
+    //         if(!noteSecure && getFrontBeam()) {
+    //             noteSecure = true;
+    //         }
+    //     } else {
+    //         output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
+    //     }
+    //     intakeMotor.set(output);
+    // }
 
     public void testRPMPID() {
         double output = 0;
@@ -197,18 +197,20 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         
+        SmartDashboard.putNumber("Intake mode count", IntakeConstants.backupModeCount);
         if(!noteInIntake && getFrontBeam()) {
             newNoteDetected();
         }
-        if(IntakeConstants.backupModeCount <= 1) {
-            if(noteInIntake && !firing) {
-                driveNoteToSetpoint();
-            }
-        } else if(IntakeConstants.backupModeCount <= 5) {
-            if(noteInIntake && !firing) {
-                driveWithBackup();
-            }
-        }
+        // if(IntakeConstants.backupModeCount <= 1) {
+        //     if(noteInIntake && !firing) {
+        //         driveNoteToSetpoint();
+        //     }
+        // } 
+        // else if(IntakeConstants.backupModeCount <= 5) {
+        //     if(noteInIntake && !firing) {
+        //         driveWithBackup();
+        //     }
+        // }
         
         
         SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());

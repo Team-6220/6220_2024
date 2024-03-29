@@ -30,7 +30,6 @@ public class SpeakerCommand extends Command{
     private double[] velocities  = {0, 0};
     private double armAngle = ArmConstants.restingSetpoint;
     private boolean isAuto, hasFired, armReady, shooterReady, aimingReady, noteReady;
-    private blinkin s_Blinkin;
     private double startShotTimeStamp, fireShotTimeStamp, armTime, shooterTime, aimingTime, noteTime;
     private static int shotCount = 0;
     private ShooterConfiguration currentShooterConfiguration;
@@ -41,9 +40,8 @@ public class SpeakerCommand extends Command{
         this.shooter = ShooterSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
-        this.s_Blinkin = blinkin.getInstance();
         this.driver = driver;
-        addRequirements(this.swerve, arm, intake, shooter, s_Blinkin);
+        addRequirements(this.swerve, arm, intake, shooter);
     }
 
     public SpeakerCommand(Swerve swerve){
@@ -52,10 +50,9 @@ public class SpeakerCommand extends Command{
         this.shooter = ShooterSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
         this.arm = ArmSubsystem.getInstance();
-        this.s_Blinkin = blinkin.getInstance();
         this.driver = null;
         intake.setHasNote();
-        addRequirements(this.swerve, arm, intake, shooter, s_Blinkin);
+        addRequirements(this.swerve, arm, intake, shooter);
     }
 
     @Override
@@ -78,7 +75,7 @@ public class SpeakerCommand extends Command{
     }
     @Override
     public void execute(){
-
+        System.out.println(hasFired);
         
         try {
             currentShooterConfiguration = ShooterConfiguration.getShooterConfiguration(swerve.getPose());
@@ -123,14 +120,7 @@ public class SpeakerCommand extends Command{
             
             if(conditionsMet() || hasFired){
                 intake.feedShooter();
-                s_Blinkin.solid_green();
-            } else if(!swerve.isFacingTurnTarget()) {
-                s_Blinkin.solid_red();
-            } else if(!arm.isAtGoal()) {
-                s_Blinkin.solid_purple();
-            } else if(!shooter.isAtSetpoint()) {
-                s_Blinkin.solid_blue();
-            }
+            } 
             
         } else {
             end(false);
