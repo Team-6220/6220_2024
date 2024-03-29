@@ -1,44 +1,44 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// // Copyright (c) FIRST and other WPILib contributors.
+// // Open Source Software; you can modify and/or share it under the terms of
+// // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.AutoCmd;
+// package frc.robot.AutoCmd;
 
-import org.photonvision.proto.Photon;
+// import org.photonvision.proto.Photon;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.subsystems.PhotonVisionSubsystem;
+// import edu.wpi.first.wpilibj2.command.Command;
+// import frc.robot.Constants.AutoConstants;
+// import frc.robot.subsystems.PhotonVisionSubsystem;
 
-public class CheckEmptyCenterNote extends Command {
-  /** Creates a new CheckEmptyCenterNote. */
-  PhotonVisionSubsystem vis = PhotonVisionSubsystem.getInstance();
-  public CheckEmptyCenterNote() {
-    // Use addRequirements() here to declare subsystem dependencies.
-    // addRequirements(vis);
-  }
+// public class CheckEmptyCenterNote extends Command {
+//   /** Creates a new CheckEmptyCenterNote. */
+//   PhotonVisionSubsystem vis = PhotonVisionSubsystem.getInstance();
+//   public CheckEmptyCenterNote() {
+//     // Use addRequirements() here to declare subsystem dependencies.
+//     // addRequirements(vis);
+//   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+//   // Called when the command is initially scheduled.
+//   @Override
+//   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if (!vis.getHasTargets()) {
-      AutoConstants.currentCenterNotePos ++;   
-      System.out.println("no note!");   
-    }
-    end(false);
-  }
+//   // Called every time the scheduler runs while the command is scheduled.
+//   @Override
+//   public void execute() {
+//     if (!vis.getHasTargets()) {
+//       AutoConstants.currentCenterNotePos ++;   
+//       System.out.println("no note!");   
+//     }
+//     end(false);
+//   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+//   // Called once the command ends or is interrupted.
+//   @Override
+//   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
-}
+//   // Returns true when the command should end.
+//   @Override
+//   public boolean isFinished() {
+//     return false;
+//   }
+// }

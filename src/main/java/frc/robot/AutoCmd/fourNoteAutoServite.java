@@ -33,6 +33,7 @@ public class fourNoteAutoServite extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     
     addCommands(
+      new InstantCommand(()-> s_Swerve.zeroHeading()),
       new SpeakerCommand(s_Swerve),
       // Commands.deadline(AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.80),4.35, new Rotation2d(AlienceColorCoordinateFlip.flipDegrees(-156.97))), AutoConstants.pathConstraints), new IntakeCommand(s_Swerve, true)),
       AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(1.7),4.3, new Rotation2d((Math.PI/180)*AlienceColorCoordinateFlip.flipDegrees(160))), AutoConstants.pathConstraints, 2),

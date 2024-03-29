@@ -6,7 +6,10 @@ package frc.robot.AutoCmd;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 // import java.util.ArrayList;
 // import java.util.Collections;
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 // import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.lib.util.AlienceColorCoordinateFlip;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.AutoSystemsPrep;
 // import frc.lib.util.Auto_GetMostRecentPoses;
@@ -47,15 +51,16 @@ public class OpenSideTwoNotesSeqCmd extends SequentialCommandGroup {
       // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      // new InstantCommand(() -> s_Swerve.setPose(new Pose2d(AlienceColorCoordinateFlip.flip(0.85), 4.40, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(120)).getRadians())))),
       new SpeakerCommand(s_Swerve),
       //AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.90), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 2),
       //AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(2.90), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians())), AutoConstants.pathConstraints, 2),
-      AutoBuilder.pathfindToPose(AutoConstants.MULTITARGETPOSES_FORINTAKECAMERA[3], AutoConstants.pathConstraints, bufferVelocityForIntake, 1),
+      AutoBuilder.pathfindToPose(AutoConstants.MULTITARGETPOSES_FORINTAKECAMERA[2], AutoConstants.pathConstraints, bufferVelocityForIntake, 1),
       new IntakeCommand(s_Swerve),
       Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.openSideShootingPose, AutoConstants.pathConstraints, bufferVelocityForShoot), new AutoSystemsPrep(AutoConstants.openSideShootingPose, s_Swerve)),
       new SpeakerCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(AutoConstants.MULTITARGETPOSES_FORINTAKECAMERA[3], AutoConstants.pathConstraints, bufferVelocityForIntake, 1),
-      //Commands.waitSeconds(.1),
+      AutoBuilder.pathfindToPose(AutoConstants.MULTITARGETPOSES_FORINTAKECAMERA[2], AutoConstants.pathConstraints, bufferVelocityForIntake, 1),
+      // Commands.waitSeconds(.1),
       new IntakeCommand(s_Swerve),
       Commands.deadline(AutoBuilder.pathfindToPose(AutoConstants.openSideShootingPose, AutoConstants.pathConstraints, bufferVelocityForShoot), new AutoSystemsPrep(AutoConstants.openSideShootingPose, s_Swerve)),
       new SpeakerCommand(s_Swerve)

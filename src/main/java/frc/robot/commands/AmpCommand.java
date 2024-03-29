@@ -171,12 +171,12 @@ public class AmpCommand extends Command {
       true
       );
     }
-    if(Math.hypot(s_Swerve.getPose().getX() - s_Swerve.getAmpX(), s_Swerve.getPose().getY()-s_Swerve.getAmpY()) < 1.75) {
-      armSubsystem.driveToGoal(ArmConstants.ampSetPoint);
-    } else {
-      armSubsystem.driveToGoal(ArmConstants.restingSetpoint);
-    }
-    
+    // if(Math.hypot(s_Swerve.getPose().getX() - s_Swerve.getAmpX(), s_Swerve.getPose().getY()-s_Swerve.getAmpY()) < 1.75) {
+    // } else {
+    //   armSubsystem.driveToGoal(ArmConstants.restingSetpoint);
+    // }
+    armSubsystem.driveToGoal(ArmConstants.ampSetPoint);
+
     
     if(shootSupplier.get()) {
       shooterSubsystem.fireAmp();

@@ -159,7 +159,7 @@ public class IntakeCommand extends Command{
         }
 
 
-        if((isAuto && !swerve.getIsAutoOverShoot()) || !isAuto && !isParallelingWithAutobuilder && arm.getArmPosition() > 80)
+        if((isAuto && !swerve.getIsAutoOverShoot()) && vis.getHasTargets() || !isAuto && !isParallelingWithAutobuilder && arm.getArmPosition() > 80)
         {
             swerve.drive(
                     new Translation2d(translation, strafeVal), 
@@ -180,10 +180,10 @@ public class IntakeCommand extends Command{
     }
     @Override
     public boolean isFinished() {
-        if(isAuto && AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
-        {
-            return true;
-        }
+        // if(isAuto && AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
+        // {
+        //     return true;
+        // }
         // 
         if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
             timeWithoutTarget = 0;

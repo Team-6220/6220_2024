@@ -40,6 +40,7 @@ import frc.robot.AutoCmd.ShootAndTwoMiddle;
 import frc.robot.AutoCmd.fourNoteAutoServite;
 import frc.robot.AutoCmd.pickUpFarNoteTesting;
 import frc.robot.AutoCmd.test;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AmpCommand;
@@ -50,6 +51,7 @@ import frc.robot.commands.IntakeIdleCommand;
 import frc.robot.commands.ManuelEjectNote;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.ShootingTestCommand;
+import frc.robot.commands.SimpleShootCmd;
 import frc.robot.commands.SpeakerCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.Tuning_Arm;
@@ -78,16 +80,19 @@ public class RobotContainer {
   private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-
+  private final JoystickButton manuelShot = new JoystickButton(driver, XboxController.Button.kA.value);
+  
   private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
-
+  
   /* Operator Buttons */
   private final Trigger intake = new Trigger(()->operator.getRawButton(5));
   private final Trigger amp = new Trigger(()->operator.getRawButton(2));
   private final Trigger noNote = new Trigger(()->operator.getRawButton(11));
   private final Trigger climb = new Trigger(()->operator.getRawButton(4));
   private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(10));
+  private final Trigger increaseArmOffset = new Trigger(() -> operator.getRawButton(8));
+  private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7));
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -143,17 +148,18 @@ public class RobotContainer {
       //   autoChooser.addOption(ListOfAllAutos.getAutoName(i), ListOfAllAutos.getAutoCommand(i));
       // }
     // }
-    autoChooser.addOption("Serite fourNoteTesting", new fourNoteAutoServite(s_Swerve));
+    autoChooser.addOption("Four note", new fourNoteAutoServite(s_Swerve));
     autoChooser.addOption("Open side two notes", new OpenSideTwoNotesSeqCmd(s_Swerve));
     autoChooser.addOption("pick up far note testing", new pickUpFarNoteTesting(s_Swerve));
     autoChooser.addOption("Shoot and pick up far note testing", new ShootAndPickUpFarNoteTesting(s_Swerve));
     autoChooser.addOption("Shoot and Two middle", new ShootAndTwoMiddle(s_Swerve));
+    autoChooser.addOption("shoot only", new SpeakerCommand(s_Swerve));
     // autoChooser.addOption("At Code Orange", new test(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
     // autoChooser.addOption("testtest", new test());
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");    
-
+    
     SmartDashboard.putData("Auto Chooser", autoChooser);
    
     
@@ -175,6 +181,8 @@ public class RobotContainer {
       ()->robotControlLeftTrigger.getAsBoolean()
       )
     );
+
+    manuelShot.whileTrue(new SimpleShootCmd());
 
     // amp.whileTrue(ampScoringTesting());
 
@@ -199,6 +207,10 @@ public class RobotContainer {
     );
     speakerTemporary.whileTrue(new ShootingTestCommand(s_Swerve, driver));
     climb.whileTrue(new ClimberTestCommand(operator));
+
+    increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
+    decreaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset --));
+    SmartDashboard.putNumber("Number offset", ArmConstants.armDegreesOffset);
     // speakerTemporary.whileTrue(new ShootingTestCommand());
   }
 

@@ -130,7 +130,7 @@ public class IntakeSubsystem extends SubsystemBase{
                 return;
             } else {
                 if(hasExited) {
-                    output = .08;
+                    output = .065;
                 } else {
                     output = -.15;
                 }

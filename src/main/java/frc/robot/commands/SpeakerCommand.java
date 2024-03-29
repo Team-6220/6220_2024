@@ -119,7 +119,7 @@ public class SpeakerCommand extends Command{
             shooter.spinToVelocity(currentShooterConfiguration.getVelocities());
 
             //armAngle = ArmConstants.getArmAngleFromDistance(distanceToSpeaker);
-            arm.driveToGoal(currentShooterConfiguration.getArmAngle());
+            arm.driveToGoal(currentShooterConfiguration.getArmAngle() + ArmConstants.armDegreesOffset);
             
             if(conditionsMet() || hasFired){
                 intake.feedShooter();
@@ -158,6 +158,7 @@ public class SpeakerCommand extends Command{
         if((shooterReady && armReady && noteReady && aimingReady) || hasFired) {
             if(!hasFired) {
                 hasFired = true;
+                shotCount++;
                 fireShotTimeStamp = Timer.getFPGATimestamp();
             } 
             return true;
@@ -168,13 +169,13 @@ public class SpeakerCommand extends Command{
     public boolean isFinished() {
         double currentTime = Timer.getFPGATimestamp();
         if(hasFired && currentTime-fireShotTimeStamp > ShooterConstants.fireTime) {
-            
+            resetStatusBooleans();
             return true;
         }
-        else if(isAuto && AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
-        {
-            return true;
-        }
+        // else if(isAuto && AutoConstants.currentCenterNotePos > AutoConstants.howManyNotesAreWeAttempting)
+        // {
+            // return true;
+        // }
         return false;
     }
 

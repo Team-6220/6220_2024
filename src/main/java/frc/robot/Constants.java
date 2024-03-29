@@ -125,6 +125,9 @@ public final class Constants {
 
     public static final class ArmConstants{
 
+        public static double armDegreesOffset = 0;
+        
+
         public static final int armMotorAID = 13;
         public static final int armMotorBID = 14;
 
@@ -205,7 +208,7 @@ public final class Constants {
         public static final int backBreakBeamPort = 1;
 
         //FIXME: set intake speed
-        public static final double intakeSpeed = 4;
+        public static final double intakeSpeed = 2.1;
         public static final double ejectSpeedSpeaker = .8;
         public static final double ejectSpeedAmp = .5;
 
@@ -223,7 +226,7 @@ public final class Constants {
 
         public static final double distanceBetweenBreakBeamsInEncoderRotations = 4.8809452057;
 
-        public static final double intakeRPMSpeed = 1400;
+        public static final double intakeRPMSpeed = 1000;
     }
 
     public static final class ShooterConstants{
