@@ -149,6 +149,28 @@ public class IntakeSubsystem extends SubsystemBase{
         intakeMotor.set(output);
 
     }
+    private void driveWithBackup() {
+        double output = 0;
+        if(!noteAtBack && !getFrontBeam()) {
+            noteAtBack = true;
+            hasExited = true;
+            encoder.setPosition(0);
+        }
+        if(noteAtBack) {
+            if(noteSecure) {
+                intakeMotor.set(0);
+                return;
+            } else if(hasExited && !getFrontBeam()) {
+                 output = -.1;
+            }
+            if(!noteSecure && getFrontBeam()) {
+                noteSecure = true;
+            }
+        } else {
+            output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
+        }
+        intakeMotor.set(output);
+    }
 
     public void testRPMPID() {
         double output = 0;
@@ -178,9 +200,16 @@ public class IntakeSubsystem extends SubsystemBase{
         if(!noteInIntake && getFrontBeam()) {
             newNoteDetected();
         }
-        if(noteInIntake && !firing) {
-            driveNoteToSetpoint();
+        if(IntakeConstants.backupModeCount <= 1) {
+            if(noteInIntake && !firing) {
+                driveNoteToSetpoint();
+            }
+        } else if(IntakeConstants.backupModeCount <= 5) {
+            if(noteInIntake && !firing) {
+                driveWithBackup();
+            }
         }
+        
         
         SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
         SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());

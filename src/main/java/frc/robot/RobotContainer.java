@@ -42,12 +42,14 @@ import frc.robot.AutoCmd.pickUpFarNoteTesting;
 import frc.robot.AutoCmd.test;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AmpCommand;
 import frc.robot.commands.ArmIdleCommand;
 import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeIdleCommand;
+import frc.robot.commands.ManueIntakeNote;
 import frc.robot.commands.ManuelEjectNote;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.ShootingTestCommand;
@@ -93,6 +95,8 @@ public class RobotContainer {
   private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(10));
   private final Trigger increaseArmOffset = new Trigger(() -> operator.getRawButton(8));
   private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7));
+  private final Trigger changeIntakeMode = new Trigger(() -> operator.getRawButton(8));
+  private final Trigger manuelIntake = new Trigger(() -> operator.getRawButton(9));
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -187,9 +191,9 @@ public class RobotContainer {
     // amp.whileTrue(ampScoringTesting());
 
     // amp.whileTrue(noteTesting());
-
+    changeIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
     ejectNote.whileTrue(new ManuelEjectNote());
-
+    manuelIntake.whileTrue(new ManueIntakeNote());
     zeroGyro.whileTrue(
       new InstantCommand(
         () -> RumbleManager.rumble(driver, 0.2)

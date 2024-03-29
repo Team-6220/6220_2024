@@ -200,6 +200,7 @@ public final class Constants {
         //FIXME: set id
         public static final int intakeMotorID = 15;
 
+        public static int backupModeCount;
         //FIXME: set inverted
         public static final boolean intakeMotorInverted = false;
 
