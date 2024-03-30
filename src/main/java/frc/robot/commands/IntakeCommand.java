@@ -173,11 +173,15 @@ public class IntakeCommand extends Command{
                     isFieldRelative, 
                     true
             );
-        }
-        else if(swerve.getIsAutoOverShoot())
+        } else if(swerve.getIsAutoOverShoot())
         {
             swerve.stopDriving();
+        } else {
+            swerve.drive(
+                new Translation2d(),0,isFieldRelative,true
+            );
         }
+        
         // else{
         //     swerve.drive(new Translation2d(0,0), 0, false, true);
         // }
@@ -211,6 +215,6 @@ public class IntakeCommand extends Command{
         arm.stop();
         intake.stop();
         swerve.stopDriving();
-        
+
     }
 }

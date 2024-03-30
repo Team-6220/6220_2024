@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.ShooterConfiguration;
 import frc.robot.Constants;
@@ -34,6 +35,8 @@ public class SpeakerCommand extends Command{
     private static int shotCount = 0;
     private ShooterConfiguration currentShooterConfiguration;
 
+
+
     public SpeakerCommand(Swerve swerve, XboxController driver){
         isAuto = false;
         this.swerve = swerve;
@@ -58,6 +61,7 @@ public class SpeakerCommand extends Command{
     @Override
     public void initialize() {
         startShotTimeStamp = Timer.getFPGATimestamp();
+        hasFired = false;
         resetStatusBooleans();
     } 
 
@@ -75,7 +79,8 @@ public class SpeakerCommand extends Command{
     }
     @Override
     public void execute(){
-        System.out.println(hasFired);
+        
+        // System.out.println(hasFired);
         
         try {
             currentShooterConfiguration = ShooterConfiguration.getShooterConfiguration(swerve.getPose());
@@ -86,6 +91,7 @@ public class SpeakerCommand extends Command{
         }
         
         if(currentShooterConfiguration != null) {
+            double teamOffset = Constants.isRed ? 0 + currentShooterConfiguration.getHeadingOffset() : 180 + currentShooterConfiguration.getHeadingOffset();
 
             double[] driverInputs;
             if(!isAuto)
@@ -96,8 +102,7 @@ public class SpeakerCommand extends Command{
             {
                 driverInputs = new double[] {0,0,0};
             }
-            double teamOffset = Constants.isRed ? 0 + currentShooterConfiguration.getHeadingOffset() : 180 + currentShooterConfiguration.getHeadingOffset();
-            swerve.setAutoTurnHeading(MathUtil.clamp((swerve.getHeadingToSpeaker() +teamOffset), -180, 180));
+            swerve.setAutoTurnHeading((swerve.getHeadingToSpeaker() +teamOffset));
             double rotationVal = swerve.getTurnPidSpeed();
             swerve.drive(
                     new Translation2d(driverInputs[0], driverInputs[1]), 
@@ -118,10 +123,15 @@ public class SpeakerCommand extends Command{
             //armAngle = ArmConstants.getArmAngleFromDistance(distanceToSpeaker);
             arm.driveToGoal(currentShooterConfiguration.getArmAngle() + ArmConstants.armDegreesOffset);
             
-            if(conditionsMet() || hasFired){
+            if(swerve.isFacingTurnTarget()&& arm.isAtGoal()&& shooter.isAtSetpoint() || hasFired){
                 intake.feedShooter();
+                if(!hasFired) {
+                    hasFired = true;
+                    fireShotTimeStamp = Timer.getFPGATimestamp();
+                }
             } 
-            
+            SmartDashboard.putBoolean("Facing Turn Heading", swerve.isFacingTurnTarget());
+            SmartDashboard.putNumber("Turn Target", (swerve.getHeadingToSpeaker() +teamOffset));
         } else {
             end(false);
         }
@@ -159,6 +169,7 @@ public class SpeakerCommand extends Command{
     public boolean isFinished() {
         double currentTime = Timer.getFPGATimestamp();
         if(hasFired && currentTime-fireShotTimeStamp > ShooterConstants.fireTime) {
+            hasFired = false;
             resetStatusBooleans();
             return true;
         }
@@ -171,17 +182,18 @@ public class SpeakerCommand extends Command{
 
     @Override
     public void end(boolean interrupted){
+        hasFired = false;
         arm.stop();
         intake.stop();
         shooter.stop();
-        String shotLog = 
-                "Shot #" + shotCount + 
-                "\nTime To Shot: " + (startShotTimeStamp - startShotTimeStamp) + 
-                "\nArm Time: " + (armTime  - startShotTimeStamp) + 
-                "\nShooter Time: " + (shooterTime  - startShotTimeStamp) + 
-                "\nAiming Time: " + (aimingTime - startShotTimeStamp) +
-                "\nIntakeSet Time: " + (noteTime - startShotTimeStamp);
-            System.out.println(shotLog);
+        // String shotLog = 
+        //         "Shot #" + shotCount + 
+        //         "\nTime To Shot: " + (startShotTimeStamp - startShotTimeStamp) + 
+        //         "\nArm Time: " + (armTime  - startShotTimeStamp) + 
+        //         "\nShooter Time: " + (shooterTime  - startShotTimeStamp) + 
+        //         "\nAiming Time: " + (aimingTime - startShotTimeStamp) +
+        //         "\nIntakeSet Time: " + (noteTime - startShotTimeStamp);
+        //     System.out.println(shotLog);
         resetStatusBooleans();
     }
 

@@ -29,6 +29,9 @@ public class ArmIdleCommand extends Command {
     s_ArmSubsystem.driveToGoal(ArmConstants.restingSetpoint);
     s_Blinkin.solid_gold();
   }
-
+  @Override
+  public void end(boolean interrupted) {
+    s_ArmSubsystem.stop();
+  } 
 
 }

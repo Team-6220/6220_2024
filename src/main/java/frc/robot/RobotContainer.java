@@ -39,6 +39,7 @@ import frc.robot.AutoCmd.ShootAndPickUpFarNoteTesting;
 import frc.robot.AutoCmd.ShootAndTwoMiddle;
 // import frc.robot.AutoCmd.ListOfAllAutos;
 import frc.robot.AutoCmd.fourNoteAutoBlue;
+import frc.robot.AutoCmd.fourNoteAutoRed;
 import frc.robot.AutoCmd.pickUpFarNoteTesting;
 import frc.robot.AutoCmd.test;
 import frc.robot.Constants.ArmConstants;
@@ -157,8 +158,9 @@ public class RobotContainer {
       // }
     // }
     autoChooser.addOption("BLUE 4 NOTE", new fourNoteAutoBlue(s_Swerve));
+    autoChooser.addOption("RED 4 NOTE", new fourNoteAutoRed(s_Swerve));
     autoChooser.addOption("Open side two notes", new OpenSideTwoNotesSeqCmd(s_Swerve));
-    autoChooser.addOption("RED OPEN SIDE TWO NOTES", new OpenSideTwoNotesSeqCmdRed(s_Swerve));
+    autoChooser.addOption("RED OPEN SIDE TWO NOTES", new OpenSideTwoNotesSeqCmd(s_Swerve));
     autoChooser.addOption("pick up far note testing", new pickUpFarNoteTesting(s_Swerve));
     autoChooser.addOption("Shoot and pick up far note testing", new ShootAndPickUpFarNoteTesting(s_Swerve));
     autoChooser.addOption("Shoot and Two middle", new ShootAndTwoMiddle(s_Swerve));

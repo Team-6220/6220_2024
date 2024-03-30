@@ -126,7 +126,7 @@ public final class Constants {
 
     public static final class ArmConstants{
 
-        public static double armDegreesOffset = 0;
+        public static double armDegreesOffset = 1;
         
 
         public static final int armMotorAID = 13;
@@ -571,7 +571,7 @@ public final class Constants {
         // public static final Pose2d AMP_POSE2D = isRed ? new Pose2d(14.65, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians())) : new Pose2d(1.9, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         public static final Pose2d AMP_POSE2D = new Pose2d(AlienceColorCoordinateFlip.flip(2.0), 7.67, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         // public static final double maxXDistance = isRed ? 8.81 : 7.75;
-        public static final double maxXDistance = isRed ? 12.5 : 2.45; // maximum x distance during auto so that it doesn't cross the middle of the field
+        public static final double maxXDistance = isRed ? 8.6 : 8; // maximum x distance during auto so that it doesn't cross the middle of the field
 
         
         /* Constraint for the motion profilied robot angle controller */
@@ -599,7 +599,7 @@ public final class Constants {
         {
             new Pose2d(6.00, 6.75, new Rotation2d(Rotation2d.fromDegrees(-170).getRadians())),
             new Pose2d(6.00, 4.00, new Rotation2d(Rotation2d.fromDegrees(-161.98).getRadians())),
-            new Pose2d(6.00, 1.45, new Rotation2d((-170)))
+            new Pose2d(6.00, 1.45, new Rotation2d(Rotation2d.fromDegrees(-170).getRadians()))
         };
         public static final Pose2d[] MULTITARGETPOSES_FORINTAKECAMERA_RED =
         {
@@ -622,6 +622,7 @@ public final class Constants {
          */
         public static final Pose2d topShootingPose = new Pose2d(AlienceColorCoordinateFlip.flip(1.6), 6.25, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(-165)).getRadians()));
 
+    
         public static final Pose2d openSideShootingPose = new Pose2d(AlienceColorCoordinateFlip.flip(1.85), 3.5, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(140)).getRadians()));
         
         public static final Pose2d middleShootingPose = new Pose2d(AlienceColorCoordinateFlip.flip(3.85), 5.50, new Rotation2d(Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180)).getRadians()));

@@ -304,7 +304,7 @@ public class Swerve extends SubsystemBase {
         Pose2d currPose = getPose();
         Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
         double angle = Math.toDegrees(Math.atan2(speakerPose.getY() - currPose.getY(), speakerPose.getX() - currPose.getX()));
-        angle += (Constants.isRed ? 0 : 180);
+        angle += (Constants.isRed ? 0 : -180);
         return angle;
     }
 
@@ -421,7 +421,7 @@ public class Swerve extends SubsystemBase {
 
     public boolean getIsAutoOverShoot()
     {
-        return false;
+        return autoIsOverShoot;
     }
 
     @Override
@@ -452,14 +452,14 @@ public class Swerve extends SubsystemBase {
         field2d.setRobotPose(getPose());
         
 
-        // if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance)))
-        // {
-        //     autoIsOverShoot = true;
-        // }
-        // else
-        // {
-        //     autoIsOverShoot = false;
-        // }
+        if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
+        {
+            autoIsOverShoot = true;
+        }
+        else
+        {
+            autoIsOverShoot = false;
+        }
 
         if(turnKP.hasChanged()
         || turnKD.hasChanged()
