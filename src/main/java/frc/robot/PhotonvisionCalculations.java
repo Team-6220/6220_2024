@@ -139,7 +139,7 @@ public class PhotonvisionCalculations {
         double nonMultiAddition = 20;
         
         if(hasTarget) {
-            if((s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1) || s_Swerve.getIsAuto()) {
+            if((s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1)) {
                 visionStdDev += movementAddition;
             }
             if(closestPose.get().strategy != PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR) {

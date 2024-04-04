@@ -484,10 +484,10 @@ public final class Constants {
         //Turning Pid Constants
         public static final double turnKP = 5;
         public static final double turnKD = 0;
-        public static final double turnKI = 1.5;
+        public static final double turnKI = 1.7;
         public static final double turnMaxVel = 400;
         public static final double turnMaxAccel = 800;
-        public static final double turnTolerance = 1.5;
+        public static final double turnTolerance = 1.75;
         public static final double turnIZone = .4;
 
         /* Swerve Profiling Values */
