@@ -126,7 +126,7 @@ public class ShooterSubsystem extends SubsystemBase{
                 motorBSpeed = currentMaxOutB;
             }
         }
-        currentMaxOutA = motorASpeed;
+        currentMaxOutA = motorASpeed; //cap the velocities so that when you fire, the motors doesn't try to drive it faster
         currentMaxOutB = motorBSpeed;
         shooterMotorA.set(motorASpeed);
         shooterMotorB.set(motorBSpeed);
