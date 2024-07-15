@@ -71,7 +71,7 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
     private boolean isAutoTurning;
-    private ProfiledPIDController turnPidController;
+    private ProfiledPIDController turnPidController;// ProfiledPIDController creates a "trapazoid" when it speeds up to avoid pulling too much voltage from the battery at once.
 
     private HashMap<Double, Rotation2d> gyro_headings = new HashMap<Double, Rotation2d>();
     private LinkedList<Double> gyro_timestamps = new LinkedList<Double>();
@@ -493,7 +493,8 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
-     * Gets the
+     * @deprecated?
+     * Gets the closest not position during autonomous
      */
     public int getClosestNotePosition()
     {

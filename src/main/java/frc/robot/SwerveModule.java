@@ -66,7 +66,7 @@ public class SwerveModule {
         mAngleController.setI(Constants.SwerveConstants.angleKI);
         mAngleController.setD(Constants.SwerveConstants.angleKD);
 
-        mAngleController.setPositionPIDWrappingEnabled(true);
+        mAngleController.setPositionPIDWrappingEnabled(true); //wraps the numbers around when it's too big. ex if the limits are 0 and 100, it will "wrap" back to 0 after it exceeds 100, vise versa
         mAngleController.setPositionPIDWrappingMinInput(0);
         mAngleController.setPositionPIDWrappingMaxInput(RevConfigs.CANCoderAngleToNeoEncoder(1));
 
@@ -77,13 +77,13 @@ public class SwerveModule {
 
         /* Drive Motor Config */
         mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
-        mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
+        mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig); //motor inverted, current limits, etc. editable in constants.java. CTREConfigs.java is just a holder to organize the values
         mDriveMotor.getConfigurator().setPosition(0.0);
         // mDriveMotor.setNeutralMode(SwerveConstants.driveNeutralMode);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle); 
+        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
         mAngleController.setReference(RevConfigs.CANCoderAngleToNeoEncoder(desiredState.angle.getRotations()), ControlType.kPosition);
         overallDesiredModuleState = desiredState.angle.getDegrees();
         // SmartDashboard.putNumber("Desired position", (desiredState.angle.getDegrees()));
@@ -115,6 +115,7 @@ public class SwerveModule {
         return Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValue());
     }
 
+    //** Points the module forward */
     public void resetToAbsolute(){
         double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
         //SmartDashboard.putNumber("absolutePosition", absolutePosition);
