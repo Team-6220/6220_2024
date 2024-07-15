@@ -22,12 +22,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.units.Time;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import frc.lib.util.TunableNumber;
-import frc.robot.Constants.*;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
   private static PhotonVisionSubsystem INSTANCE = null;
@@ -54,6 +48,8 @@ public class PhotonVisionSubsystem extends SubsystemBase {
   private boolean hasTargets;
   private List<PhotonTrackedTarget> targets;
   private PhotonTrackedTarget bestTarget;
+  private double timeCountDown;
+  private boolean seenNoteRecently;
   private double pitch, yaw, skew, area, latency, filteredYaw;
   // private Swerve s_Swerve;
   private LinearFilter linearFilter;
@@ -113,12 +109,13 @@ public class PhotonVisionSubsystem extends SubsystemBase {
 
   public boolean getHasTargets()
   {
-    return hasTargets;
+
+    return seenNoteRecently;
   }
 
   public double getTurnOffset()
   {
-    SmartDashboard.putNumber("yaw", yaw);
+    //SmartDashboard.putNumber("yaw", yaw);
     return yaw;
   }
 
@@ -127,6 +124,16 @@ public class PhotonVisionSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     filteredYaw = linearFilter.calculate(yaw);
     updateValues();
+    if(hasTargets && (!seenNoteRecently||timeCountDown!=50)) {
+      seenNoteRecently = true;
+      timeCountDown = 50;
+    }
+    if(seenNoteRecently && !hasTargets) {
+      if(timeCountDown < 0) {
+        seenNoteRecently = false;
+      }
+      timeCountDown--;
+    }
   }
 
   public static synchronized PhotonVisionSubsystem getInstance(){
