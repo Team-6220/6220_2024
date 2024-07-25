@@ -222,7 +222,7 @@ public class RobotContainer {
       s_Swerve, 
       driver)
     );
-    speakerTemporary.whileTrue(new ShootingTestCommand(s_Swerve, driver));
+    speakerTemporary.whileTrue(new SimpleShootCmd());
     climb.whileTrue(new ClimberTestCommand(operator));
 
     increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));

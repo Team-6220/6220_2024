@@ -31,8 +31,8 @@ public class ManuelEjectNote extends Command {
   @Override
   public void execute() {
     
-      s_IntakeSubsystem.simpleDrive(true, 0.5);
-      s_ShooterSubsystem.spinManually(-0.3);
+      s_IntakeSubsystem.simpleDrive(true, IntakeConstants.manuelEjectSpeed);
+      s_ShooterSubsystem.spinManually(-IntakeConstants.manuelEjectSpeed);
     
   }
 
