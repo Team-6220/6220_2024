@@ -85,6 +85,13 @@ public class ModuleIOMixed implements ModuleIO {
         driveTalon.getConfigurator().apply(driveConfig);
         setDriveBrakeMode(true);
 
+        cancoder.getConfigurator().apply(new CANcoderConfiguration());
+
+        drivePosition = driveTalon.getPosition();
+        driveVelocity = driveTalon.getVelocity();
+        driveAppliedVolts = driveTalon.getMotorVoltage();
+        driveCurrent = driveTalon.getSupplyCurrent();
+
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0, drivePosition); // Required for odometry, use faster rate
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -106,11 +113,7 @@ public class ModuleIOMixed implements ModuleIO {
         turnSparkMax.burnFlash();
 
         
-
-        drivePosition = driveTalon.getPosition();
-        driveVelocity = driveTalon.getVelocity();
-        driveAppliedVolts = driveTalon.getMotorVoltage();
-        driveCurrent = driveTalon.getSupplyCurrent();
+ 
 
         driveTalon.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
         driveTalon.getConfigurator().setPosition(0.0);
