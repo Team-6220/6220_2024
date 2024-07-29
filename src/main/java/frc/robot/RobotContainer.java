@@ -82,10 +82,10 @@ public class RobotContainer {
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   //private final JoystickButton intakeTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
   //private final JoystickButton ampTemporary = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-  private final JoystickButton manuelShot = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton manuelShot = new JoystickButton(driver, XboxController.Button.kX.value);
   
   private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
@@ -98,10 +98,10 @@ public class RobotContainer {
   private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(12));
   private final Trigger increaseArmOffset = new Trigger(() -> operator.getRawButton(8));
   private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7));
-  private final Trigger increaseIntakeMode = new Trigger(() -> operator.getRawButton(6));
-  private final Trigger decreaseIntakeMode = new Trigger(() -> operator.getRawButton(3));
+  // private final Trigger increaseIntakeMode = new Trigger(() -> operator.getRawButton(6));
+  // private final Trigger decreaseIntakeMode = new Trigger(() -> operator.getRawButton(3));
   private final Trigger manuelIntake = new Trigger(() -> operator.getRawButton(11));
-  private final Trigger testing = new Trigger(()-> operator.getRawButton(10));
+  // private final Trigger testing = new Trigger(()-> operator.getRawButton(10));
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -185,10 +185,10 @@ public class RobotContainer {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0))))); //Red side
     // zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(1.33, 5.60), new Rotation2d(0))))); //Blue Side
-    testing.onTrue(Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
-      Commands.deadline(
-        Commands.waitSeconds(.1), 
-        new ManuelMoveNoteBack())));
+    // testing.onTrue(Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
+    //   Commands.deadline(
+    //     Commands.waitSeconds(.1), 
+    //     new ManuelMoveNoteBack())));
 
     amp.whileTrue(new AmpCommand(
       s_Swerve,
@@ -203,8 +203,8 @@ public class RobotContainer {
     // amp.whileTrue(ampScoringTesting());
 
     // amp.whileTrue(noteTesting());
-    increaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
-    decreaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount --));
+    // increaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
+    // decreaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount --));
     trueEject.whileTrue(new ManuelEjectNote());
     ejectNote.whileTrue(new ManuelMoveNoteBack());
     manuelIntake.whileTrue(new ManueIntakeNote());

@@ -213,7 +213,7 @@ public final class Constants {
         public static final double intakeSpeed = 0.5;
         public static final double ejectSpeedSpeaker = .8;
         public static final double ejectSpeedAmp = .5;
-        public static final double manuelEjectSpeed = 0.1;
+        public static final double manuelEjectSpeed = 0.5;
 
         public static final double kP = 0.2;
         public static final double kI = 0;
