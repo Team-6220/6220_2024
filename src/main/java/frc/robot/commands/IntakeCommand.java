@@ -196,7 +196,7 @@ public class IntakeCommand extends Command{
         //     return true;
         // }
         // 
-        if((timeWithoutTarget > stopIntakeDelay && isAuto)) {
+        if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
             timeWithoutTarget = 0;
             counterForFrontIntake ++;
             if(intake.getFrontBeam() && counterForFrontIntake > 10)
