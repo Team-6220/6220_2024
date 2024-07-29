@@ -49,6 +49,8 @@ public final class Constants {
 
     public static boolean isRed = false;
 
+    public static final double loopPeriodSecs = 0.02;
+
     public static void updateAllianceColor(){
         Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
         Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
