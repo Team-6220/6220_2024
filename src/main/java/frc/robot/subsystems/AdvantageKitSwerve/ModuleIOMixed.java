@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -24,26 +25,32 @@ import edu.wpi.first.math.util.Units;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkRelativeEncoder.Type;
 
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 
 /** Add your docs here. */
-public class ModuleIOMixed implements ModuleIO {
+public class ModuleIOMixed implements ModuleIO 
+{
     private final TalonFX driveTalon;
     private final CANSparkMax turnSparkMax;
 
     private final CANcoder cancoder;
-
-    private final RelativeEncoder mNeoAngleEncoder;
+    /**AKA NEO encoder */
+    private final RelativeEncoder turnRelativeEncoder;
 
     private final StatusSignal<Double> drivePosition;
     private final StatusSignal<Double> driveVelocity;
     private final StatusSignal<Double> driveAppliedVolts;
     private final StatusSignal<Double> driveCurrent;
 
+    /**AKA Cancoder position */
+    private final StatusSignal<Double> turnAbsolutePosition;
+
     private final Rotation2d absoluteEncoderOffset;
-        private final boolean isTurnMotorInverted = SwerveConstants.angleMotorInvert;
+    private final boolean isTurnMotorInverted = SwerveConstants.angleMotorInvert;
+
     public ModuleIOMixed(int index)
     {
         switch(index)
@@ -76,21 +83,30 @@ public class ModuleIOMixed implements ModuleIO {
             throw new RuntimeException("Invalid module index");
         }
 
-        TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
-        CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
-
+        // TALON STUFF BEGIN
+        
         var driveConfig = new TalonFXConfiguration();
+        driveConfig.MotorOutput.Inverted = SwerveConstants.driveMotorInvert;
+        driveConfig.CurrentLimits.SupplyCurrentLimitEnable = SwerveConstants.driveEnableCurrentLimit;
         driveConfig.CurrentLimits.SupplyCurrentLimit = SwerveConstants.driveCurrentLimit;
-        driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        driveConfig.CurrentLimits.SupplyCurrentThreshold = SwerveConstants.driveCurrentThreshold;
+        driveConfig.CurrentLimits.SupplyTimeThreshold = SwerveConstants.driveCurrentThresholdTime;
+
         driveTalon.getConfigurator().apply(driveConfig);
-        setDriveBrakeMode(true);
+        boolean driveBrakeMode = SwerveConstants.driveNeutralMode == NeutralModeValue.Brake;
+        setDriveBrakeMode(driveBrakeMode);
 
+        CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
+        swerveCANcoderConfig.MagnetSensor.SensorDirection = SwerveConstants.cancoderInvert;
+        
         cancoder.getConfigurator().apply(new CANcoderConfiguration());
-
+        
         drivePosition = driveTalon.getPosition();
         driveVelocity = driveTalon.getVelocity();
         driveAppliedVolts = driveTalon.getMotorVoltage();
         driveCurrent = driveTalon.getSupplyCurrent();
+        
+        turnAbsolutePosition = cancoder.getAbsolutePosition();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0, drivePosition); // Required for odometry, use faster rate
@@ -98,79 +114,94 @@ public class ModuleIOMixed implements ModuleIO {
             50.0,
             driveVelocity,
             driveAppliedVolts,
-            driveCurrent);
+            driveCurrent,
+            turnAbsolutePosition);
         driveTalon.optimizeBusUtilization();
-
-
-
-        
+        // TALON STUFF FINISHED
+        // TURN MOTOR BEGIN
         turnSparkMax.restoreFactoryDefaults();
 
         turnSparkMax.setCANTimeout(250);
 
-        mNeoAngleEncoder = turnSparkMax.getEncoder(Type.kHallSensor, 42);
+        turnSparkMax.setCANTimeout(250);
+
+        turnRelativeEncoder = turnSparkMax.getEncoder(Type.kHallSensor, 42);
         
+        turnSparkMax.setInverted(isTurnMotorInverted);
+        // turnSparkMax.setSmartCurrentLimit(SwerveConstants.angleCurrentThreshold, SwerveConstants.angleCurrentLimit, 500);
+        turnSparkMax.setSmartCurrentLimit(SwerveConstants.angleCurrentThreshold, SwerveConstants.angleCurrentLimit);
+        turnSparkMax.enableVoltageCompensation(12.0);
+
+        turnRelativeEncoder.setPosition(0);
+        turnRelativeEncoder.setMeasurementPeriod(10);
+        turnRelativeEncoder.setAverageDepth(2);
+
+        turnSparkMax.setCANTimeout(0);
+
         turnSparkMax.burnFlash();
 
+        // TURN MOTOR FINISHED
+    }
+
+    @Override
+    public void updateInputs(ModuleIOInputs inputs) 
+    {
+        // TALON UPDATES STARTS
+        BaseStatusSignal.refreshAll(
+            drivePosition,
+            driveVelocity,
+            driveAppliedVolts,
+            driveCurrent,
+            turnAbsolutePosition);
+
+        inputs.drivePositionRad =
+            Units.rotationsToRadians(drivePosition.getValueAsDouble()) / SwerveConstants.driveGearRatio;
+        inputs.driveVelocityRadPerSec =
+            Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / SwerveConstants.driveGearRatio;
+        inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
+        inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
+
+        inputs.turnAbsolutePosition =
+            Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
+                .minus(absoluteEncoderOffset);
+        // TALON UPDATES END
+        // SPARK MAX UPDATE START
+        inputs.turnPosition =
+            Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / SwerveConstants.angleGearRatio);
+        inputs.turnVelocityRadPerSec =
+            Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
+                / SwerveConstants.angleGearRatio;
+        inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
+        inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
+
+        // SPARK MAX UPDATE END
         
- 
+    }
 
-        driveTalon.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
-        driveTalon.getConfigurator().setPosition(0.0);
-        }
+    @Override
+    public void setDriveVoltage(double volts) 
+    {
+        driveTalon.setControl(new VoltageOut(volts));
+    }
 
-        @Override
-  public void updateInputs(ModuleIOInputs inputs) {
-    BaseStatusSignal.refreshAll(
-        drivePosition,
-        driveVelocity,
-        driveAppliedVolts,
-        driveCurrent);
+    @Override
+    public void setTurnVoltage(double volts) 
+    {
+        turnSparkMax.setVoltage(volts);
+    }
 
-    inputs.drivePositionRad =
-        Units.rotationsToRadians(drivePosition.getValueAsDouble()) / SwerveConstants.driveGearRatio;
-    inputs.driveVelocityRadPerSec =
-        Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / SwerveConstants.driveGearRatio;
-    inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
-    inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
+    @Override
+    public void setDriveBrakeMode(boolean enable) 
+    {
+        var config = new MotorOutputConfigs();
+        config.Inverted = InvertedValue.CounterClockwise_Positive;
+        config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+        driveTalon.getConfigurator().apply(config);
+    }
 
-    inputs.turnAbsolutePosition =
-        Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
-            .minus(absoluteEncoderOffset);
-    inputs.turnPosition =
-        Rotation2d.fromRotations(turnPosition.getValueAsDouble() / SwerveConstants.angleGearRatio);
-    inputs.turnVelocityRadPerSec =
-        Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / SwerveConstants.angleGearRatio;
-    inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
-    inputs.turnCurrentAmps = new double[] {turnCurrent.getValueAsDouble()};
-  }
-
-  @Override
-  public void setDriveVoltage(double volts) {
-    driveTalon.setControl(new VoltageOut(volts));
-  }
-
-  @Override
-  public void setTurnVoltage(double volts) {
-    turnTalon.setControl(new VoltageOut(volts));
-  }
-
-  @Override
-  public void setDriveBrakeMode(boolean enable) {
-    var config = new MotorOutputConfigs();
-    config.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
-    driveTalon.getConfigurator().apply(config);
-  }
-
-  @Override
-  public void setTurnBrakeMode(boolean enable) {
-    var config = new MotorOutputConfigs();
-    config.Inverted =
-        isTurnMotorInverted
-            ? InvertedValue.Clockwise_Positive
-            : InvertedValue.CounterClockwise_Positive;
-    config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
-    turnTalon.getConfigurator().apply(config);
-  }
+    @Override
+    public void setTurnBrakeMode(boolean enable) 
+    {
+        turnSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    }
 }
