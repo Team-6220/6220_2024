@@ -45,6 +45,19 @@ public final class Constants {
     
     public static boolean TUNING_MODE = true;
 
+    public static final Mode currentMode = Mode.REAL;
+
+    public static enum Mode {
+        /** Running on a real robot. */
+        REAL,
+
+        /** Running a physics simulator. */
+        SIM,
+
+        /** Replaying from a log file. */
+        REPLAY
+    }
+
     public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
 
     public static boolean isRed = false;
@@ -492,12 +505,12 @@ public final class Constants {
         public static final double turnTolerance = 1.75;
         public static final double turnIZone = .4;
 
+        public static final double DRIVE_BASE_RADIUS = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
         /* Swerve Profiling Values */
         /** Meters per Second */
         public static final double maxSpeed = 6380.0 / 60.0 * wheelCircumference * driveGearRatio;
         /** Radians per Second */
-        public static final double maxAngularVelocity = maxSpeed / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
-
+        public static final double maxAngularVelocity = maxSpeed / DRIVE_BASE_RADIUS;
         /* Neutral Modes */
         public static final IdleMode angleNeutralMode = IdleMode.kBrake;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;

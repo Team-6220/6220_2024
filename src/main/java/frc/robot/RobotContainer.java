@@ -49,6 +49,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AmpCommand;
 import frc.robot.commands.ArmIdleCommand;
 import frc.robot.commands.ClimberTestCommand;
+import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeIdleCommand;
 import frc.robot.commands.ManueIntakeNote;
@@ -66,6 +67,12 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.blinkin;
+import frc.robot.subsystems.AdvantageKitSwerve.Drive;
+import frc.robot.subsystems.AdvantageKitSwerve.GyroIO;
+import frc.robot.subsystems.AdvantageKitSwerve.GyroIONavX;
+import frc.robot.subsystems.AdvantageKitSwerve.ModuleIO;
+import frc.robot.subsystems.AdvantageKitSwerve.ModuleIOMixed;
+import frc.robot.subsystems.AdvantageKitSwerve.ModuleIOSim;
 
 public class RobotContainer {
 
@@ -89,6 +96,8 @@ public class RobotContainer {
   
   private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
+
+  private final Trigger stopWithX = new Trigger(()->driver.getXButton());
   
   /* Operator Buttons */
   private final Trigger intake = new Trigger(()->operator.getRawButton(5));
@@ -110,12 +119,57 @@ public class RobotContainer {
   private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
   private final ClimberSubsystem s_ClimberSubsystem = ClimberSubsystem.getInstance();
 
+  private final Drive drive;
   //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
   private final blinkin s_Blinkin = blinkin.getInstance();
 
   public RobotContainer() {
 
-    s_Swerve.zeroHeading();
+    switch (Constants.currentMode) {
+      case REAL:
+        // Real robot, instantiate hardware IO implementations
+        drive =
+            new Drive(
+                new GyroIONavX(),
+                new ModuleIOMixed(0),
+                new ModuleIOMixed(1),
+                new ModuleIOMixed(2),
+                new ModuleIOMixed(3));
+        // flywheel = new Flywheel(new FlywheelIOSparkMax());
+        // drive = new Drive(
+        // new GyroIOPigeon2(),
+        // new ModuleIOTalonFX(0),
+        // new ModuleIOTalonFX(1),
+        // new ModuleIOTalonFX(2),
+        // new ModuleIOTalonFX(3));
+        // flywheel = new Flywheel(new FlywheelIOTalonFX());
+        break;
+
+      case SIM:
+        // Sim robot, instantiate physics sim IO implementations
+        // drive =
+        //     new Drive(
+        //         new GyroIO() {},
+        //         new ModuleIOSim(),
+        //         new ModuleIOSim(),
+        //         new ModuleIOSim(),
+        //         new ModuleIOSim());
+        // flywheel = new Flywheel(new FlywheelIOSim());
+
+      default:
+        // Replayed robot, disable IO implementations
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+        // flywheel = new Flywheel(new FlywheelIO() {});
+        break;
+    }
+
+    // s_Swerve.zeroHeading();
     ShooterConfiguration.setupRadiusValues();   
     ShooterConfiguration.setupConfigurations();
     Constants.VisionConstants.setTagHeights();
@@ -128,15 +182,15 @@ public class RobotContainer {
         Commands.waitSeconds(.1), 
         new ManuelMoveNoteBack())));
 
-    s_Swerve.configureAutoBuilder();
+    // s_Swerve.configureAutoBuilder();
 
-    s_Swerve.setDefaultCommand(
-        new TeleopSwerve(
-            s_Swerve,
-            driver,
-            () -> robotCentric.getAsBoolean()
-        )
-    );
+    // s_Swerve.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         s_Swerve,
+    //         driver,
+    //         () -> robotCentric.getAsBoolean()
+    //     )
+    // ); 
 
     
     s_ArmSubsystem.setDefaultCommand(new ArmIdleCommand());
@@ -182,6 +236,13 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -driver.getLeftY(),
+            () -> -driver.getLeftX(),
+            () -> -driver.getRightX()));
+    stopWithX.onTrue(Commands.runOnce(drive::stopWithX, drive));
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0))))); //Red side
     // zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(1.33, 5.60), new Rotation2d(0))))); //Blue Side
