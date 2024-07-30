@@ -45,7 +45,7 @@ public class IntakeCommand extends Command{
     private double armAngle = ArmConstants.hoverSetpoint;
     private XboxController driver;
     private boolean isAuto;
-    private int timeWithoutTarget = 0, stopIntakeDelay = 100, counterForFrontIntake = 0;
+    private int timeWithoutTarget = 0, stopIntakeDelay = 100;
     private boolean isParallelingWithAutobuilder = false;
 
     private boolean isFieldRelative = false;
@@ -70,7 +70,6 @@ public class IntakeCommand extends Command{
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
         timeWithoutTarget = 0;
-        counterForFrontIntake = 0;
         addRequirements(this.swerve, arm, intake, vis);
     }
 
@@ -90,7 +89,6 @@ public class IntakeCommand extends Command{
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
-        counterForFrontIntake = 0;
         addRequirements(this.swerve, arm, intake, vis);
     }
 
@@ -111,7 +109,6 @@ public class IntakeCommand extends Command{
         limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
         limelightPidController.setTolerance(turnTolerance.get());
         limelightPidController.setIZone(.5);
-        counterForFrontIntake = 0;
         addRequirements(arm, intake, vis);
     }
 
@@ -124,7 +121,6 @@ public class IntakeCommand extends Command{
     public void execute(){
         intake.feedIntake();
         arm.driveToGoal(ArmConstants.intakeSetpoint);
-        counterForFrontIntake = 0;
         double[] driverInputs;
         double rotationVal = 0, translation = 0, strafeVal = 0;
         if(!isAuto && !autoControl.getAsBoolean()) {
@@ -165,7 +161,7 @@ public class IntakeCommand extends Command{
         }
 
 
-        if((isAuto && !swerve.getIsAutoOverShoot()) && vis.getHasTargets() || !isAuto && !isParallelingWithAutobuilder && arm.getArmPosition() > 80)
+        if(((isAuto && !swerve.getIsAutoOverShoot()) && vis.getHasTargets()) ||( !isAuto && !isParallelingWithAutobuilder && arm.getArmPosition() > 80))
         {
             swerve.drive(
                     new Translation2d(translation, strafeVal), 
@@ -173,10 +169,12 @@ public class IntakeCommand extends Command{
                     isFieldRelative, 
                     true
             );
-        } else if(swerve.getIsAutoOverShoot())
+        } 
+        else if(swerve.getIsAutoOverShoot())
         {
             swerve.stopDriving();
-        } else {
+        }
+        else {
             swerve.drive(
                 new Translation2d(),0,isFieldRelative,true
             );
@@ -185,8 +183,7 @@ public class IntakeCommand extends Command{
         // else{
         //     swerve.drive(new Translation2d(0,0), 0, false, true);
         // }
-        shooter.spinManually(-0.1);
-        SmartDashboard.putNumber("Intake Motor Current Draw", intake.intakeMotor.getOutputCurrent());
+        // shooter.spinManually(-0.1);
     }
     @Override
     public boolean isFinished() {
@@ -196,10 +193,9 @@ public class IntakeCommand extends Command{
         //     return true;
         // }
         // 
-        if(intake.getFrontBeam() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
+        if(intake.getNoteInIntake() || (timeWithoutTarget > stopIntakeDelay && isAuto)) {
             timeWithoutTarget = 0;
-            counterForFrontIntake ++;
-            if(intake.getFrontBeam() && counterForFrontIntake > 10)
+            if(intake.getBackBeam())
             {  
                 if(!isAuto) {
                     RumbleManager.rumble(driver, 0.2);
