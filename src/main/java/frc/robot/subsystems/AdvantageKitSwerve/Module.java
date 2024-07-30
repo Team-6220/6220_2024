@@ -4,10 +4,15 @@
 
 package frc.robot.subsystems.AdvantageKitSwerve;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import frc.robot.Constants.SwerveConstants;
+
 /** Add your docs here. */
 public class Module
 {
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
     private final int index;
+
+    private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(SwerveConstants.driveKS, SwerveConstants.driveKV, SwerveConstants.driveKA);
 }
