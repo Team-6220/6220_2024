@@ -120,7 +120,7 @@ public class RobotContainer {
     ShooterConfiguration.setupConfigurations();
     Constants.VisionConstants.setTagHeights();
 
-    // PhotonvisionCalculations.initPhoton();
+    PhotonvisionCalculations.initPhoton();
 
     NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
     NamedCommands.registerCommand("pickup", Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
