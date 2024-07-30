@@ -24,6 +24,8 @@ public interface ModuleIO
 {
     @AutoLog
     public static class ModuleIOInputs {
+        
+
         public double drivePositionRad = 0.0;
         public double driveVelocityRadPerSec = 0.0;
         public double driveAppliedVolts = 0.0;
@@ -52,4 +54,16 @@ public interface ModuleIO
     
       /** Enable or disable brake mode on the turn motor. */
       public default void setTurnBrakeMode(boolean enable) {} 
+      
+      /** Run to drive velocity setpoint with feedforward */
+      public default void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {}
+
+      /** Run to turn position setpoint */
+      public default void runTurnPositionSetpoint(double angleRads) {}
+
+      /** Configure drive PID */
+      public default void setDrivePID(double kP, double kI, double kD) {}
+
+      /** Configure turn PID */
+      public default void setTurnPID(double kP, double kI, double kD) {}
 }
