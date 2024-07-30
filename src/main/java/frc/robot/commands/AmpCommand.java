@@ -148,20 +148,21 @@ public class AmpCommand extends Command {
       // else{
       //   System.err.println("APRIL TAG NOT DETECTED");
       // }
-      fowardAndBackPID.setGoal(s_Swerve.getAmpX());
-      leftAndRightPID.setGoal(s_Swerve.getAmpY());
+      // fowardAndBackPID.setGoal(s_Swerve.getAmpX());
+      // leftAndRightPID.setGoal(s_Swerve.getAmpY());
       
       SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
-      SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
-      SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);
+      // SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
+      // SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);
       
-      xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
-      yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
+      // xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
+      // yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
+      
+      // s_Swerve.setAutoTurnHeading(90);
+      // rotationVal = s_Swerve.getTurnPidSpeed();
       
       s_Blinkin.sky_blue();
     }
-    s_Swerve.setAutoTurnHeading(90);
-    rotationVal = s_Swerve.getTurnPidSpeed();
     if(!isParallelingWithAutobuilder)
     {
       s_Swerve.drive(
