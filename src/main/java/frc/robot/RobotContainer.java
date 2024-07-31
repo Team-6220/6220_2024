@@ -33,39 +33,39 @@ import frc.lib.util.RumbleManager;
 import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TriggerButton;
 import frc.lib.util.TunableNumber;
-import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmd;
-import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmdRed;
-import frc.robot.AutoCmd.ShootAndPickUpFarNoteTesting;
-import frc.robot.AutoCmd.ShootAndTwoMiddle;
+// import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmd;
+// import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmdRed;
+// import frc.robot.AutoCmd.ShootAndPickUpFarNoteTesting;
+// import frc.robot.AutoCmd.ShootAndTwoMiddle;
 // import frc.robot.AutoCmd.ListOfAllAutos;
-import frc.robot.AutoCmd.fourNoteAutoBlue;
-import frc.robot.AutoCmd.fourNoteAutoRed;
-import frc.robot.AutoCmd.pickUpFarNoteTesting;
-import frc.robot.AutoCmd.test;
+// import frc.robot.AutoCmd.fourNoteAutoBlue;
+// import frc.robot.AutoCmd.fourNoteAutoRed;
+// import frc.robot.AutoCmd.pickUpFarNoteTesting;
+// import frc.robot.AutoCmd.test;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AmpCommand;
+// import frc.robot.commands.AmpCommand;
 import frc.robot.commands.ArmIdleCommand;
 import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.IntakeCommand;
+// import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeIdleCommand;
 import frc.robot.commands.ManueIntakeNote;
 import frc.robot.commands.ManuelEjectNote;
 import frc.robot.commands.ManuelMoveNoteBack;
 import frc.robot.commands.ShooterIdleCommand;
-import frc.robot.commands.ShootingTestCommand;
+// import frc.robot.commands.ShootingTestCommand;
 import frc.robot.commands.SimpleShootCmd;
-import frc.robot.commands.SpeakerCommand;
-import frc.robot.commands.TeleopSwerve;
+// import frc.robot.commands.SpeakerCommand;
+// import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.Tuning_Arm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.Swerve;
+// import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.blinkin;
 import frc.robot.subsystems.AdvantageKitSwerve.Drive;
 import frc.robot.subsystems.AdvantageKitSwerve.GyroIO;
@@ -89,7 +89,7 @@ public class RobotContainer {
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   //private final JoystickButton intakeTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
   //private final JoystickButton ampTemporary = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
+  // private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton manuelShot = new JoystickButton(driver, XboxController.Button.kA.value);
@@ -113,7 +113,7 @@ public class RobotContainer {
   private final Trigger testing = new Trigger(()-> operator.getRawButton(10));
 
   /* Subsystems */
-  private final Swerve s_Swerve = new Swerve();
+  // private final Swerve s_Swerve = new Swerve();
   private final ArmSubsystem s_ArmSubsystem = ArmSubsystem.getInstance();
   private final IntakeSubsystem s_IntakeSubsystem = IntakeSubsystem.getInstance();
   private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
@@ -176,11 +176,11 @@ public class RobotContainer {
 
     // PhotonvisionCalculations.initPhoton();
 
-    NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
-    NamedCommands.registerCommand("pickup", Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
-      Commands.deadline(
-        Commands.waitSeconds(.1), 
-        new ManuelMoveNoteBack())));
+    // NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
+    // NamedCommands.registerCommand("pickup", Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
+      // Commands.deadline(
+        // Commands.waitSeconds(.1), 
+        // new ManuelMoveNoteBack())));
 
     // s_Swerve.configureAutoBuilder();
 
@@ -214,14 +214,14 @@ public class RobotContainer {
       //   autoChooser.addOption(ListOfAllAutos.getAutoName(i), ListOfAllAutos.getAutoCommand(i));
       // }
     // }
-    autoChooser.addOption("BLUE 4 NOTE", new fourNoteAutoBlue(s_Swerve));
-    autoChooser.addOption("RED 4 NOTE", new fourNoteAutoRed(s_Swerve));
-    autoChooser.addOption("Open side two notes", new OpenSideTwoNotesSeqCmd(s_Swerve));
-    autoChooser.addOption("RED OPEN SIDE TWO NOTES", new OpenSideTwoNotesSeqCmd(s_Swerve));
-    autoChooser.addOption("pick up far note testing", new pickUpFarNoteTesting(s_Swerve));
-    autoChooser.addOption("Shoot and pick up far note testing", new ShootAndPickUpFarNoteTesting(s_Swerve));
-    autoChooser.addOption("Shoot and Two middle", new ShootAndTwoMiddle(s_Swerve));
-    autoChooser.addOption("shoot only", new SpeakerCommand(s_Swerve));
+    // autoChooser.addOption("BLUE 4 NOTE", new fourNoteAutoBlue(s_Swerve));
+    // autoChooser.addOption("RED 4 NOTE", new fourNoteAutoRed(s_Swerve));
+    // autoChooser.addOption("Open side two notes", new OpenSideTwoNotesSeqCmd(s_Swerve));
+    // autoChooser.addOption("RED OPEN SIDE TWO NOTES", new OpenSideTwoNotesSeqCmd(s_Swerve));
+    // autoChooser.addOption("pick up far note testing", new pickUpFarNoteTesting(s_Swerve));
+    // autoChooser.addOption("Shoot and pick up far note testing", new ShootAndPickUpFarNoteTesting(s_Swerve));
+    // autoChooser.addOption("Shoot and Two middle", new ShootAndTwoMiddle(s_Swerve));
+    // autoChooser.addOption("shoot only", new SpeakerCommand(s_Swerve));
     // autoChooser.addOption("At Code Orange", new test(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
     // autoChooser.addOption("testtest", new test());
@@ -239,25 +239,25 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driver.getLeftY(),
-            () -> -driver.getLeftX(),
-            () -> -driver.getRightX()));
+            () -> driver.getLeftY(),
+            () -> driver.getLeftX(),
+            () -> driver.getRightX()));
     stopWithX.onTrue(Commands.runOnce(drive::stopWithX, drive));
-    zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-    zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0))))); //Red side
+    // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+    // zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0))))); //Red side
     // zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(1.33, 5.60), new Rotation2d(0))))); //Blue Side
-    testing.onTrue(Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
-      Commands.deadline(
-        Commands.waitSeconds(.1), 
-        new ManuelMoveNoteBack())));
+    // testing.onTrue(Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
+      // Commands.deadline(
+        // Commands.waitSeconds(.1), 
+        // new ManuelMoveNoteBack())));
 
-    amp.whileTrue(new AmpCommand(
-      s_Swerve,
-      driver,
-      () -> operator.getRawButton(1),
-      ()->robotControlLeftTrigger.getAsBoolean()
-      )
-    );
+    // amp.whileTrue(new AmpCommand(
+    //   s_Swerve,
+    //   driver,
+    //   () -> operator.getRawButton(1),
+    //   ()->robotControlLeftTrigger.getAsBoolean()
+    //   )
+    // );
 
     manuelShot.whileTrue(new SimpleShootCmd());
 
@@ -274,16 +274,16 @@ public class RobotContainer {
         () -> RumbleManager.rumble(driver, 0.2)
       )
     );
-    intake.whileTrue(new IntakeCommand(
-      s_Swerve, 
-      driver,  
-      () -> robotControlLeftTrigger.getAsBoolean()));
+    // intake.whileTrue(new IntakeCommand(
+    //   s_Swerve, 
+    //   driver,  
+    //   () -> robotControlLeftTrigger.getAsBoolean()));
 
-    fireRightTrigger.whileTrue(new SpeakerCommand(
-      s_Swerve, 
-      driver)
-    );
-    speakerTemporary.whileTrue(new ShootingTestCommand(s_Swerve, driver));
+    // fireRightTrigger.whileTrue(new SpeakerCommand(
+    //   s_Swerve, 
+    //   driver)
+    // );
+    // speakerTemporary.whileTrue(new ShootingTestCommand(s_Swerve, driver));
     climb.whileTrue(new ClimberTestCommand(operator));
 
     increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
@@ -315,7 +315,7 @@ public class RobotContainer {
 
   public SequentialCommandGroup pickUpFarNoteAndShoot()
   {
-      s_Swerve.setIsAuto(true);
+      // s_Swerve.setIsAuto(true);
     List<Translation2d> bezierPointToFar = PathPlannerPath.bezierFromPoses(
       new Pose2d(3.9, 6.15, Rotation2d.fromDegrees(0)),
       new Pose2d(7.55, 7.45, Rotation2d.fromDegrees(0))
@@ -326,14 +326,15 @@ public class RobotContainer {
       new GoalEndState(0, Rotation2d.fromDegrees(180))
       );
       pathTofar.preventFlipping = false;
-    return new SequentialCommandGroup(
-      new SpeakerCommand(s_Swerve),
-      // AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(7.5), 7.5, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.PathConstraints),
-      AutoBuilder.pathfindThenFollowPath(pathTofar, AutoConstants.pathConstraints),
-      new IntakeCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(4), 5.8, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
-      new SpeakerCommand(s_Swerve)
-      );
+      return new SequentialCommandGroup();
+    // return new SequentialCommandGroup(
+    //   new SpeakerCommand(s_Swerve),
+    //   // AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(7.5), 7.5, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.PathConstraints),
+    //   AutoBuilder.pathfindThenFollowPath(pathTofar, AutoConstants.pathConstraints),
+    //   new IntakeCommand(s_Swerve),
+    //   AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(4), 5.8, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
+    //   new SpeakerCommand(s_Swerve)
+    //   );
   }
   //All auto ends here
 
@@ -359,7 +360,7 @@ public class RobotContainer {
   public SequentialCommandGroup intakeTest()
   {
     return new SequentialCommandGroup(
-      new IntakeCommand(s_Swerve)
+      // new IntakeCommand(s_Swerve)
     );
   }
 
