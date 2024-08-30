@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.security.Principal;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.revrobotics.CANSparkMax;
@@ -98,6 +100,19 @@ public class IntakeSubsystem extends SubsystemBase{
         encoder.setPosition(0);
     }
 
+    public void initReset()
+    {
+        noteInIntake = false;
+        noteAtBack = false;
+        noteSecure = false;
+        hasExited = false;
+        firing = false;
+        m_Controller.reset();
+        m_VelocityController.reset();
+        encoder.setPosition(0);
+        intakeMotor.set(0);
+    }
+
     public void stop(){
         intakeMotor.set(0);
         firing = false;
@@ -180,13 +195,14 @@ public class IntakeSubsystem extends SubsystemBase{
     public void periodic() {
         if(getFrontBeam())
         {
+            // System.out.println("Note in!");
             counterForFrontIntake ++;
         }
         else
         {
             counterForFrontIntake = 0;
         }
-        if(!noteInIntake && counterForFrontIntake > 10) {
+        if(!noteInIntake && counterForFrontIntake > 5) {
             newNoteDetected();
         }
         if(noteInIntake && !firing) {

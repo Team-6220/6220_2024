@@ -86,7 +86,8 @@ public class RobotContainer {
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton manuelShot = new JoystickButton(driver, XboxController.Button.kX.value);
-  
+  private final JoystickButton noNote = new JoystickButton(driver, 8);
+
   private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
   
@@ -119,6 +120,8 @@ public class RobotContainer {
     ShooterConfiguration.setupRadiusValues();   
     ShooterConfiguration.setupConfigurations();
     Constants.VisionConstants.setTagHeights();
+
+    // s_IntakeSubsystem.reset();
 
     PhotonvisionCalculations.initPhoton();
 
@@ -190,6 +193,8 @@ public class RobotContainer {
     //     Commands.waitSeconds(.1), 
     //     new ManuelMoveNoteBack())));
 
+    noNote.onTrue(new InstantCommand(()->s_IntakeSubsystem.initReset()));
+    
     amp.whileTrue(new AmpCommand(
       s_Swerve,
       driver,

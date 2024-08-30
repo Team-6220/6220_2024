@@ -33,6 +33,7 @@ public class ManuelEjectNote extends Command {
     
       s_IntakeSubsystem.simpleDrive(true, IntakeConstants.manuelEjectSpeed);
       s_ShooterSubsystem.spinManually(-IntakeConstants.manuelEjectSpeed);
+      System.out.println("EJECTING");
     
   }
 

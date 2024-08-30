@@ -438,7 +438,7 @@ public class Swerve extends SubsystemBase {
         {
             lastTurnUpdate = timestamp;
             resetModulesToAbsolute();
-            System.out.println("update!");
+            // System.out.println("update!");
         }
 
         
