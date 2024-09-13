@@ -142,7 +142,7 @@ public class RobotContainer {
         // new ModuleIOTalonFX(1),
         // new ModuleIOTalonFX(2),
         // new ModuleIOTalonFX(3));
-        // flywheel = new Flywheel(new FlywheelIOTalonFX());
+        // flywheel = new Flywheel(new FlywheelIOTalonFX()); 
         break;
 
       case SIM:
