@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -12,6 +15,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,6 +27,7 @@ public class Robot extends LoggedRobot  {
 
   private RobotContainer m_robotContainer;
 
+  private static final List<PeriodicFunction> periodicFunctions = new ArrayList<>();
   @Override
   public void robotInit() {
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
@@ -87,7 +92,12 @@ Logger.start(); // Start logging! No more data receivers, replay sources, or met
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() 
+  {
+    for (PeriodicFunction f : periodicFunctions) {
+      f.runIfReady();
+    }
+  }
 
   @Override
   public void teleopExit() {}
@@ -102,4 +112,31 @@ Logger.start(); // Start logging! No more data receivers, replay sources, or met
 
   @Override
   public void testExit() {}
+
+  public static void addPeriodic(Runnable callback, double period) {
+    periodicFunctions.add(new PeriodicFunction(callback, period));
+  }
+
+  private static class PeriodicFunction {
+    private final Runnable callback;
+    private final double periodSeconds;
+
+    private double lastRunTimeSeconds;
+
+    private PeriodicFunction(Runnable callback, double periodSeconds) {
+      this.callback = callback;
+      this.periodSeconds = periodSeconds;
+
+      this.lastRunTimeSeconds = 0.0;
+    }
+
+    private void runIfReady() {
+      if (Timer.getFPGATimestamp() > lastRunTimeSeconds + periodSeconds) {
+        callback.run();
+
+        lastRunTimeSeconds = Timer.getFPGATimestamp();
+      }
+    }
+  }
+
 }
