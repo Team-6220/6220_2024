@@ -15,7 +15,7 @@ public class ArmIOSparkMax implements ArmIO {
     private final CANSparkMax armMotorA = new CANSparkMax(ArmConstants.armMotorAID, MotorType.kBrushless);
     private final CANSparkMax armMotorB = new CANSparkMax(ArmConstants.armMotorBID, MotorType.kBrushless);
     
-    private final DutyCycleEncoder armEncoder;
+    private final DutyCycleEncoder armEncoder = new DutyCycleEncoder(ArmConstants.k_ENC_PORT);;
     private final RelativeEncoder builtinEncoderA = armMotorA.getEncoder();
     private final RelativeEncoder builtinEncoderB = armMotorB.getEncoder();
     public ArmIOSparkMax()
@@ -67,9 +67,9 @@ public class ArmIOSparkMax implements ArmIO {
    *
    * @param subsystem The subsystem to register hardware on
    */
-  default public void registerSelfCheckHardware(AdvancedSubsystem subsystem) {}
+  public void registerSelfCheckHardware(AdvancedSubsystem subsystem) {}
 
   /** Optimize status signals for running sysID */
-  default public void optimizeForSysID() {}
+  public void optimizeForSysID() {}
 
 }
