@@ -73,44 +73,44 @@ public class IntakeCommand extends Command{
         addRequirements(this.swerve, arm, intake, vis);
     }
 
-    public IntakeCommand(Swerve swerve) {
-        isAuto = true;
-        isParallelingWithAutobuilder = false;
-        swerve.setIsAuto(true);
-        timeWithoutTarget = 0;
-        this.swerve = swerve;
-        this.intake = IntakeSubsystem.getInstance();
-        this.arm = ArmSubsystem.getInstance();
-        this.vis = PhotonVisionSubsystem.getInstance();
-        this.s_Blinkin = blinkin.getInstance();
-        this.autoControl = ()-> true;
-        this.driver = null;
-        shooter = ShooterSubsystem.getInstance();
-        limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
-        limelightPidController.setTolerance(turnTolerance.get());
-        limelightPidController.setIZone(.5);
-        addRequirements(this.swerve, arm, intake, vis);
-    }
+    // public IntakeCommand(Swerve swerve) {
+    //     isAuto = true;
+    //     isParallelingWithAutobuilder = false;
+    //     swerve.setIsAuto(true);
+    //     timeWithoutTarget = 0;
+    //     this.swerve = swerve;
+    //     this.intake = IntakeSubsystem.getInstance();
+    //     this.arm = ArmSubsystem.getInstance();
+    //     this.vis = PhotonVisionSubsystem.getInstance();
+    //     this.s_Blinkin = blinkin.getInstance();
+    //     this.autoControl = ()-> true;
+    //     this.driver = null;
+    //     shooter = ShooterSubsystem.getInstance();
+    //     limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
+    //     limelightPidController.setTolerance(turnTolerance.get());
+    //     limelightPidController.setIZone(.5);
+    //     addRequirements(this.swerve, arm, intake, vis);
+    // }
 
-    public IntakeCommand(Swerve swerve, boolean isParallelingWithAutobuilder)
-    {
-        this.isParallelingWithAutobuilder = isParallelingWithAutobuilder;
-        shooter = ShooterSubsystem.getInstance();
-        isAuto = true;
-        swerve.setIsAuto(true);
-        timeWithoutTarget = 0;
-        this.swerve = swerve;
-        this.intake = IntakeSubsystem.getInstance();
-        this.arm = ArmSubsystem.getInstance();
-        this.vis = PhotonVisionSubsystem.getInstance();
-        this.s_Blinkin = blinkin.getInstance();
-        this.autoControl = ()-> true;
-        this.driver = null;
-        limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
-        limelightPidController.setTolerance(turnTolerance.get());
-        limelightPidController.setIZone(.5);
-        addRequirements(arm, intake, vis);
-    }
+    // public IntakeCommand(Swerve swerve, boolean isParallelingWithAutobuilder)
+    // {
+    //     this.isParallelingWithAutobuilder = isParallelingWithAutobuilder;
+    //     shooter = ShooterSubsystem.getInstance();
+    //     isAuto = true;
+    //     swerve.setIsAuto(true);
+    //     timeWithoutTarget = 0;
+    //     this.swerve = swerve;
+    //     this.intake = IntakeSubsystem.getInstance();
+    //     this.arm = ArmSubsystem.getInstance();
+    //     this.vis = PhotonVisionSubsystem.getInstance();
+    //     this.s_Blinkin = blinkin.getInstance();
+    //     this.autoControl = ()-> true;
+    //     this.driver = null;
+    //     limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
+    //     limelightPidController.setTolerance(turnTolerance.get());
+    //     limelightPidController.setIZone(.5);
+    //     addRequirements(arm, intake, vis);
+    // }
 
     @Override
     public void initialize() {
@@ -131,7 +131,7 @@ public class IntakeCommand extends Command{
             isFieldRelative = true;
         }
 
-        if((!isAuto && autoControl.getAsBoolean() && !isParallelingWithAutobuilder)|| isAuto) {
+        if((!isAuto && autoControl.getAsBoolean() && !isParallelingWithAutobuilder)|| isAuto) { //you have to hold it to fire the auto aim
             // System.out.println("ISAUTO" + isAuto);
             if(vis.getHasTargets() && arm.isAtGoal()) {
                 // System.out.println("let's see,,,");

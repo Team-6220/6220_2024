@@ -125,11 +125,11 @@ public class RobotContainer {
 
     PhotonvisionCalculations.initPhoton();
 
-    NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
-    NamedCommands.registerCommand("pickup", Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
-      Commands.deadline(
-        Commands.waitSeconds(.1), 
-        new ManuelMoveNoteBack())));
+    // NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
+    // NamedCommands.registerCommand("pickup", Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
+    //   Commands.deadline(
+    //     Commands.waitSeconds(.1), 
+    //     new ManuelMoveNoteBack())));
 
     s_Swerve.configureAutoBuilder();
 
@@ -188,6 +188,7 @@ public class RobotContainer {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0))))); //Red side
     // zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(1.33, 5.60), new Rotation2d(0))))); //Blue Side
+
     // testing.onTrue(Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
     //   Commands.deadline(
     //     Commands.waitSeconds(.1), 
@@ -223,11 +224,11 @@ public class RobotContainer {
       driver,  
       () -> robotControlLeftTrigger.getAsBoolean()));
 
-    fireRightTrigger.whileTrue(new SpeakerCommand(
-      s_Swerve, 
-      driver)
-    );
-    speakerTemporary.whileTrue(new SimpleShootCmd());
+    // fireRightTrigger.whileTrue(new SpeakerCommand(
+    //   s_Swerve, 
+    //   driver)
+    // );
+    // speakerTemporary.whileTrue(new SimpleShootCmd());
     climb.whileTrue(new ClimberTestCommand(operator));
 
     increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
@@ -257,28 +258,28 @@ public class RobotContainer {
   //   );
   // }
 
-  public SequentialCommandGroup pickUpFarNoteAndShoot()
-  {
-      s_Swerve.setIsAuto(true);
-    List<Translation2d> bezierPointToFar = PathPlannerPath.bezierFromPoses(
-      new Pose2d(3.9, 6.15, Rotation2d.fromDegrees(0)),
-      new Pose2d(7.55, 7.45, Rotation2d.fromDegrees(0))
-    );
-    PathPlannerPath pathTofar = new PathPlannerPath(
-      bezierPointToFar,
-      AutoConstants.pathConstraints,
-      new GoalEndState(0, Rotation2d.fromDegrees(180))
-      );
-      pathTofar.preventFlipping = false;
-    return new SequentialCommandGroup(
-      new SpeakerCommand(s_Swerve),
-      // AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(7.5), 7.5, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.PathConstraints),
-      AutoBuilder.pathfindThenFollowPath(pathTofar, AutoConstants.pathConstraints),
-      new IntakeCommand(s_Swerve),
-      AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(4), 5.8, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
-      new SpeakerCommand(s_Swerve)
-      );
-  }
+  // public SequentialCommandGroup pickUpFarNoteAndShoot()
+  // {
+  //     s_Swerve.setIsAuto(true);
+  //   List<Translation2d> bezierPointToFar = PathPlannerPath.bezierFromPoses(
+  //     new Pose2d(3.9, 6.15, Rotation2d.fromDegrees(0)),
+  //     new Pose2d(7.55, 7.45, Rotation2d.fromDegrees(0))
+  //   );
+  //   PathPlannerPath pathTofar = new PathPlannerPath(
+  //     bezierPointToFar,
+  //     AutoConstants.pathConstraints,
+  //     new GoalEndState(0, Rotation2d.fromDegrees(180))
+  //     );
+  //     pathTofar.preventFlipping = false;
+  //   return new SequentialCommandGroup(
+  //     new SpeakerCommand(s_Swerve),
+  //     // AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(7.5), 7.5, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.PathConstraints),
+  //     AutoBuilder.pathfindThenFollowPath(pathTofar, AutoConstants.pathConstraints),
+  //     new IntakeCommand(s_Swerve),
+  //     AutoBuilder.pathfindToPose(new Pose2d(AlienceColorCoordinateFlip.flip(4), 5.8, Rotation2d.fromDegrees(AlienceColorCoordinateFlip.flipDegrees(180))), AutoConstants.pathConstraints),
+  //     new SpeakerCommand(s_Swerve)
+  //     );
+  // }
   //All auto ends here
 
   //All Paths starts here
@@ -300,12 +301,12 @@ public class RobotContainer {
   //   );
   // }
 
-  public SequentialCommandGroup intakeTest()
-  {
-    return new SequentialCommandGroup(
-      new IntakeCommand(s_Swerve)
-    );
-  }
+  // public SequentialCommandGroup intakeTest()
+  // {
+  //   return new SequentialCommandGroup(
+  //     new IntakeCommand(s_Swerve)
+  //   );
+  // }
 
   // public SequentialCommandGroup test(){
 
