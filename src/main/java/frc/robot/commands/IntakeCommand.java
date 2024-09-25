@@ -120,6 +120,7 @@ public class IntakeCommand extends Command{
     @Override
     public void execute(){
         intake.feedIntake();
+        shooter.manuelIntakeAntiShootOut();
         arm.driveToGoal(ArmConstants.intakeSetpoint);
         double[] driverInputs;
         double rotationVal = 0, translation = 0, strafeVal = 0;
@@ -211,6 +212,6 @@ public class IntakeCommand extends Command{
         arm.stop();
         intake.stop();
         swerve.stopDriving();
-
+        intake.manuelIntakedNotesEndMethod();
     }
 }

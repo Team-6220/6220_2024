@@ -146,6 +146,11 @@ public class ShooterSubsystem extends SubsystemBase{
         
     }
 
+    public void manuelIntakeAntiShootOut()
+    {
+        spinManually(-0.2);
+    }
+
     public void stop(){
         shooterMotorA.set(0);
         shooterMotorB.set(0);

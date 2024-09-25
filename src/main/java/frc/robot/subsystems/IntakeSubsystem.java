@@ -135,6 +135,19 @@ public class IntakeSubsystem extends SubsystemBase{
         encoder.setPosition(-IntakeConstants.distanceBetweenBreakBeamsInEncoderRotations);
     }
 
+    public void manuelIntakedNotesEndMethod()
+    {
+        noteAtBack = true;
+        noteSecure = true;
+    }
+
+    public void manuelShootNotesEndMethod()
+    {
+        noteInIntake = false;
+        noteAtBack = false;
+        noteSecure = false;
+    }
+
     public void driveNoteToSetpoint() {
         double output = 0;
         if(!noteAtBack && getBackBeam()) {
@@ -193,21 +206,21 @@ public class IntakeSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if(getFrontBeam())
-        {
-            // System.out.println("Note in!");
-            counterForFrontIntake ++;
-        }
-        else
-        {
-            counterForFrontIntake = 0;
-        }
-        if(!noteInIntake && counterForFrontIntake > 5) {
-            newNoteDetected();
-        }
-        if(noteInIntake && !firing) {
-            driveNoteToSetpoint();
-        }
+        // if(getFrontBeam())
+        // {
+        //     // System.out.println("Note in!");
+        //     counterForFrontIntake ++;
+        // }
+        // else
+        // {
+        //     counterForFrontIntake = 0;
+        // }
+        // if(!noteInIntake && counterForFrontIntake > 5) {
+        //     newNoteDetected();
+        // }
+        // if(noteInIntake && !firing) {
+        //     driveNoteToSetpoint();
+        // }
         
         SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
         SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
