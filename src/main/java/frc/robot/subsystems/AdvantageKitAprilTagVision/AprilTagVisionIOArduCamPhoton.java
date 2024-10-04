@@ -2,6 +2,8 @@ package frc.robot.subsystems.AdvantageKitAprilTagVision;
 
 import java.util.function.Supplier;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -16,13 +18,17 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
   private static final int cameraExposure = 10;
   private static final int cameraGain = 25;
 
+  private double yaw;
+
   private final Supplier<AprilTagLayoutType> aprilTagTypeSupplier;
-  private AprilTagLayoutType lastAprilTagType = null;
+  // private AprilTagLayoutType lastAprilTagType = null;
 
   private final StringPublisher tagLayoutPublisher;
   private final DoubleArraySubscriber observationSubscriber;
   private final DoubleArraySubscriber demoObservationSubscriber;
   private final IntegerSubscriber fpsSubscriber;
+
+  PhotonCamera cam = whatsoever (name);
 
   private static final double disconnectedTimeout = 0.5;
   private final Alert disconnectedAlert;
@@ -60,6 +66,7 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
   }
 
   public void updateInputs(AprilTagVisionIOInputs inputs) {
+    Apriltagvisionioinputs.yaw = PhotoncamerName.getyaw;
     // Publish tag layout
     var aprilTagType = aprilTagTypeSupplier.get();
     if (aprilTagType != lastAprilTagType) {
