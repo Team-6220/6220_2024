@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -16,6 +17,8 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.path.PathConstraints;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -336,6 +339,17 @@ public final class Constants {
     }
 
     public static final class VisionConstants{
+
+        public static final AprilTagFieldLayout apriltagLayout;
+
+        static {
+            try {
+            apriltagLayout =
+                AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+            } catch (IOException e) {
+            throw new RuntimeException(e);
+            }
+        }
 
         public static final String LIMELIGHT3_NAME_STRING = "limelight";
         public static final String LIMELIGHT2_NAME_STRING = "Limelight_2";
