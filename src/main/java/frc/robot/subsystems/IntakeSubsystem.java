@@ -22,8 +22,8 @@ public class IntakeSubsystem extends SubsystemBase{
     public final CANSparkMax intakeMotor;
     private final RelativeEncoder encoder;
 
-    private final DigitalInput frontBreakBeam;
-    private final DigitalInput backBreakBeam;
+    //private final DigitalInput frontBreakBeam;
+    //private final DigitalInput backBreakBeam;
     private final TimeOfFlight tof = new TimeOfFlight(0);
     private final PIDController m_Controller;
     private final PIDController m_VelocityController;
@@ -49,9 +49,8 @@ public class IntakeSubsystem extends SubsystemBase{
     private IntakeSubsystem() {
         intakeMotor  = new CANSparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
-
-        frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
-        backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
+        // frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
+        // backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
         encoder = intakeMotor.getEncoder();
         m_Controller = new PIDController(Kp.get(), Ki.get(), IntakeConstants.kD);
         m_VelocityController = new PIDController(IntakeConstants.velocityPIDConstants[0], IntakeConstants.velocityPIDConstants[1], IntakeConstants.velocityPIDConstants[2]);
@@ -105,10 +104,10 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public boolean getFrontBeam() {
-        return !frontBreakBeam.get();
+        return tof.getRange()<15;
     }
     public boolean getBackBeam() {
-        return !backBreakBeam.get();
+        return tof.getRange()<15;
     }
 
     public void setHasNote() {
@@ -212,8 +211,9 @@ public class IntakeSubsystem extends SubsystemBase{
         // }
         
         
-        SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
-        SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
+        //SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
+        //SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
+        SmartDashboard.putBoolean("TimeOfFlight Front", tof.getRange()<15);
         SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
         SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
         if(Kp.hasChanged()
