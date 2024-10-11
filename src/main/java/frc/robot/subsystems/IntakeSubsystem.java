@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.IntakeIdleCommand;
-
+import com.playingwithfusion.*;
 public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem INSTANCE = null;
 
@@ -24,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private final DigitalInput frontBreakBeam;
     private final DigitalInput backBreakBeam;
-
+    private final TimeOfFlight tof = new TimeOfFlight(0);
     private final PIDController m_Controller;
     private final PIDController m_VelocityController;
     private SimpleMotorFeedforward m_Feedforward; 
@@ -52,7 +52,6 @@ public class IntakeSubsystem extends SubsystemBase{
 
         frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
         backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
-
         encoder = intakeMotor.getEncoder();
         m_Controller = new PIDController(Kp.get(), Ki.get(), IntakeConstants.kD);
         m_VelocityController = new PIDController(IntakeConstants.velocityPIDConstants[0], IntakeConstants.velocityPIDConstants[1], IntakeConstants.velocityPIDConstants[2]);
