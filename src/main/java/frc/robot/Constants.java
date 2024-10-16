@@ -20,7 +20,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -28,6 +30,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -63,15 +67,18 @@ public final class Constants {
 
     public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
 
-    public static boolean isRed = false;
+    // public static boolean isRed = false;
 
     public static final double loopPeriodSecs = 0.02;
 
-    public static void updateAllianceColor(){
-        Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
-        Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
-        Constants.isRed = false;
-    }
+    // public static void updateAllianceColor(){
+    //     Robot.isRedAlliance() = DriverStation.getAlliance()
+    //     .filter(value -> value == DriverStation.Alliance.Red)
+    //     .isPresent();
+    //     // Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
+    //     // Robot.isRedAlliance() = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
+    //     // Robot.isRedAlliance() = false;
+    // }
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
@@ -130,7 +137,7 @@ public final class Constants {
             inputs[1] = MathUtil.applyDeadband(inputs[1], OIConstants.kDeadband);
             inputs[2] = MathUtil.applyDeadband(inputs[2], OIConstants.kDeadband);
 
-            int invert =  (Constants.isRed) ? -1 : 1; 
+            int invert =  (Robot.isRedAlliance()) ? -1 : 1; 
 
             inputs[0] *= invert;
             inputs[1] *= invert;
@@ -340,6 +347,12 @@ public final class Constants {
 
     public static final class VisionConstants{
 
+        public static final double fieldBorderMargin = 0.25;
+        public static final double zMargin = 0.5;
+        public static final double xyStdDevCoefficient = 0.02;
+        public static final double thetaStdDevCoefficient = 0.04;
+        public static final double ambiguityThreshold = 0.15;
+
         public static final AprilTagFieldLayout apriltagLayout;
 
         static {
@@ -360,6 +373,7 @@ public final class Constants {
         public static final Pose2d AMP_POSE2D_RED = new Pose2d(new Translation2d(Units.inchesToMeters(580.77), Units.inchesToMeters(323-7.25)), new Rotation2d(270));
         public static final Pose2d AMP_POSE2D_BLUE = new Pose2d(new Translation2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323-7.25)), new Rotation2d(270));
 
+        public static final Translation2d fieldSize = new Translation2d(16.54, 8.21);
         
         public static final Translation2d CENTER_OF_FIELD = new Translation2d(8.2706,4.105148);
         //FIXME: set limelight values
@@ -439,6 +453,10 @@ public final class Constants {
     }
 
     public static final class SwerveConstants {
+
+        public static final class PoseEstimator {
+            public static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.003, 0.003, 0.0002);
+        }
 
         public static int swerveAlignUpdateSecond = 20;
 
@@ -600,7 +618,7 @@ public final class Constants {
         // public static final Pose2d AMP_POSE2D = isRed ? new Pose2d(14.65, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians())) : new Pose2d(1.9, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         public static final Pose2d AMP_POSE2D = new Pose2d(AlienceColorCoordinateFlip.flip(2.0), 7.67, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         // public static final double maxXDistance = isRed ? 8.81 : 7.75;
-        public static final double maxXDistance = isRed ? 8.6 : 8; // maximum x distance during auto so that it doesn't cross the middle of the field
+        public static final double maxXDistance = Robot.isRedAlliance() ? 8.6 : 8; // maximum x distance during auto so that it doesn't cross the middle of the field
 
         
         /* Constraint for the motion profilied robot angle controller */

@@ -5,6 +5,7 @@
 package frc.lib.util;
 
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 /** Add your docs here. */
 public class AlienceColorCoordinateFlip {
@@ -12,10 +13,10 @@ public class AlienceColorCoordinateFlip {
     {}
     public static double flip(double x)
     {
-        return Constants.isRed ? (16.54-x) : x;
+        return Robot.isRedAlliance() ? (16.54-x) : x;
     }
     public static double flipDegrees(double degrees)
     {
-        return Constants.isRed ? (180 - degrees) : degrees;
+        return Robot.isRedAlliance() ? (180 - degrees) : degrees;
     }
 }

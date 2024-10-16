@@ -119,7 +119,7 @@ public class RobotContainer {
   private final ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
   private final ClimberSubsystem s_ClimberSubsystem = ClimberSubsystem.getInstance();
 
-  private final Drive drive;
+  public static Drive drive;
   //private final PhotonVisionSubsystem p_PhotonVisionSubsystem = PhotonVisionSubsystem.getInstance();
   private final blinkin s_Blinkin = blinkin.getInstance();
 

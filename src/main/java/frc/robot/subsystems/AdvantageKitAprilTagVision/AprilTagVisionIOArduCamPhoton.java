@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.IntegerSubscriber;
@@ -67,19 +72,30 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
 
     camera = new PhotonCamera(cameraName);
 
+    camera.setPipelineIndex(0);
+
     poseEstimator = new PhotonPoseEstimator(
       VisionConstants.apriltagLayout, // ok so they have different apriltaglayouts existing in constant (used switch case to change the layout) but we only need one so em
       PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
       camera,
       robotToCamera
       );
+    poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
   }
+
+  // public static void updateCamerasPoseEstimation(SwerveDrivePoseEstimator swervePoseEstimator, double camTrustValues)
+  // {
+    
+  // }
+
 
   public void updateInputs(AprilTagVisionIOInputs inputs)
   {
-    inputs.estimates = new ArrayList<>();
+    // inputs.estimate = new ArrayList<>();
     
+    PoseStrategy.valueOf("Right_Ardu_Cam").toString();
 
+    double timestamp = Logger.getTimestamp();
     Optional<EstimatedRobotPose> estimatedRobotPose = poseEstimator.update();
     estimatedRobotPose.ifPresent
     (
@@ -106,12 +122,13 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
 
           avgDistance /= numTags;
 
-          inputs.estimates.add(
-          new AprilTagPoseEstimate(
-          robotPose, 0.0, avgDistance, null, 0.0, 0.0, estimate.timestampSeconds,
-          tagIDs));
+          inputs.estimate = estimate;
       }
     );
+    if(!estimatedRobotPose.isPresent())
+    {
+      inputs.estimate = new EstimatedRobotPose(new Pose3d(new Pose2d(0,0, new Rotation2d(0))), timestamp, null, null);
+    }
   }
 
   @Override

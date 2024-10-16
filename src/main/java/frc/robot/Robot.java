@@ -14,6 +14,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -53,6 +54,12 @@ Logger.start(); // Start logging! No more data receivers, replay sources, or met
 
   }
 
+    public static boolean isRedAlliance() {
+    return DriverStation.getAlliance()
+        .filter(value -> value == DriverStation.Alliance.Red)
+        .isPresent();
+  }
+
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
@@ -69,7 +76,7 @@ Logger.start(); // Start logging! No more data receivers, replay sources, or met
 
   @Override
   public void autonomousInit() {
-    Constants.updateAllianceColor();
+    // Constants.updateAllianceColor();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -85,7 +92,7 @@ Logger.start(); // Start logging! No more data receivers, replay sources, or met
 
   @Override
   public void teleopInit() {
-    Constants.updateAllianceColor();
+    // Constants.updateAllianceColor();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

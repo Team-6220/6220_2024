@@ -9,6 +9,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
 
 public class ShooterConfiguration {
@@ -119,7 +120,7 @@ public class ShooterConfiguration {
         double angle = ((GRID_WIDTH) * (num / ((r + 1) * 2)) - (GRID_WIDTH / 2));
         Pair<Double, Double> pos = Pair.of(r * Math.cos(angle), r * Math.sin(angle));
         
-        if(Constants.isRed) {
+        if(Robot.isRedAlliance()) {
             pos = Pair.of(VisionConstants.SPEAKER_POSE2D_RED.getX() - pos.getFirst(), VisionConstants.SPEAKER_POSE2D_RED.getY() - pos.getSecond());
         } else {
             pos = Pair.of(VisionConstants.SPEAKER_POSE2D_BLUE.getX() + pos.getFirst(), VisionConstants.SPEAKER_POSE2D_BLUE.getY() + pos.getSecond());
@@ -128,8 +129,8 @@ public class ShooterConfiguration {
     }
 
     private static Pair<Double, Double> cartesianToPolar(Pose2d pose){
-        Pose2d speakerPos = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
-        double yval = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED.getY() - pose.getY() : pose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
+        Pose2d speakerPos = Robot.isRedAlliance() ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+        double yval = Robot.isRedAlliance() ? VisionConstants.SPEAKER_POSE2D_RED.getY() - pose.getY() : pose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
         double angle = Math.atan2(yval, Math.abs(speakerPos.getX() - pose.getX()));
         double r = Math.hypot(Math.abs(pose.getX() - speakerPos.getX()), Math.abs(pose.getY() - speakerPos.getY()));
         return Pair.of(r, angle);
@@ -208,8 +209,8 @@ public class ShooterConfiguration {
 
     public static ShooterConfiguration getShooterConfiguration(Pose2d robotPose) throws IllegalPositionException{
         List<Pair<Integer, Integer>> configs = getNearestShooterConfigurations(robotPose);
-        //Pose2d speakerPos = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
-        double yval = robotPose.getY();//Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED.getY() - robotPose.getY() : robotPose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
+        //Pose2d speakerPos = Robot.isRedAlliance() ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+        double yval = robotPose.getY();//Robot.isRedAlliance() ? VisionConstants.SPEAKER_POSE2D_RED.getY() - robotPose.getY() : robotPose.getY() - VisionConstants.SPEAKER_POSE2D_BLUE.getY();
         double xval = robotPose.getX();//Math.abs(robotPose.getX() - speakerPos.getX());
         Pair<Double, Double> a = polarToCartesian(configs.get(0).getFirst(), configs.get(0).getSecond());
         Pair<Double, Double> b = polarToCartesian(configs.get(1).getFirst(), configs.get(1).getSecond());

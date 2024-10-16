@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.subsystem.Swerve.PoseEstimator;
 import frc.lib.util.LocalADStarAK;
 import frc.robot.Constants.SwerveConstants;
 
@@ -45,6 +46,11 @@ public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+  private final SwerveModulePosition[] currentPositions;
+  private final SwerveModuleState[] currentStates;
+  private final ChassisSpeeds currentSpeed;
+  // private final SwerveModuleState[] currentStates;
+  PoseEstimator DIYPoseEstimator;
   private final SysIdRoutine sysId;
 
   // private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
@@ -71,11 +77,25 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
 
+    currentPositions = new SwerveModulePosition[modules.length];
+    currentStates = new SwerveModuleState[modules.length];
+
+    for (int i = 0; i < modules.length; i++) {
+      currentPositions[i] = modules[i].getPosition();
+      currentStates[i] = modules[i].getState();
+    }
+    
+    currentSpeed = SwerveConstants.swerveKinematics.toChassisSpeeds(currentStates);
+
+    DIYPoseEstimator =
+        new PoseEstimator(SwerveConstants.PoseEstimator.stateStdDevs,  SwerveConstants.swerveKinematics);
+
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
         this::getPose,
         this::setPose,
-        () -> SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates()),
+        // () -> SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates()),
+        this::getCurrentSpeeds,
         this::runVelocity,
         new HolonomicPathFollowerConfig(
             SwerveConstants.maxSpeed, SwerveConstants.DRIVE_BASE_RADIUS, new ReplanningConfig()),
@@ -112,9 +132,25 @@ public class Drive extends SubsystemBase {
                 this));
   }
 
+  @AutoLogOutput(key = "Drive/CurrentSpeeds")
+  public ChassisSpeeds getCurrentSpeeds()
+  {
+    return SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
+  }
+
+  @AutoLogOutput(key = "Drive/CurrentLinearVelocity")
+  public double getLinearVelocity() {
+    ChassisSpeeds speeds = getCurrentSpeeds();
+    return Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+  }
+
   public void periodic() {
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+
+    //Log useful stuffs
+    
+
     for (var module : modules) {
       module.periodic();
     }
