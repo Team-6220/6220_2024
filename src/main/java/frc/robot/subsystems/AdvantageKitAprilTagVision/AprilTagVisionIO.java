@@ -22,6 +22,7 @@ public interface AprilTagVisionIO {
 
     class AprilTagVisionIOInputs implements LoggableInputs {
       public EstimatedRobotPose estimate;
+      public String cameraName;
     // public List<PhotonPipeLineTags> tags = new ArrayList<>(); //hash map?
     // PhotonTrackedTarget photontarget = new PhotonTrackedTarget(0, 0, 0, 0, 0, null, null, 0, null, null)
     // public double yaw = 0.0;
@@ -58,7 +59,7 @@ public interface AprilTagVisionIO {
         //     Arrays.stream(estimate.tagIDs()).mapToLong(Long::valueOf).toArray());
 
       // }
-      String tableKey = "Estimates/";
+      String tableKey = "Estimates/" + cameraName + "/";
     
       table.put(tableKey + "timestampSeconds" + estimate.timestampSeconds);
       table.put(tableKey + "Pose" + poseToLog(estimate.estimatedPose));
@@ -67,10 +68,10 @@ public interface AprilTagVisionIO {
 
     @Override
     public void fromLog(LogTable table) {
-      int numEstimates = table.get("NumEstimates", 0);
+      // int numEstimates = table.get("NumEstimates", 0);
 
-      for (int i = 0; i < numEstimates; i++) {
-        String tableKey = "Estimates/" + i + "/";
+      // for (int i = 0; i < numEstimates; i++) {
+        String tableKey = "Estimates/" + cameraName + "/";
 
         // Pose3d pose0 = poseFromLog(table.get(tableKey + "Pose0", new double[0]));
         // double ambiguity0 = table.get(tableKey + "Ambiguity0", 0.0);
@@ -86,7 +87,7 @@ public interface AprilTagVisionIO {
         Pose3d pose = poseFromLog(table.get(tableKey + "Pose", new double[0]));
         // PoseStrategy strategy = (table.get(tableKey."Strategy", "") == "") ? : null;
         estimate = new EstimatedRobotPose(pose, timestamp, null, null);
-    }
+    // }
   }
  
       private static Pose3d poseFromLog(double[] loggedPose) {

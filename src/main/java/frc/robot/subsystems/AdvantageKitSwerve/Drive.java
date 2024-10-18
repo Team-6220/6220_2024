@@ -37,7 +37,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.subsystem.Swerve.PoseEstimator;
 import frc.lib.util.LocalADStarAK;
+import frc.lib.util.AdvantageKitStuff.LoggedTunableNumber;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.AdvantageKitAprilTagVision.MyOwnLocalizationSubsystem;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -52,7 +55,7 @@ public class Drive extends SubsystemBase {
   // private final SwerveModuleState[] currentStates;
   PoseEstimator DIYPoseEstimator;
   private final SysIdRoutine sysId;
-
+  public final LoggedTunableNumber visionMeasurementStdDevConstant = new LoggedTunableNumber("drive/visionStdDevConstant", VisionConstants.visionStdDev);
   // private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
@@ -191,6 +194,7 @@ public class Drive extends SubsystemBase {
 
     // Apply odometry update
     poseEstimator.update(rawGyroRotation, modulePositions);
+    MyOwnLocalizationSubsystem.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
   }
 
   /**

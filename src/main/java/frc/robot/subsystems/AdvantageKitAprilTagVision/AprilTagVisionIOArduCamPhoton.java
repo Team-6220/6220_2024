@@ -80,7 +80,7 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
       camera,
       robotToCamera
       );
-    poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+    poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
   }
 
   // public static void updateCamerasPoseEstimation(SwerveDrivePoseEstimator swervePoseEstimator, double camTrustValues)
@@ -93,7 +93,7 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
   {
     // inputs.estimate = new ArrayList<>();
     
-    PoseStrategy.valueOf("Right_Ardu_Cam").toString();
+    PoseStrategy.valueOf(inputs.cameraName).toString();
 
     double timestamp = Logger.getTimestamp();
     Optional<EstimatedRobotPose> estimatedRobotPose = poseEstimator.update();
@@ -101,33 +101,34 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
     (
        estimate -> 
        {
-          int[] tagIDs = new int[estimate.targetsUsed.size()];
-          double avgDistance = 0.0;
-          int numTags = 0;
+         //Per april tag, not really used...
+          // int[] tagIDs = new int[estimate.targetsUsed.size()];
+          // double avgDistance = 0.0;
+          // int numTags = 0;
 
-          Pose3d robotPose = estimate.estimatedPose;
+          // Pose3d robotPose = estimate.estimatedPose;
 
-          for (int i = 0; i < estimate.targetsUsed.size(); i++) {
-          tagIDs[i] = estimate.targetsUsed.get(i).getFiducialId();
+          // for (int i = 0; i < estimate.targetsUsed.size(); i++) {
+          // tagIDs[i] = estimate.targetsUsed.get(i).getFiducialId();
 
-          Optional<Pose3d> tagPose = VisionConstants.apriltagLayout.getTagPose(tagIDs[i]);
+          // Optional<Pose3d> tagPose = VisionConstants.apriltagLayout.getTagPose(tagIDs[i]);
 
-          if (tagPose.isPresent())
-          {
-            numTags++;
-            avgDistance +=
-            tagPose.get().getTranslation().getDistance(robotPose.getTranslation());
-          }
-          }
+          // if (tagPose.isPresent())
+          // {
+          //   numTags++;
+          //   avgDistance +=
+          //   tagPose.get().getTranslation().getDistance(robotPose.getTranslation());
+          // }
+          // }
 
-          avgDistance /= numTags;
+          // avgDistance /= numTags;
 
           inputs.estimate = estimate;
       }
     );
     if(!estimatedRobotPose.isPresent())
     {
-      inputs.estimate = new EstimatedRobotPose(new Pose3d(new Pose2d(0,0, new Rotation2d(0))), timestamp, null, null);
+      inputs.estimate = new EstimatedRobotPose(new Pose3d(new Pose2d(-1,-1, new Rotation2d(0))), timestamp, null, null);
     }
   }
 
