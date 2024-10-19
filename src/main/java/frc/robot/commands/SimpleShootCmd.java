@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.fasterxml.jackson.databind.cfg.ConstructorDetector.SingleArgConstructor;
+
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -55,6 +57,7 @@ public class SimpleShootCmd extends Command {
     s_ArmSubsystem.stop();
     s_IntakeSubsystem.stop();
     s_ShooterSubsystem.stop();
+    s_IntakeSubsystem.manuelShootNotesEndMethod();
   }
 
   // Returns true when the command should end.

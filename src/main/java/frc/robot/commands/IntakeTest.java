@@ -31,7 +31,7 @@ public class IntakeTest extends Command {
   @Override
   public void execute() {
     double armPos = 0;
-    if(s_intakeSubsystem.noteInIntake()) {
+    if(s_intakeSubsystem.getNoteInIntake()) {
       armPos = 45;
     } else {
       armPos = ArmConstants.intakeSetpoint;
