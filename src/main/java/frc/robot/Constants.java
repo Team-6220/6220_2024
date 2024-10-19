@@ -394,7 +394,7 @@ public final class Constants {
         public static final double rightArduCamPitchOffsetRad = Rotation2d.fromDegrees(35).getRadians();
 
         /**Trust value of the vision */
-        public static final double visionStdDev = 0.2;
+        public static final double visionStdDev = 0.5;
 
         public static void setTagHeights(){
             tagHeights.put(1, 48.125);

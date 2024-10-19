@@ -11,25 +11,25 @@ import frc.robot.Constants.ClimberConstants;
 public class ClimberSubsystem extends SubsystemBase{
     private static ClimberSubsystem INSTANCE = null;
 
-    private final CANSparkMax climbMotorA, climbMotorB;
+    // private final CANSparkMax climbMotorA, climbMotorB;
 
 
     private ClimberSubsystem(){
-        climbMotorA = new CANSparkMax(ClimberConstants.climberDriverLeftID, MotorType.kBrushless);
-        climbMotorB = new CANSparkMax(ClimberConstants.climberDriverRightID, MotorType.kBrushless);
+        // climbMotorA = new CANSparkMax(ClimberConstants.climberDriverLeftID, MotorType.kBrushless);
+        // climbMotorB = new CANSparkMax(ClimberConstants.climberDriverRightID, MotorType.kBrushless);
 
-        climbMotorA.restoreFactoryDefaults();
-        climbMotorB.restoreFactoryDefaults();
+        // climbMotorA.restoreFactoryDefaults();
+        // climbMotorB.restoreFactoryDefaults();
 
-        climbMotorA.setInverted(ClimberConstants.motorAInverted);
-        climbMotorB.setInverted(ClimberConstants.motorBInverted);
+        // climbMotorA.setInverted(ClimberConstants.motorAInverted);
+        // climbMotorB.setInverted(ClimberConstants.motorBInverted);
 
-        climbMotorA.setIdleMode(IdleMode.kBrake);
-        climbMotorB.setIdleMode(IdleMode.kBrake);
+        // climbMotorA.setIdleMode(IdleMode.kBrake);
+        // climbMotorB.setIdleMode(IdleMode.kBrake);
 
-        //climbMotorB.follow(climbMotorA, true);
-        climbMotorA.burnFlash();
-        climbMotorB.burnFlash();
+        // climbMotorB.follow(climbMotorA, true);
+        // climbMotorA.burnFlash();
+        // climbMotorB.burnFlash();
     }
 
 
@@ -40,7 +40,7 @@ public class ClimberSubsystem extends SubsystemBase{
         else if (speed < -0.5){
             speed = -0.5;
         }
-        climbMotorA.set(speed);
+        // climbMotorA.set(speed);
         // System.out.println(speed);
     }
     public void simpleDriveLeft(double speed){
@@ -50,7 +50,7 @@ public class ClimberSubsystem extends SubsystemBase{
         else if (speed < -0.5){
             speed = -0.5;
         }
-        climbMotorB.set(speed);
+        // climbMotorB.set(speed);
         // System.out.println(speed);
     }
 

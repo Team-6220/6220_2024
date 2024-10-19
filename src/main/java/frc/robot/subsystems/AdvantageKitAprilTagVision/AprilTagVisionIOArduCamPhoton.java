@@ -27,9 +27,6 @@ import frc.robot.subsystems.AdvantageKitAprilTagVision.AprilTagVisionIO;
 
 public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
 
-
-
-
   private final PhotonCamera camera;
   private final PhotonPoseEstimator poseEstimator;
   // PhotonPipelineResult photonPipelineResult = new PhotonPipelineResult();
@@ -69,7 +66,6 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
     // disconnectedAlert =
     //     new Alert("No data from \"" + instanceNames[index] + "\"", Alert.AlertType.ERROR);
     // disconnectedTimer.start();
-
     camera = new PhotonCamera(cameraName);
 
     camera.setPipelineIndex(0);
@@ -93,9 +89,9 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
   {
     // inputs.estimate = new ArrayList<>();
     
-    PoseStrategy.valueOf(inputs.cameraName).toString();
+    // PoseStrategy.valueOf(getCameraName()).toString();
 
-    double timestamp = Logger.getTimestamp();
+    // double timestamp = Logger.getTimestamp(); //This is used to calculate how fast update inputs run, I don't think we need it but I'll still keep it
     Optional<EstimatedRobotPose> estimatedRobotPose = poseEstimator.update();
     estimatedRobotPose.ifPresent
     (
@@ -114,11 +110,11 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
           // Optional<Pose3d> tagPose = VisionConstants.apriltagLayout.getTagPose(tagIDs[i]);
 
           // if (tagPose.isPresent())
-          // {
-          //   numTags++;
-          //   avgDistance +=
-          //   tagPose.get().getTranslation().getDistance(robotPose.getTranslation());
-          // }
+            // {
+            //   numTags++;
+            //   avgDistance +=
+            //   tagPose.get().getTranslation().getDistance(robotPose.getTranslation());
+            // }
           // }
 
           // avgDistance /= numTags;
@@ -128,7 +124,7 @@ public class AprilTagVisionIOArduCamPhoton implements AprilTagVisionIO {
     );
     if(!estimatedRobotPose.isPresent())
     {
-      inputs.estimate = new EstimatedRobotPose(new Pose3d(new Pose2d(-1,-1, new Rotation2d(0))), timestamp, null, null);
+      inputs.estimate = new EstimatedRobotPose(new Pose3d(new Pose2d(-1,-1, new Rotation2d(0))), 0, null, null);
     }
   }
 

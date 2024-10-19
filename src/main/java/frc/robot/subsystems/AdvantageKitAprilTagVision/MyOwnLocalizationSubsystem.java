@@ -25,7 +25,7 @@ import frc.robot.subsystems.AdvantageKitSwerve.Drive;
 
 public class MyOwnLocalizationSubsystem {
   /** Creates a new MyOwnLocalizationSubsystem. */
-  public static AprilTagVisionIO[] visionIOs ;//LEFT IS ID 0, RIGHT IS ID 1
+  public static AprilTagVisionIOArduCamPhoton[] visionIOs = {new AprilTagVisionIOArduCamPhoton("Left_Ardu_cam", VisionConstants.camerasToCenter[0]), new AprilTagVisionIOArduCamPhoton("Right_Ardu_Cam", VisionConstants.camerasToCenter[1])};//LEFT IS ID 0, RIGHT IS ID 1
   // = {
   //   new AprilTagVisionIOArduCamPhoton("Right_Ardu_Cam", VisionConstants.camerasToCenter[0]),
   //   new AprilTagVisionIOArduCamPhoton("Left_Ardu_Cam", VisionConstants.camerasToCenter[1])
@@ -33,15 +33,19 @@ public class MyOwnLocalizationSubsystem {
 
   public static AprilTagVisionIO.AprilTagVisionIOInputs[] visionInputs;
   public static Pose3d[] estimatedRobotPoses;
-  //Gotta create a Myownlocaliationsubsystem objectin Drive...
-  public MyOwnLocalizationSubsystem(AprilTagVisionIO[] visionIOs) {
-    MyOwnLocalizationSubsystem.visionIOs = visionIOs;
-
+  public static void initilizeSubsystem()
+  {
     estimatedRobotPoses = new Pose3d[visionIOs.length];
     visionInputs = new AprilTagVisionIO.AprilTagVisionIOInputs[visionIOs.length];
     for (int i = 0; i < visionIOs.length; i++) {
       visionInputs[i] = new AprilTagVisionIO.AprilTagVisionIOInputs();
     }
+  }
+  //Gotta create a Myownlocaliationsubsystem objectin Drive...
+  public MyOwnLocalizationSubsystem() {
+    // MyOwnLocalizationSubsystem.visionIOs = visionIOs;
+
+   
   }
 
   /**

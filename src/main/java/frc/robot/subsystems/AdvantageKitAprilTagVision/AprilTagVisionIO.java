@@ -21,8 +21,8 @@ public interface AprilTagVisionIO {
     String getCameraName();
 
     class AprilTagVisionIOInputs implements LoggableInputs {
-      public EstimatedRobotPose estimate;
-      public String cameraName;
+      public EstimatedRobotPose estimate = new EstimatedRobotPose(new Pose3d(0,0,0, new Rotation3d()), 0, null, null);
+      // public String cameraName;
     // public List<PhotonPipeLineTags> tags = new ArrayList<>(); //hash map?
     // PhotonTrackedTarget photontarget = new PhotonTrackedTarget(0, 0, 0, 0, 0, null, null, 0, null, null)
     // public double yaw = 0.0;
@@ -59,11 +59,11 @@ public interface AprilTagVisionIO {
         //     Arrays.stream(estimate.tagIDs()).mapToLong(Long::valueOf).toArray());
 
       // }
-      String tableKey = "Estimates/" + cameraName + "/";
+      String tableKey = "Estimates/";
     
       table.put(tableKey + "timestampSeconds" + estimate.timestampSeconds);
       table.put(tableKey + "Pose" + poseToLog(estimate.estimatedPose));
-      table.put(tableKey + "Strategy" + estimate.strategy.toString());
+      // table.put(tableKey + "Strategy" + estimate.strategy.toString());
     }
 
     @Override
@@ -71,7 +71,7 @@ public interface AprilTagVisionIO {
       // int numEstimates = table.get("NumEstimates", 0);
 
       // for (int i = 0; i < numEstimates; i++) {
-        String tableKey = "Estimates/" + cameraName + "/";
+        String tableKey = "Estimates/";
 
         // Pose3d pose0 = poseFromLog(table.get(tableKey + "Pose0", new double[0]));
         // double ambiguity0 = table.get(tableKey + "Ambiguity0", 0.0);
