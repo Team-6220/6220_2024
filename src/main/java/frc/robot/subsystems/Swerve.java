@@ -101,7 +101,7 @@ public class Swerve extends SubsystemBase {
     private boolean autoIsOverShoot = false, isAuto = false;
 
     
-    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", 1);
+    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", VisionConstants.visionStdDev);
 
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
