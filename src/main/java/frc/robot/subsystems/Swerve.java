@@ -137,7 +137,7 @@ public class Swerve extends SubsystemBase {
 
         // Set up custom logging to add the current path to a field 2d widget
         PathPlannerLogging.setLogActivePathCallback((poses) -> field2d.getObject("path").setPoses(poses));
-        Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
+        // Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
         // SmartDashboard.putData("Field", field2d);
         createShuffleOutputs();
     }
@@ -163,7 +163,7 @@ public class Swerve extends SubsystemBase {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
             //SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
         }
-    }
+            }
 
     public void stopDriving()
     {
@@ -468,7 +468,7 @@ public class Swerve extends SubsystemBase {
             turnPidController.setConstraints(new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
             turnPidController.reset(getHeading().getDegrees());
         }
-        //createShuffleOutputs();
+        
     }
 
     private void createShuffleOutputs() {

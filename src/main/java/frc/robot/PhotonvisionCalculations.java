@@ -146,34 +146,40 @@ public class PhotonvisionCalculations {
             // "Estimates/AprilTag/" + camera[camera].getCameraName() + "/";
             // Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimators.update();
             Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimators[i].update();
-            estimatedRobotPose.ifPresent(
+            estimatedRobotPose.ifPresentOrElse(
                 estimate -> {
                     SmartDashboard.putNumber("estimated x", estimate.estimatedPose.getX());
-                    if(                   
-                    !(estimate.estimatedPose.getX() < -VisionConstants.fieldBorderMargin
-                    || estimate.estimatedPose.getX()
-                        > VisionConstants.fieldSize.getX() + VisionConstants.fieldBorderMargin
-                    || estimate.estimatedPose.getY() < -VisionConstants.fieldBorderMargin
-                    || estimate.estimatedPose.getY()
-                        > VisionConstants.fieldSize.getY() + VisionConstants.fieldBorderMargin
-                    || estimate.estimatedPose.getZ() < -VisionConstants.zMargin
-                    || estimate.estimatedPose.getZ() > VisionConstants.zMargin)
-                    )
-                    {
+                    SmartDashboard.putNumber("estimated y", estimate.estimatedPose.getY());
+                    // if(                   
+                    // !(estimate.estimatedPose.getX() < -VisionConstants.fieldBorderMargin
+                    // || estimate.estimatedPose.getX()
+                    //     > VisionConstants.fieldSize.getX() + VisionConstants.fieldBorderMargin
+                    // || estimate.estimatedPose.getY() < -VisionConstants.fieldBorderMargin
+                    // || estimate.estimatedPose.getY()
+                    //     > VisionConstants.fieldSize.getY() + VisionConstants.fieldBorderMargin
+                    // || estimate.estimatedPose.getZ() < -VisionConstants.zMargin
+                    // || estimate.estimatedPose.getZ() > VisionConstants.zMargin)
+                    // )
+                    // {
                         xSum += estimate.estimatedPose.getX();
                         ySum += estimate.estimatedPose.getY();
                         
                         camNumerator ++;
 
-                        timeStampSum += estimate.timestampSeconds;
+                        timeStampSum = estimate.timestampSeconds;
                         
                         if(estimate.strategy.equals(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR))
                         {
                             xSum += estimate.estimatedPose.getX();
                             ySum += estimate.estimatedPose.getY();
+                            timeStampSum = estimate.timestampSeconds;
                             camNumerator ++;
                         }
-                    }
+                    //}
+                },
+                () -> {
+                    SmartDashboard.putNumber("estimated x", 0);
+                    SmartDashboard.putNumber("estimated y", 0);
                 }
             );
            
@@ -214,12 +220,16 @@ public class PhotonvisionCalculations {
         
         double avgX = camNumerator != 0 ? xSum/camNumerator : 0;
         double avgY = camNumerator != 0 ? ySum/camNumerator : 0;
-        double avgTimeStamp = camNumerator != 0 ? timeStampSum/camNumerator : -1;
+        double avgTimeStamp = timeStampSum;
 
         Pose2d weightedEstimatePose = new Pose2d(new Translation2d(avgX, avgY), new Rotation2d());
         theField.setRobotPose(weightedEstimatePose);
-        SmartDashboard.putNumber("Weighted pose stuff", camNumerator);
+        SmartDashboard.putData("Weighted pose stuff", theField);
         SmartDashboard.putNumber("xSum", xSum);
+        SmartDashboard.putNumber("ySum", ySum);
+        SmartDashboard.putNumber("camNumerator", camNumerator);
+        SmartDashboard.putNumber("localCamTrustVal", localCamTrustVal);
+        SmartDashboard.putNumber("Avgtimestamp", avgTimeStamp);
         // System.out.println(weightedEstimatePose.toString());
         if(s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1)
         {
