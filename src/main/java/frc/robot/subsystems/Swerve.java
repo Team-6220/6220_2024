@@ -444,9 +444,11 @@ public class Swerve extends SubsystemBase {
         
         // LimelightCalculations.updatePoseEstimation(poseEstimator, this);
         poseEstimator.update(getGyroYaw(), getModulePositions());
-        PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
+        // PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
         
         field2d.setRobotPose(getPose());
+
+        // SmartDashboard.putData("fieldSwerve",field2d);
         
 
         if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
