@@ -185,26 +185,26 @@ public class RobotContainer {
     zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(15.3, 5.55), new Rotation2d(0))))); //Red side
     // zeroOdometry.onTrue(new InstantCommand(() -> s_Swerve.setPose(new Pose2d(new Translation2d(1.33, 5.60), new Rotation2d(0))))); //Blue Side
-    testing.onTrue(Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
-      Commands.deadline(
-        Commands.waitSeconds(.1), 
-        new ManuelMoveNoteBack())));
+    // testing.onTrue(Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
+    //   Commands.deadline(
+    //     Commands.waitSeconds(.1), 
+    //     new ManuelMoveNoteBack())));
 
-    amp.whileTrue(new AmpCommand(
-      s_Swerve,
-      driver,
-      () -> operator.getRawButton(1),
-      ()->robotControlLeftTrigger.getAsBoolean()
-      )
-    );
+    // amp.whileTrue(new AmpCommand(
+    //   s_Swerve,
+    //   driver,
+    //   () -> operator.getRawButton(1),
+    //   ()->robotControlLeftTrigger.getAsBoolean()
+    //   )
+    // );
 
     manuelShot.whileTrue(new SimpleShootCmd());
 
     // amp.whileTrue(ampScoringTesting());
 
     // amp.whileTrue(noteTesting());
-    increaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
-    decreaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount --));
+    // increaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
+    // decreaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount --));
     trueEject.whileTrue(new ManuelEjectNote());
     ejectNote.whileTrue(new ManuelMoveNoteBack());
     manuelIntake.whileTrue(new ManueIntakeNote());
@@ -218,15 +218,15 @@ public class RobotContainer {
       driver,  
       () -> robotControlLeftTrigger.getAsBoolean()));
 
-    fireRightTrigger.whileTrue(new SpeakerCommand(
-      s_Swerve, 
-      driver)
-    );
-    speakerTemporary.whileTrue(new ShootingTestCommand(s_Swerve, driver));
-    climb.whileTrue(new ClimberTestCommand(operator));
+    // fireRightTrigger.whileTrue(new SpeakerCommand(
+    //   s_Swerve, 
+    //   driver)
+    // );
+    // speakerTemporary.whileTrue(new ShootingTestCommand(s_Swerve, driver));
+    // climb.whileTrue(new ClimberTestCommand(operator));
 
-    increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
-    decreaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset --));
+    // increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
+    // decreaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset --));
     SmartDashboard.putNumber("Number offset", ArmConstants.armDegreesOffset);
     // speakerTemporary.whileTrue(new ShootingTestCommand());
   }

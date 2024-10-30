@@ -108,10 +108,10 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public boolean getFrontBeam() {
-        return frontToF.getRange()<15;
+        return frontToF.getRange()<95;
     }
     public boolean getBackBeam() {
-        return backToF.getRange()<15;
+        return backToF.getRange()<95;
     }
 
     public void setHasNote() {
@@ -199,7 +199,7 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         
-        SmartDashboard.putNumber("Intake mode count", IntakeConstants.backupModeCount);
+        SmartDashboard.putNumber("Intake front beam", frontToF.getRange());
         if(!noteInIntake && getFrontBeam()) {
             newNoteDetected();
         }
