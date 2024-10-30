@@ -224,10 +224,10 @@ public class RobotContainer {
       driver,  
       () -> robotControlLeftTrigger.getAsBoolean()));
 
-    // fireRightTrigger.whileTrue(new SpeakerCommand(
-    //   s_Swerve, 
-    //   driver)
-    // );
+    fireRightTrigger.whileTrue(new SpeakerCommand(
+      s_Swerve, 
+      driver)
+    );
     // speakerTemporary.whileTrue(new SimpleShootCmd());
     climb.whileTrue(new ClimberTestCommand(operator));
 

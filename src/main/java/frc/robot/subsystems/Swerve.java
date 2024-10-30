@@ -59,13 +59,13 @@ public class Swerve extends SubsystemBase {
      * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
      * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
      */
-    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
+    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.05);
     
     /**
      * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
      * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
      */
-    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
+    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, Double.MAX_VALUE);
 
 
     public SwerveModule[] mSwerveMods;
@@ -443,8 +443,8 @@ public class Swerve extends SubsystemBase {
 
         
         // LimelightCalculations.updatePoseEstimation(poseEstimator, this);
+        PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
         poseEstimator.update(getGyroYaw(), getModulePositions());
-        // PhotonvisionCalculations.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
         
         field2d.setRobotPose(getPose());
 

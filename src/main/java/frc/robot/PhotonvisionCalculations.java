@@ -166,15 +166,15 @@ public class PhotonvisionCalculations {
                         
                         camNumerator ++;
 
+                        timeStampSum += estimate.timestampSeconds;
                         
                         if(estimate.strategy.equals(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR))
                         {
                             xSum += estimate.estimatedPose.getX();
                             ySum += estimate.estimatedPose.getY();
-                            // timeStampSum = estimate.timestampSeconds;
+                            timeStampSum += estimate.timestampSeconds;
                             camNumerator ++;
                         }
-                        timeStampSum = estimate.timestampSeconds;
                     //}
                 },
                 () -> {
@@ -220,7 +220,7 @@ public class PhotonvisionCalculations {
         
         double avgX = camNumerator != 0 ? xSum/camNumerator : 0;
         double avgY = camNumerator != 0 ? ySum/camNumerator : 0;
-        // double avgTimeStamp = timeStampSum;
+        double avgTimeStamp = camNumerator != 0 ? timeStampSum/camNumerator : 0;
 
         Pose2d weightedEstimatePose = new Pose2d(new Translation2d(avgX, avgY), new Rotation2d());
         theField.setRobotPose(weightedEstimatePose);
@@ -229,7 +229,7 @@ public class PhotonvisionCalculations {
         SmartDashboard.putNumber("ySum", ySum);
         SmartDashboard.putNumber("camNumerator", camNumerator);
         SmartDashboard.putNumber("localCamTrustVal", localCamTrustVal);
-        SmartDashboard.putNumber("TimeStampSum", timeStampSum);
+        SmartDashboard.putNumber("Avgtimestamp", avgTimeStamp);
         // System.out.println(weightedEstimatePose.toString());
         if(s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1)
         {
@@ -237,7 +237,7 @@ public class PhotonvisionCalculations {
         }
         if(camNumerator > 0)
         {
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(localCamTrustVal,localCamTrustVal, Double.MAX_VALUE));
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(localCamTrustVal,localCamTrustVal, 999));
             poseEstimator.addVisionMeasurement(weightedEstimatePose, timeStampSum );//addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3,N1> visionMeasurementStdDevs) : void
             // System.out.println("Updated vision inputs!");
         }
