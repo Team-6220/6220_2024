@@ -204,9 +204,9 @@ public class IntakeSubsystem extends SubsystemBase{
             newNoteDetected();
         }
         // if(IntakeConstants.backupModeCount <= 1) {
-        //     if(noteInIntake && !firing) {
-        //         driveNoteToSetpoint();
-        //     }
+            if(noteInIntake && !firing) {
+                driveNoteToSetpoint();
+            }
         // } 
         // else if(IntakeConstants.backupModeCount <= 5) {
         //     if(noteInIntake && !firing) {
