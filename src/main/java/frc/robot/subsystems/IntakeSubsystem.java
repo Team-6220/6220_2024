@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.security.Principal;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.revrobotics.CANSparkMax;
@@ -20,7 +22,7 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
 public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem INSTANCE = null;
 
-    public final CANSparkMax intakeMotor;
+    private final CANSparkMax intakeMotor;
     private final RelativeEncoder encoder;
 
     //private final DigitalInput frontBreakBeam;
@@ -30,6 +32,8 @@ public class IntakeSubsystem extends SubsystemBase{
     private final PIDController m_Controller;
     private final PIDController m_VelocityController;
     private SimpleMotorFeedforward m_Feedforward; 
+
+    private int counterForFrontIntake = 0; 
 
     private boolean firing;
 
@@ -82,9 +86,9 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void feedIntake() {
-
+        if(!noteInIntake) {
             simpleDrive(false, IntakeConstants.intakeSpeed);
-        
+        }
     }
 
     public void reset() {
@@ -98,12 +102,25 @@ public class IntakeSubsystem extends SubsystemBase{
         encoder.setPosition(0);
     }
 
+    public void initReset()
+    {
+        noteInIntake = false;
+        noteAtBack = false;
+        noteSecure = false;
+        hasExited = false;
+        firing = false;
+        m_Controller.reset();
+        m_VelocityController.reset();
+        encoder.setPosition(0);
+        intakeMotor.set(0);
+    }
+
     public void stop(){
         intakeMotor.set(0);
         firing = false;
     }
 
-    public boolean noteInIntake() {
+    public boolean getNoteInIntake() {
         return noteInIntake;
     }
 
@@ -118,6 +135,19 @@ public class IntakeSubsystem extends SubsystemBase{
         noteInIntake = true;
         noteAtBack = true;
         encoder.setPosition(-IntakeConstants.distanceBetweenBreakBeamsInEncoderRotations);
+    }
+
+    public void manuelIntakedNotesEndMethod()
+    {
+        noteAtBack = true;
+        noteSecure = true;
+    }
+
+    public void manuelShootNotesEndMethod()
+    {
+        noteInIntake = false;
+        noteAtBack = false;
+        noteSecure = false;
     }
 
     public void driveNoteToSetpoint() {
@@ -151,28 +181,6 @@ public class IntakeSubsystem extends SubsystemBase{
         intakeMotor.set(output);
 
     }
-    // private void driveWithBackup() {
-    //     double output = 0;
-    //     if(!noteAtBack && !getFrontBeam()) {
-    //         noteAtBack = true;
-    //         hasExited = true;
-    //         encoder.setPosition(0);
-    //     }
-    //     if(noteAtBack) {
-    //         if(noteSecure) {
-    //             intakeMotor.set(0);
-    //             return;
-    //         } else if(hasExited && !getFrontBeam()) {
-    //              output = .1;
-    //         }
-    //         if(!noteSecure && getFrontBeam()) {
-    //             noteSecure = true;
-    //         }
-    //     } else {
-    //         output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
-    //     }
-    //     intakeMotor.set(output);
-    // }
 
     public void testRPMPID() {
         double output = 0;
@@ -192,12 +200,15 @@ public class IntakeSubsystem extends SubsystemBase{
         noteInIntake = true;
     }
 
+    
+
     public boolean noteReady() {
         return noteSecure;
     }
 
     @Override
     public void periodic() {
+<<<<<<< HEAD
         
         SmartDashboard.putNumber("Intake front beam", frontToF.getRange());
         if(!noteInIntake && getFrontBeam()) {
@@ -212,8 +223,23 @@ public class IntakeSubsystem extends SubsystemBase{
         //     if(noteInIntake && !firing) {
         //         driveWithBackup();
         //     }
+=======
+        // if(getFrontBeam())
+        // {
+        //     // System.out.println("Note in!");
+        //     counterForFrontIntake ++;
         // }
-        
+        // else
+        // {
+        //     counterForFrontIntake = 0;
+        // }
+        // if(!noteInIntake && counterForFrontIntake > 5) {
+        //     newNoteDetected();
+        // }
+        // if(noteInIntake && !firing) {
+        //     driveNoteToSetpoint();
+>>>>>>> 59ab3b341ae26b0589ab1a23e8d17fd4693a982a
+        // }
         
         //SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
         //SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
@@ -221,6 +247,7 @@ public class IntakeSubsystem extends SubsystemBase{
         SmartDashboard.putBoolean("Back TOF", getBackBeam());
         SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
         SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
+        SmartDashboard.putNumber("Intake Motor Current Draw", intakeMotor.getOutputCurrent());
         if(Kp.hasChanged()
         || Ki.hasChanged())
         {

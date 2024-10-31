@@ -40,12 +40,12 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 
 public class AmpCommand extends Command {
 
-  private final TunableNumber kP = new TunableNumber(" ampkP", 175);
-  private final TunableNumber kI = new TunableNumber(" ampkI", 0);
-  private final TunableNumber kD = new TunableNumber(" ampkD", 0);
-  private final TunableNumber Vel = new TunableNumber(" MaxVel", 3);
-  private final TunableNumber Accel = new TunableNumber(" Accel", 2);
-  private final TunableNumber Tolerance = new TunableNumber(" Tolerance", 0.01);
+  // private final TunableNumber kP = new TunableNumber(" ampkP", 175);
+  // private final TunableNumber kI = new TunableNumber(" ampkI", 0);
+  // private final TunableNumber kD = new TunableNumber(" ampkD", 0);
+  // private final TunableNumber Vel = new TunableNumber(" MaxVel", 3);
+  // private final TunableNumber Accel = new TunableNumber(" Accel", 2);
+  // private final TunableNumber Tolerance = new TunableNumber(" Tolerance", 0.01);
 
   private final ArmSubsystem armSubsystem;
   private final ShooterSubsystem shooterSubsystem;
@@ -53,7 +53,7 @@ public class AmpCommand extends Command {
   private final XboxController driver;
   private final Swerve s_Swerve;
   private final Supplier<Boolean> shootSupplier, autoControl; // Use this so that it's the driver click the button for it to shoot.
-  private final ProfiledPIDController leftAndRightPID, fowardAndBackPID; //from the driver's point of view and 0,0 is at the right hand side of the driver
+  // private final ProfiledPIDController leftAndRightPID, fowardAndBackPID; //from the driver's point of view and 0,0 is at the right hand side of the driver
   private blinkin s_Blinkin;
   private boolean isParallelingWithAutobuilder = false;
 
@@ -74,13 +74,13 @@ public class AmpCommand extends Command {
     this.driver = driver;
     this.autoControl = autoControl;
     
-    fowardAndBackPID = new ProfiledPIDController(kP.get(), kI.get(),kD.get(), new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
-    fowardAndBackPID.setTolerance(Tolerance.get());
+    // fowardAndBackPID = new ProfiledPIDController(kP.get(), kI.get(),kD.get(), new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
+    // fowardAndBackPID.setTolerance(Tolerance.get());
     
-    leftAndRightPID = new ProfiledPIDController(kP.get(), kI.get(), kD.get(),  new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
-    leftAndRightPID.setTolerance(Tolerance.get());
+    // leftAndRightPID = new ProfiledPIDController(kP.get(), kI.get(), kD.get(),  new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
+    // leftAndRightPID.setTolerance(Tolerance.get());
     
-    addRequirements(armSubsystem,shooterSubsystem, s_Swerve, s_Blinkin);
+    addRequirements(armSubsystem,shooterSubsystem, s_Blinkin);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -100,26 +100,26 @@ public class AmpCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    s_Swerve.resetTurnController();
-    fowardAndBackPID.reset(s_Swerve.getPose().getX());
-    leftAndRightPID.reset(s_Swerve.getPose().getY());
+    // s_Swerve.resetTurnController();
+    // fowardAndBackPID.reset(s_Swerve.getPose().getX());
+    // leftAndRightPID.reset(s_Swerve.getPose().getY());
   }
   
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double[] driverInputs = OIConstants.getDriverInputs(driver);
-    double xOutput = 0, yOutput = 0, rotationVal = 0;
-    if(!isParallelingWithAutobuilder && !autoControl.get()) {
-      xOutput = driverInputs[0];
-      yOutput = driverInputs[1];
-      rotationVal = driverInputs[2];
-      
-      fieldRelative = true;
+    // double[] driverInputs = OIConstants.getDriverInputs(driver);
+    // double xOutput = 0, yOutput = 0, rotationVal = 0;
+    // xOutput = driverInputs[0];
+    // yOutput = driverInputs[1];
+    // rotationVal = driverInputs[2];
+    
+    // fieldRelative = true;
 
-      s_Blinkin.solid_purple();
-    }
-    else {
+    // s_Blinkin.solid_purple();
+    // if(!isParallelingWithAutobuilder && !autoControl.get()) {
+    // }
+    // else {
       // double xOffset, yOffset, validTarget, lastTimeStampSeconds;
       // NetworkTableEntry tx,ty;
       
@@ -148,29 +148,30 @@ public class AmpCommand extends Command {
       // else{
       //   System.err.println("APRIL TAG NOT DETECTED");
       // }
-      fowardAndBackPID.setGoal(s_Swerve.getAmpX());
-      leftAndRightPID.setGoal(s_Swerve.getAmpY());
+      // fowardAndBackPID.setGoal(s_Swerve.getAmpX());
+      // leftAndRightPID.setGoal(s_Swerve.getAmpY());
       
-      SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
-      SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
-      SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);
+      // SmartDashboard.putNumber("heading swerve", s_Swerve.getHeadingDegrees());
+      // SmartDashboard.putNumber("x setpoint", fowardAndBackPID.getSetpoint().position);
+      // SmartDashboard.putNumber("y setpoint", leftAndRightPID.getSetpoint().position);
       
-      xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
-      yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
+      // xOutput = fowardAndBackPID.calculate(s_Swerve.getPose().getX());
+      // yOutput = leftAndRightPID.calculate(s_Swerve.getPose().getY());
       
-      s_Blinkin.sky_blue();
-    }
-    s_Swerve.setAutoTurnHeading(90);
-    rotationVal = s_Swerve.getTurnPidSpeed();
-    if(!isParallelingWithAutobuilder)
-    {
-      s_Swerve.drive(
-      new Translation2d(xOutput, yOutput),
-      rotationVal,
-      fieldRelative,
-      true
-      );
-    }
+      // s_Swerve.setAutoTurnHeading(90);
+      // rotationVal = s_Swerve.getTurnPidSpeed();
+      
+      // s_Blinkin.sky_blue();
+    // }
+    // if(!isParallelingWithAutobuilder)
+    // {
+      // s_Swerve.drive(
+      // new Translation2d(xOutput, yOutput),
+      // rotationVal,
+      // fieldRelative,
+      // true
+      // );
+    // }
     // if(Math.hypot(s_Swerve.getPose().getX() - s_Swerve.getAmpX(), s_Swerve.getPose().getY()-s_Swerve.getAmpY()) < 1.75) {
     // } else {
     //   armSubsystem.driveToGoal(ArmConstants.restingSetpoint);
@@ -187,20 +188,20 @@ public class AmpCommand extends Command {
       intakeSubsystem.stop();
     }
 
-    if(kP.hasChanged()
-    || kI.hasChanged()
-    || kD.hasChanged()) {
-        fowardAndBackPID.setPID(kP.get(), kI.get(), kD.get());
-        leftAndRightPID.setPID(kP.get(), kI.get(), kD.get());
-        leftAndRightPID.reset(s_Swerve.getPose().getY());
-        fowardAndBackPID.reset(s_Swerve.getPose().getX());
-    }
-    if(Vel.hasChanged() || Accel.hasChanged()) {
-        fowardAndBackPID.setConstraints(new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
-        leftAndRightPID.setConstraints(new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
-        leftAndRightPID.reset(s_Swerve.getPose().getY());
-        fowardAndBackPID.reset(s_Swerve.getPose().getX());
-    }
+    // if(kP.hasChanged()
+    // || kI.hasChanged()
+    // || kD.hasChanged()) {
+    //     fowardAndBackPID.setPID(kP.get(), kI.get(), kD.get());
+    //     leftAndRightPID.setPID(kP.get(), kI.get(), kD.get());
+    //     leftAndRightPID.reset(s_Swerve.getPose().getY());
+    //     fowardAndBackPID.reset(s_Swerve.getPose().getX());
+    // }
+    // if(Vel.hasChanged() || Accel.hasChanged()) {
+    //     fowardAndBackPID.setConstraints(new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
+    //     leftAndRightPID.setConstraints(new TrapezoidProfile.Constraints(Vel.get(), Accel.get()));
+    //     leftAndRightPID.reset(s_Swerve.getPose().getY());
+    //     fowardAndBackPID.reset(s_Swerve.getPose().getX());
+    // }
     
   }
 

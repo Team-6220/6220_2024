@@ -21,7 +21,7 @@ public class ShooterIdleCommand extends Command {
 
   @Override
   public void execute() {
-    if(s_IntakeSubsystem.noteReady() || !s_IntakeSubsystem.noteInIntake()) {
+    if(s_IntakeSubsystem.noteReady() || !s_IntakeSubsystem.getNoteInIntake()) {
       s_ShooterSubsystem.spinManually(ShooterConstants.idleOutput);
     } else {
       s_ShooterSubsystem.spinManually(0);
