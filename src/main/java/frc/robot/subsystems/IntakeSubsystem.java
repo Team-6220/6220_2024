@@ -208,7 +208,6 @@ public class IntakeSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-<<<<<<< HEAD
         
         SmartDashboard.putNumber("Intake front beam", frontToF.getRange());
         if(!noteInIntake && getFrontBeam()) {
@@ -223,22 +222,6 @@ public class IntakeSubsystem extends SubsystemBase{
         //     if(noteInIntake && !firing) {
         //         driveWithBackup();
         //     }
-=======
-        // if(getFrontBeam())
-        // {
-        //     // System.out.println("Note in!");
-        //     counterForFrontIntake ++;
-        // }
-        // else
-        // {
-        //     counterForFrontIntake = 0;
-        // }
-        // if(!noteInIntake && counterForFrontIntake > 5) {
-        //     newNoteDetected();
-        // }
-        // if(noteInIntake && !firing) {
-        //     driveNoteToSetpoint();
->>>>>>> 59ab3b341ae26b0589ab1a23e8d17fd4693a982a
         // }
         
         //SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
