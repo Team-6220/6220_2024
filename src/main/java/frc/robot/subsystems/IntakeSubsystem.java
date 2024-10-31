@@ -17,16 +17,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.IntakeIdleCommand;
-
+import com.playingwithfusion.*;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem INSTANCE = null;
 
     private final CANSparkMax intakeMotor;
     private final RelativeEncoder encoder;
 
-    private final DigitalInput frontBreakBeam;
-    private final DigitalInput backBreakBeam;
-
+    //private final DigitalInput frontBreakBeam;
+    //private final DigitalInput backBreakBeam;
+    private final TimeOfFlight frontToF = new TimeOfFlight(1);
+    private final TimeOfFlight backToF = new TimeOfFlight(0);
     private final PIDController m_Controller;
     private final PIDController m_VelocityController;
     private SimpleMotorFeedforward m_Feedforward; 
@@ -51,12 +53,12 @@ public class IntakeSubsystem extends SubsystemBase{
     private final TunableNumber KpVel = new TunableNumber("IntakeKpVel", IntakeConstants.velocityPIDConstants[0]);
 
     private IntakeSubsystem() {
+        frontToF.setRangingMode(RangingMode.Short, 24);
+        backToF.setRangingMode(RangingMode.Short, 24);
         intakeMotor  = new CANSparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
-
-        frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
-        backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
-
+        // frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
+        // backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
         encoder = intakeMotor.getEncoder();
         m_Controller = new PIDController(Kp.get(), Ki.get(), IntakeConstants.kD);
         m_VelocityController = new PIDController(IntakeConstants.velocityPIDConstants[0], IntakeConstants.velocityPIDConstants[1], IntakeConstants.velocityPIDConstants[2]);
@@ -123,10 +125,10 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public boolean getFrontBeam() {
-        return !frontBreakBeam.get();
+        return frontToF.getRange()<95;
     }
     public boolean getBackBeam() {
-        return !backBreakBeam.get();
+        return backToF.getRange()<95;
     }
 
     public void setHasNote() {
@@ -206,6 +208,22 @@ public class IntakeSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+<<<<<<< HEAD
+        
+        SmartDashboard.putNumber("Intake front beam", frontToF.getRange());
+        if(!noteInIntake && getFrontBeam()) {
+            newNoteDetected();
+        }
+        // if(IntakeConstants.backupModeCount <= 1) {
+            if(noteInIntake && !firing) {
+                driveNoteToSetpoint();
+            }
+        // } 
+        // else if(IntakeConstants.backupModeCount <= 5) {
+        //     if(noteInIntake && !firing) {
+        //         driveWithBackup();
+        //     }
+=======
         // if(getFrontBeam())
         // {
         //     // System.out.println("Note in!");
@@ -220,10 +238,13 @@ public class IntakeSubsystem extends SubsystemBase{
         // }
         // if(noteInIntake && !firing) {
         //     driveNoteToSetpoint();
+>>>>>>> 59ab3b341ae26b0589ab1a23e8d17fd4693a982a
         // }
         
-        SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
-        SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
+        //SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
+        //SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
+        SmartDashboard.putBoolean("FrontTOF", getFrontBeam());
+        SmartDashboard.putBoolean("Back TOF", getBackBeam());
         SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
         SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
         SmartDashboard.putNumber("Intake Motor Current Draw", intakeMotor.getOutputCurrent());
