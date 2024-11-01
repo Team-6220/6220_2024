@@ -128,7 +128,7 @@ public class IntakeSubsystem extends SubsystemBase{
         return frontToF.getRange()<95;
     }
     public boolean getBackBeam() {
-        return backToF.getRange()<95;
+        return backToF.getRange()<135;
     }
 
     public void setHasNote() {
@@ -137,11 +137,11 @@ public class IntakeSubsystem extends SubsystemBase{
         encoder.setPosition(-IntakeConstants.distanceBetweenBreakBeamsInEncoderRotations);
     }
 
-    public void manuelIntakedNotesEndMethod()
-    {
-        noteAtBack = true;
-        noteSecure = true;
-    }
+    // public void manuelIntakedNotesEndMethod()
+    // {
+    //     noteAtBack = true;
+    //     noteSecure = true;
+    // }
 
     public void manuelShootNotesEndMethod()
     {
@@ -153,12 +153,14 @@ public class IntakeSubsystem extends SubsystemBase{
     public void driveNoteToSetpoint() {
         double output = 0;
         if(!noteAtBack && getBackBeam()) {
+            // System.out.println("toggled on NOTE AT BACK");
             noteAtBack = true;
             encoder.setPosition(0);
         }
         if(noteAtBack) {
             if(noteSecure) {
                 intakeMotor.set(0);
+                // System.out.println("NOTE SECURE");
                 return;
             } else {
                 if(hasExited) {
@@ -175,10 +177,13 @@ public class IntakeSubsystem extends SubsystemBase{
                 noteSecure = true;
             }
         } else {
+            // System.out.println("there supposed to be output");
             output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
         }
+        // System.out.println("drivenotetosetpoint 1st");
         
         intakeMotor.set(output);
+        // System.out.println("driveToSetpoint working + output" + output);
 
     }
 
@@ -209,13 +214,15 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         
-        SmartDashboard.putNumber("Intake front beam", frontToF.getRange());
+        SmartDashboard.putNumber("Intake front beam", backToF.getRange());
         if(!noteInIntake && getFrontBeam()) {
             newNoteDetected();
+            // System.out.println("new note detected");
         }
         // if(IntakeConstants.backupModeCount <= 1) {
             if(noteInIntake && !firing) {
                 driveNoteToSetpoint();
+                // System.out.println("here lies the note");
             }
         // } 
         // else if(IntakeConstants.backupModeCount <= 5) {
@@ -228,6 +235,7 @@ public class IntakeSubsystem extends SubsystemBase{
         //SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
         SmartDashboard.putBoolean("FrontTOF", getFrontBeam());
         SmartDashboard.putBoolean("Back TOF", getBackBeam());
+        SmartDashboard.putBoolean("note at back", noteAtBack);
         SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
         SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
         SmartDashboard.putNumber("Intake Motor Current Draw", intakeMotor.getOutputCurrent());
