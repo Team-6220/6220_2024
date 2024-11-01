@@ -115,6 +115,7 @@ public class IntakeCommand extends Command{
     @Override
     public void initialize() {
         timeWithoutTarget = 0;
+        intake.initReset();
     }
 
     @Override
