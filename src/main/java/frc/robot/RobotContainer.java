@@ -82,26 +82,26 @@ public class RobotContainer {
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   //private final JoystickButton intakeTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
   //private final JoystickButton ampTemporary = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
+  // private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton manuelShot = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton noNote = new JoystickButton(driver, 8);
-
+  
   private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
   
   /* Operator Buttons */
-  private final Trigger intake = new Trigger(()->operator.getRawButton(5));
   private final Trigger amp = new Trigger(()->operator.getRawButton(2));
-  private final Trigger trueEject = new Trigger(()->operator.getRawButton(9));
-  private final Trigger climb = new Trigger(()->operator.getRawButton(4));
-  private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(12));
+  private final Trigger climbTrigger = new Trigger(()->operator.getRawButton(4));
+  private final Trigger intake = new Trigger(()->operator.getRawButton(5));
+  private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7)); 
   private final Trigger increaseArmOffset = new Trigger(() -> operator.getRawButton(8));
-  private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7));
+  private final Trigger trueEject = new Trigger(()->operator.getRawButton(9));
   // private final Trigger increaseIntakeMode = new Trigger(() -> operator.getRawButton(6));
   // private final Trigger decreaseIntakeMode = new Trigger(() -> operator.getRawButton(3));
-  private final Trigger manuelIntake = new Trigger(() -> operator.getRawButton(11));
+  private final Trigger noNote = new Trigger(()->operator.getRawButton(10));
+  private final Trigger moveNoteToShooter = new Trigger(() -> operator.getRawButton(11));
+  private final Trigger moveNoteAgainstShooter = new Trigger(() -> operator.getRawButton(12));
   // private final Trigger testing = new Trigger(()-> operator.getRawButton(10));
 
   /* Subsystems */
@@ -212,8 +212,8 @@ public class RobotContainer {
     // increaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
     // decreaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount --));
     trueEject.whileTrue(new ManuelEjectNote());
-    ejectNote.whileTrue(new ManuelMoveNoteBack());
-    manuelIntake.whileTrue(new ManueIntakeNote());
+    moveNoteAgainstShooter.whileTrue(new ManuelMoveNoteBack());
+    moveNoteToShooter.whileTrue(new ManueIntakeNote());
     zeroGyro.whileTrue(
       new InstantCommand(
         () -> RumbleManager.rumble(driver, 0.2)
@@ -229,10 +229,10 @@ public class RobotContainer {
       driver)
     );
     // speakerTemporary.whileTrue(new SimpleShootCmd());
-    climb.whileTrue(new ClimberTestCommand(operator));
+    climbTrigger.whileTrue(new ClimberTestCommand(operator));
 
-    // increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
-    // decreaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset --));
+    increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
+    decreaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset --));
     SmartDashboard.putNumber("Number offset", ArmConstants.armDegreesOffset);
     // speakerTemporary.whileTrue(new ShootingTestCommand());
   }
