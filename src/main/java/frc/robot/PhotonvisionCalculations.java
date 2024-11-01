@@ -148,8 +148,8 @@ public class PhotonvisionCalculations {
             Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimators[i].update();
             estimatedRobotPose.ifPresentOrElse(
                 estimate -> {
-                    SmartDashboard.putNumber("estimated x", estimate.estimatedPose.getX());
-                    SmartDashboard.putNumber("estimated y", estimate.estimatedPose.getY());
+                    // SmartDashboard.putNumber("estimated x", estimate.estimatedPose.getX());
+                    // SmartDashboard.putNumber("estimated y", estimate.estimatedPose.getY());
                     // if(                   
                     // !(estimate.estimatedPose.getX() < -VisionConstants.fieldBorderMargin
                     // || estimate.estimatedPose.getX()
@@ -178,8 +178,8 @@ public class PhotonvisionCalculations {
                     //}
                 },
                 () -> {
-                    SmartDashboard.putNumber("estimated x", 0);
-                    SmartDashboard.putNumber("estimated y", 0);
+                    // SmartDashboard.putNumber("estimated x", 0);
+                    // SmartDashboard.putNumber("estimated y", 0);
                 }
             );
            
@@ -224,12 +224,12 @@ public class PhotonvisionCalculations {
 
         Pose2d weightedEstimatePose = new Pose2d(new Translation2d(avgX, avgY), new Rotation2d());
         theField.setRobotPose(weightedEstimatePose);
-        SmartDashboard.putData("Weighted pose stuff", theField);
-        SmartDashboard.putNumber("xSum", xSum);
-        SmartDashboard.putNumber("ySum", ySum);
-        SmartDashboard.putNumber("camNumerator", camNumerator);
-        SmartDashboard.putNumber("localCamTrustVal", localCamTrustVal);
-        SmartDashboard.putNumber("Avgtimestamp", avgTimeStamp);
+        // SmartDashboard.putData("Weighted pose stuff", theField);
+        // SmartDashboard.putNumber("xSum", xSum);
+        // SmartDashboard.putNumber("ySum", ySum);
+        // SmartDashboard.putNumber("camNumerator", camNumerator);
+        // SmartDashboard.putNumber("localCamTrustVal", localCamTrustVal);
+        // SmartDashboard.putNumber("Avgtimestamp", avgTimeStamp);
         // System.out.println(weightedEstimatePose.toString());
         if(s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond > 1 || s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond > 1)
         {
@@ -237,7 +237,7 @@ public class PhotonvisionCalculations {
         }
         if(camNumerator > 0)
         {
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(localCamTrustVal,localCamTrustVal, 999));
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(localCamTrustVal,localCamTrustVal, Double.MAX_VALUE));
             poseEstimator.addVisionMeasurement(weightedEstimatePose, timeStampSum );//addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3,N1> visionMeasurementStdDevs) : void
             // System.out.println("Updated vision inputs!");
         }
