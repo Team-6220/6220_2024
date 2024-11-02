@@ -34,6 +34,7 @@ import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TriggerButton;
 import frc.lib.util.TunableNumber;
 import frc.robot.AutoCmd.ShootAndGetOut;
+import frc.robot.AutoCmd.justGetOut;
 // import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmd;
 // import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmdRed;
 // import frc.robot.AutoCmd.ShootAndPickUpFarNoteTesting;
@@ -175,6 +176,7 @@ public class RobotContainer {
     // autoChooser.addOption("At Code Orange", new test(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
     autoChooser.addOption("Shot And Get Out", new ShootAndGetOut(s_Swerve));
+    autoChooser.addOption("just get out", new justGetOut(s_Swerve));
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");    
     
