@@ -233,12 +233,12 @@ public class IntakeSubsystem extends SubsystemBase{
         
         //SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
         //SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
-        SmartDashboard.putBoolean("FrontTOF", getFrontBeam());
-        SmartDashboard.putBoolean("Back TOF", getBackBeam());
-        SmartDashboard.putBoolean("note at back", noteAtBack);
-        SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
-        SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
-        SmartDashboard.putNumber("Intake Motor Current Draw", intakeMotor.getOutputCurrent());
+        // SmartDashboard.putBoolean("FrontTOF", getFrontBeam());
+        // SmartDashboard.putBoolean("Back TOF", getBackBeam());
+        // SmartDashboard.putBoolean("note at back", noteAtBack);
+        // SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
+        // SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
+        // SmartDashboard.putNumber("Intake Motor Current Draw", intakeMotor.getOutputCurrent());
         if(Kp.hasChanged()
         || Ki.hasChanged())
         {
