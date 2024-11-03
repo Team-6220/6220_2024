@@ -40,7 +40,7 @@ public class SimpleShootAmpSide extends Command {
   public void execute() {
             // shooterConfigurations.put(keys.get(1).get(2), new ShooterConfiguration(Pair.of(3700d,3900d), 68d, 0d));
     s_ArmSubsystem.driveToGoal(71 + ArmConstants.armDegreesOffset); //TODO: change the 71
-    s_ShooterSubsystem.spinToVelocity(Pair.of(3700d,3900d)); //TODO:change both of these
+    s_ShooterSubsystem.spinToVelocity(Pair.of(3550d,4000d)); //TODO:change both of these
     if(s_ArmSubsystem.isAtGoal() && s_ShooterSubsystem.isAtSetpoint() || hasFired)
     {
       if(!hasFired) {
