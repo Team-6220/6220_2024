@@ -58,7 +58,9 @@ import frc.robot.commands.ManuelEjectNote;
 import frc.robot.commands.ManuelMoveNoteBack;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.ShootingTestCommand;
+import frc.robot.commands.SimpleShootAmpSide;
 import frc.robot.commands.SimpleShootCmd;
+import frc.robot.commands.SimpleShootSourceSide;
 import frc.robot.commands.SpeakerCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.Tuning_Arm;
@@ -88,6 +90,8 @@ public class RobotContainer {
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton manuelShot = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton ampSideManuelShot = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton sourceSideManuelShot = new JoystickButton(driver, XboxController.Button.kB.value);
   
   private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
@@ -208,6 +212,10 @@ public class RobotContainer {
     );
 
     manuelShot.whileTrue(new SimpleShootCmd());
+
+    ampSideManuelShot.whileTrue(new SimpleShootAmpSide());
+
+    sourceSideManuelShot.whileTrue(new SimpleShootSourceSide());
 
     // amp.whileTrue(ampScoringTesting());
 

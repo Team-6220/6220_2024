@@ -125,7 +125,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public boolean getFrontBeam() {
-        return frontToF.getRange()<95;
+        return frontToF.getRange()<85;
     }
     public boolean getBackBeam() {
         return backToF.getRange()<135;
