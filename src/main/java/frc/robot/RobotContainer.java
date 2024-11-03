@@ -177,6 +177,8 @@ public class RobotContainer {
     // autoChooser.addOption("Shoot and pick up far note testing", new ShootAndPickUpFarNoteTesting(s_Swerve));
     // autoChooser.addOption("Shoot and Two middle", new ShootAndTwoMiddle(s_Swerve));
     autoChooser.addOption("shoot only", new SpeakerCommand(s_Swerve));
+    autoChooser.addOption("source side shoot", new SimpleShootSourceSide());
+    autoChooser.addOption("amp side shoot", new SimpleShootAmpSide());
     // autoChooser.addOption("At Code Orange", new test(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
     autoChooser.addOption("Shot And Get Out", new ShootAndGetOut(s_Swerve));
