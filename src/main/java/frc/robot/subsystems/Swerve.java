@@ -59,13 +59,13 @@ public class Swerve extends SubsystemBase {
      * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
      * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
      */
-    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
+    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.05);
     
     /**
      * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
      * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
      */
-    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
+    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, Double.MAX_VALUE);
 
 
     public SwerveModule[] mSwerveMods;
@@ -101,7 +101,7 @@ public class Swerve extends SubsystemBase {
     private boolean autoIsOverShoot = false, isAuto = false;
 
     
-    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", 1);
+    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", VisionConstants.visionStdDev);
 
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
@@ -137,7 +137,7 @@ public class Swerve extends SubsystemBase {
 
         // Set up custom logging to add the current path to a field 2d widget
         PathPlannerLogging.setLogActivePathCallback((poses) -> field2d.getObject("path").setPoses(poses));
-        Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
+        // Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
         // SmartDashboard.putData("Field", field2d);
         createShuffleOutputs();
     }
@@ -163,7 +163,7 @@ public class Swerve extends SubsystemBase {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
             //SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
         }
-    }
+            }
 
     public void stopDriving()
     {
@@ -447,6 +447,8 @@ public class Swerve extends SubsystemBase {
         poseEstimator.update(getGyroYaw(), getModulePositions());
         
         field2d.setRobotPose(getPose());
+
+        // SmartDashboard.putData("fieldSwerve",field2d);
         
 
         if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
@@ -468,7 +470,7 @@ public class Swerve extends SubsystemBase {
             turnPidController.setConstraints(new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
             turnPidController.reset(getHeading().getDegrees());
         }
-        //createShuffleOutputs();
+        
     }
 
     private void createShuffleOutputs() {

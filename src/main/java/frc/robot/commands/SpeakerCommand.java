@@ -111,8 +111,8 @@ public class SpeakerCommand extends Command{
                     true
             );
 
-            //Pose2d currPose = swerve.getPose();
-            //Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+            // Pose2d currPose = swerve.getPose();
+            // Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
 
             
             //double distanceToSpeaker = Math.hypot(currPose.getX()-speakerPose.getX(), currPose.getY()-speakerPose.getY());

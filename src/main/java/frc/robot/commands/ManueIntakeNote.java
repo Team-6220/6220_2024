@@ -36,6 +36,7 @@ public class ManueIntakeNote extends Command {
   @Override
   public void end(boolean interrupted) {
     s_IntakeSubsystem.simpleDrive(false, 0);
+    // s_IntakeSubsystem.setFiring(false);
     // s_IntakeSubsystem.reset();
   }
 

@@ -47,12 +47,12 @@ public final class Constants {
 
     public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
 
-    public static boolean isRed = false;
+    public static boolean isRed = false;//FIXME: MAKE AUTO UPDATE ISRED
 
     public static void updateAllianceColor(){
-        Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
-        Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
-        Constants.isRed = false;
+        // Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
+        // Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
+        // Constants.isRed = true;
     }
 
     public static final class OIConstants {
@@ -323,6 +323,14 @@ public final class Constants {
 
     public static final class VisionConstants{
 
+        public static final double fieldBorderMargin = 0.25;
+        public static final double zMargin = 0.5;
+        public static final double xyStdDevCoefficient = 0.02;
+        public static final double thetaStdDevCoefficient = 0.04;
+        public static final double ambiguityThreshold = 0.15;
+
+        public static final Translation2d fieldSize = new Translation2d(16.54, 8.21);
+
         public static final String LIMELIGHT3_NAME_STRING = "limelight";
         public static final String LIMELIGHT2_NAME_STRING = "Limelight_2";
 
@@ -352,7 +360,7 @@ public final class Constants {
         public static final double rightArduCamPitchOffsetRad = Rotation2d.fromDegrees(35).getRadians();
 
         /**Trust value of the vision */
-        public static final double visionStdDev = 0.2;
+        public static final double visionStdDev = 0.5;
 
         public static void setTagHeights(){
             tagHeights.put(1, 48.125);
