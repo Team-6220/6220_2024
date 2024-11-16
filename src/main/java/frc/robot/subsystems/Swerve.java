@@ -110,11 +110,13 @@ public class Swerve extends SubsystemBase {
         new SwerveModulePosition(),
         new SwerveModulePosition()
     };
-
+    
     private final SwerveDrivePoseEstimator poseEstimator;
     //private final SwerveDriveOdometry odometer;
-    
-    //Swerve Constructor
+
+    /**
+     * initializes the swerve drive and sets up the variables and constants
+     */
     public Swerve() {
         gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
 
@@ -144,6 +146,16 @@ public class Swerve extends SubsystemBase {
         createShuffleOutputs();
     }
 
+    /**
+     * @param translation
+     * the 2d position on where the robot is
+     * @param rotation
+     * the rotation of the robot
+     * @param fieldRelative
+     * is the robot driving using the field's directions or the robot's directions?
+     * @param isOpenLoop
+     * open loop: takes input directly from controller without feedback from the output, close loop vice versa
+     */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
             SwerveConstants.swerveKinematics.toSwerveModuleStates(
@@ -160,13 +172,16 @@ public class Swerve extends SubsystemBase {
                                 );
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
-
+        //set all the modules
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
             //SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
         }
             }
 
+    /**
+     * passes stop driving to all modules
+     */
     public void stopDriving()
     {
         for(SwerveModule mod : mSwerveMods)
@@ -174,6 +189,9 @@ public class Swerve extends SubsystemBase {
             mod.stopDriving();
         }
     }
+    /**
+     * swerve auto init
+     */
     public void configureAutoBuilder() {
         AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
@@ -202,6 +220,11 @@ public class Swerve extends SubsystemBase {
         );
     }
     
+
+    /**
+     * @param robotRelativeSpeeds
+     * the speed in m/s
+     */
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     
@@ -257,6 +280,10 @@ public class Swerve extends SubsystemBase {
         return yDistance;
     }
 
+    /**
+     * use for auto
+     * @return The amp position based on team color
+     */
     public Pose2d getAmpPose()
     {
         return Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
@@ -271,6 +298,9 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * @return list of the states of the modules
+     */
     public SwerveModuleState[] getModuleStates(){
         SwerveModuleState[] states = new SwerveModuleState[4];
         for(SwerveModule mod : mSwerveMods){
@@ -279,6 +309,9 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
+    /**
+     * @return positions of the modules
+     */
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for(SwerveModule mod : mSwerveMods){
@@ -300,6 +333,9 @@ public class Swerve extends SubsystemBase {
         return getPose().getRotation();
     }
 
+    /**
+     * @return the direction to the speaker
+     */
     public double getHeadingToSpeaker(){
         
         Pose2d currPose = getPose();
@@ -331,6 +367,9 @@ public class Swerve extends SubsystemBase {
         return isAutoTurning;
     }
 
+    /**
+     * @return is it facing toward the target
+     */
     public boolean isFacingTurnTarget() {
         return turnPidController.atGoal();
     }
@@ -358,6 +397,9 @@ public class Swerve extends SubsystemBase {
         turnPidController.setGoal(goal);
     }
 
+    /**
+     * @return gets the angular velocity of turning
+     */
     public double getTurnPidSpeed() {
 
         turnPidController.setGoal(autoTurnHeading);
@@ -380,6 +422,12 @@ public class Swerve extends SubsystemBase {
         return speed;
     }
 
+
+    /**
+     * @param timestamp
+     * the time
+     * @return the heading
+     */
     public double getHeadingByTimestamp(double timestamp){
         double timea = 0, timeb = 0;
         if(timestamp > gyro_timestamps.getFirst()){
