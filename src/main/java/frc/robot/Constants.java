@@ -518,7 +518,7 @@ public final class Constants {
         public static final class Mod1 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 12;
-            public static final int canCoderID = 1;
+            public static final int canCoderID = 2;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-148.8867);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -528,11 +528,13 @@ public final class Constants {
         public static final class Mod2 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 11;
-            public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(93.779296875);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+            public static final int canCoderID = 1;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(2.373046875);
+            public static final SwerveModuleConstants constants = 
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
+        //Front left Module 3
         public static final class Mod3 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 9;
