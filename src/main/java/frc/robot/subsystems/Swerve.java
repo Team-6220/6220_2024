@@ -14,7 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 //import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
-import static frc.robot.Constants.isRed.equals("red");
+import static frc.robot.Constants.isRed;
 
 import java.util.Arrays;
 import java.util.HashMap;

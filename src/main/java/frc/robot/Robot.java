@@ -44,14 +44,14 @@ public class Robot extends TimedRobot {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
-            Constants.isRed.equals("red") = "red";
+            Constants.isRed = "red";
         }
         if (ally.get() == Alliance.Blue) {
-            Constants.isRed.equals("red") = "blue";
+            Constants.isRed = "blue";
         }
     }
     else {
-        Constants.isRed.equals("red") = "N/A";
+        Constants.isRed = "N/A";
     }
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -71,14 +71,14 @@ public class Robot extends TimedRobot {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
-            Constants.isRed.equals("red") = "red";
+            Constants.isRed = "red";
         }
         if (ally.get() == Alliance.Blue) {
-            Constants.isRed.equals("red") = "blue";
+            Constants.isRed = "blue";
         }
     }
     else {
-        Constants.isRed.equals("red") = "N/A";
+        Constants.isRed = "N/A";
     }
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -96,14 +96,14 @@ public class Robot extends TimedRobot {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
-            Constants.isRed.equals("red") = "red";
+            Constants.isRed = "red";
         }
         if (ally.get() == Alliance.Blue) {
-            Constants.isRed.equals("red") = "blue";
+            Constants.isRed = "blue";
         }
     }
     else {
-        Constants.isRed.equals("red") = "N/A";
+        Constants.isRed = "N/A";
     }
     CommandScheduler.getInstance().cancelAll();
   }
