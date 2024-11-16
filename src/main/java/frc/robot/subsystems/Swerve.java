@@ -14,7 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 //import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
-import static frc.robot.Constants.isRed;
+import static frc.robot.Constants.isRed.equals("red");
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -236,7 +236,7 @@ public class Swerve extends SubsystemBase {
     public double getAmpX()
     {
         //Pose2d currPose = getPose();
-        Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        Pose2d ampPose = Constants.isRed.equals("red") ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
         double xDistance = ampPose.getX(); // - currPose.getX() // I don't think we need this
         SmartDashboard.putNumber("forward backward", xDistance);
         return xDistance;
@@ -249,7 +249,7 @@ public class Swerve extends SubsystemBase {
     public double getAmpY()
     {
         Pose2d currPose = getPose();
-        Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        Pose2d ampPose = Constants.isRed.equals("red") ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
         double yDistance = ampPose.getY() ; //- currPose.getY() // I don't think we need it
         SmartDashboard.putNumber("left and right", yDistance);
         return yDistance;
@@ -257,7 +257,7 @@ public class Swerve extends SubsystemBase {
 
     public Pose2d getAmpPose()
     {
-        return Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        return Constants.isRed.equals("red") ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
     }
 
     /* Used by SwerveControllerCommand in Auto */
@@ -301,9 +301,9 @@ public class Swerve extends SubsystemBase {
     public double getHeadingToSpeaker(){
         
         Pose2d currPose = getPose();
-        Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+        Pose2d speakerPose = Constants.isRed.equals("red") ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
         double angle = Math.toDegrees(Math.atan2(speakerPose.getY() - currPose.getY(), speakerPose.getX() - currPose.getX()));
-        angle += (Constants.isRed ? 0 : -180);
+        angle += (Constants.isRed.equals("red") ? 0 : -180);
         return angle;
     }
 
@@ -317,7 +317,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroHeading(){
-        double offset = Constants.isRed ? 0 : Math.PI;
+        double offset = Constants.isRed.equals("red") ? 0 : Math.PI;
         poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d(offset)));
     }
 
@@ -425,7 +425,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
-        SmartDashboard.putBoolean("is Red", isRed);
+        SmartDashboard.putBoolean("is Red", isRed.equals("red"));
         Double timestamp = Timer.getFPGATimestamp();
         // gyro_headings.put(timestamp, getHeading());
         // gyro_timestamps.addFirst(timestamp);
@@ -451,7 +451,7 @@ public class Swerve extends SubsystemBase {
         // SmartDashboard.putData("fieldSwerve",field2d);
         
 
-        if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
+        if (isAuto && ((Constants.isRed.equals("red") && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed.equals("red") && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
         {
             autoIsOverShoot = true;
         }

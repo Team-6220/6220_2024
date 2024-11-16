@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -37,7 +41,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    Constants.updateAllianceColor();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red) {
+            Constants.isRed.equals("red") = "red";
+        }
+        if (ally.get() == Alliance.Blue) {
+            Constants.isRed.equals("red") = "blue";
+        }
+    }
+    else {
+        Constants.isRed.equals("red") = "N/A";
+    }
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -53,7 +68,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    Constants.updateAllianceColor();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red) {
+            Constants.isRed.equals("red") = "red";
+        }
+        if (ally.get() == Alliance.Blue) {
+            Constants.isRed.equals("red") = "blue";
+        }
+    }
+    else {
+        Constants.isRed.equals("red") = "N/A";
+    }
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -67,6 +93,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red) {
+            Constants.isRed.equals("red") = "red";
+        }
+        if (ally.get() == Alliance.Blue) {
+            Constants.isRed.equals("red") = "blue";
+        }
+    }
+    else {
+        Constants.isRed.equals("red") = "N/A";
+    }
     CommandScheduler.getInstance().cancelAll();
   }
 

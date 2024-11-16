@@ -47,13 +47,7 @@ public final class Constants {
 
     public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
 
-    public static boolean isRed = false;//FIXME: MAKE AUTO UPDATE ISRED
-
-    public static void updateAllianceColor(){
-        // Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
-        // Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
-        // Constants.isRed = true;
-    }
+    public static String isRed = "N/A";//FIXME: MAKE AUTO UPDATE ISRED
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;

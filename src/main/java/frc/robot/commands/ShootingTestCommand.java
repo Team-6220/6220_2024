@@ -85,7 +85,7 @@ public class ShootingTestCommand extends Command {
       xOutput = 0;
       yOutput = 0;
     }
-    double teamOffset = Constants.isRed ? 0 + headingOffsetTest.get() : 180 + headingOffsetTest.get();
+    double teamOffset = Constants.isRed.equals("red") ? 0 + headingOffsetTest.get() : 180 + headingOffsetTest.get();
 
     s_Swerve.setAutoTurnHeading(s_Swerve.getHeadingToSpeaker() + teamOffset);
     rotationVal = s_Swerve.getTurnPidSpeed();

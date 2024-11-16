@@ -91,7 +91,7 @@ public class SpeakerCommand extends Command{
         }
         
         if(currentShooterConfiguration != null) {
-            double teamOffset = Constants.isRed ? 0 + currentShooterConfiguration.getHeadingOffset() : 180 + currentShooterConfiguration.getHeadingOffset();
+            double teamOffset = Constants.isRed.equals("red") ? 0 + currentShooterConfiguration.getHeadingOffset() : 180 + currentShooterConfiguration.getHeadingOffset();
 
             double[] driverInputs;
             if(!isAuto)
@@ -112,7 +112,7 @@ public class SpeakerCommand extends Command{
             );
 
             // Pose2d currPose = swerve.getPose();
-            // Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+            // Pose2d speakerPose = Constants.isRed.equals("red") ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
 
             
             //double distanceToSpeaker = Math.hypot(currPose.getX()-speakerPose.getX(), currPose.getY()-speakerPose.getY());
