@@ -1,42 +1,42 @@
 package frc.robot;
 
-import java.nio.file.Path;
-import java.time.Instant;
-import java.util.List;
+// import java.nio.file.Path;
+// import java.time.Instant;
+// import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
+// import com.pathplanner.lib.auto.NamedCommands;
+// import com.pathplanner.lib.path.GoalEndState;
+// import com.pathplanner.lib.path.PathConstraints;
+// import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.filter.Debouncer;
+// import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+// import edu.wpi.first.wpilibj.Joystick;
+// import edu.wpi.first.wpilibj.RobotController;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+// import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+// import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+// import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.util.AlienceColorCoordinateFlip;
+// import edu.wpi.first.wpilibj2.command.button.Trigger;
+// import frc.lib.util.AlienceColorCoordinateFlip;
 import frc.lib.util.RumbleManager;
 import frc.lib.util.ShooterConfiguration;
-import frc.lib.util.TriggerButton;
-import frc.lib.util.TunableNumber;
+// import frc.lib.util.TriggerButton;
+// import frc.lib.util.TunableNumber;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.OIConstants;
+// import frc.robot.Constants.AutoConstants;
+// import frc.robot.Constants.IntakeConstants;
+// import frc.robot.Constants.OIConstants;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Swerve;
 
@@ -45,7 +45,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   /* Controllers */
   private final XboxController driver = new XboxController(0);
-  private final Joystick operator = new Joystick(1);
+  // private final Joystick operator = new Joystick(1);
   /* Drive Controls */
 
   
@@ -62,19 +62,19 @@ public class RobotContainer {
   // private final JoystickButton noNote = new JoystickButton(driver, 8);
 
   // private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
-  private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
+  //private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
   
   /* Operator Buttons */
-  private final Trigger intake = new Trigger(()->operator.getRawButton(5));
-  private final Trigger amp = new Trigger(()->operator.getRawButton(2));
-  private final Trigger trueEject = new Trigger(()->operator.getRawButton(9));
-  private final Trigger climb = new Trigger(()->operator.getRawButton(4));
-  private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(12));
-  private final Trigger increaseArmOffset = new Trigger(() -> operator.getRawButton(8));
-  private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7));
+  // private final Trigger intake = new Trigger(()->operator.getRawButton(5));
+  // private final Trigger amp = new Trigger(()->operator.getRawButton(2));
+  // private final Trigger trueEject = new Trigger(()->operator.getRawButton(9));
+  // private final Trigger climb = new Trigger(()->operator.getRawButton(4));
+  // private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(12));
+  // private final Trigger increaseArmOffset = new Trigger(() -> operator.getRawButton(8));
+  // private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7));
   // private final Trigger increaseIntakeMode = new Trigger(() -> operator.getRawButton(6));
   // private final Trigger decreaseIntakeMode = new Trigger(() -> operator.getRawButton(3));
-  private final Trigger manuelIntake = new Trigger(() -> operator.getRawButton(11));
+  // private final Trigger manuelIntake = new Trigger(() -> operator.getRawButton(11));
   // private final Trigger testing = new Trigger(()-> operator.getRawButton(10));
 
   /* Subsystems */

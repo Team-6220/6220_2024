@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants;
-import frc.robot.LimelightCalculations;
+// import frc.robot.LimelightCalculations;
 // import frc.robot.PhotonvisionCalculations;
 //import frc.robot.LimelightHelpers;
 import frc.robot.SwerveModule;
@@ -102,7 +102,7 @@ public class Swerve extends SubsystemBase {
 
     
     public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", 1);
-
+    //Instance Variaable array
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
         new SwerveModulePosition(),
@@ -113,10 +113,11 @@ public class Swerve extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator;
     //private final SwerveDriveOdometry odometer;
 
+    //default constructor
     public Swerve() {
         gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
 
-
+        //assigns the constants for each module to a usable array
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, SwerveConstants.Mod0.constants),
             new SwerveModule(1, SwerveConstants.Mod1.constants),
@@ -124,12 +125,12 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, SwerveConstants.Mod3.constants)
         };
 
-
+        //creates a swerve drive position estimator using the listed parameters
         poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.swerveKinematics, new Rotation2d(), positions, new Pose2d(), stateStdDevs, visionMeasurementStdDevs);
         //odometer = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, new Rotation2d(0), positions);
 
         
-
+        //sets 
         turnPidController = new ProfiledPIDController(turnKP.get(), turnKI.get(), turnKD.get(), new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
         turnPidController.setIZone(Constants.SwerveConstants.turnIZone);
         turnPidController.setTolerance(Constants.SwerveConstants.turnTolerance);
