@@ -127,6 +127,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public boolean getFrontBeam() {
+
         return frontToF.getRange()<85;
     }
     public boolean getBackBeam() {
@@ -216,6 +217,7 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         
+
         SmartDashboard.putNumber("Intake front beam", backToF.getRange());
         if(!noteInIntake && getFrontBeam()) {
             newNoteDetected();
@@ -224,6 +226,8 @@ public class IntakeSubsystem extends SubsystemBase{
         // if(IntakeConstants.backupModeCount <= 1) {
             if(noteInIntake && !firing) {
                 driveNoteToSetpoint();
+
+
                 // System.out.println("here lies the note");
             }
         // } 
@@ -235,6 +239,7 @@ public class IntakeSubsystem extends SubsystemBase{
         
         //SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
         //SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
+
         // SmartDashboard.putBoolean("FrontTOF", getFrontBeam());
         // SmartDashboard.putBoolean("Back TOF", getBackBeam());
         // SmartDashboard.putBoolean("note at back", noteAtBack);
