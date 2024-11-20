@@ -1,4 +1,3 @@
-//Import packages
 package frc.robot.subsystems;
 
 import frc.lib.util.TunableNumber;
@@ -68,7 +67,7 @@ public class Swerve extends SubsystemBase {
      */
     private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, Double.MAX_VALUE);
 
-    //intialize stuff for future use
+
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
     private boolean isAutoTurning;

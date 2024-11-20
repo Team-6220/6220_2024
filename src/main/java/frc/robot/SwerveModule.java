@@ -1,4 +1,3 @@
-//A file that groups drive and turn motors
 package frc.robot;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -26,9 +25,6 @@ import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule {
     public int moduleNumber;
-    /**
-     *in deg
-     */
     private Rotation2d angleOffset;
 
     //private TalonFX mAngleMotor;
@@ -50,7 +46,7 @@ public class SwerveModule {
     // private final PositionVoltage anglePosition = new PositionVoltage(0);
     
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
-       this.moduleNumber = moduleNumber;
+        this.moduleNumber = moduleNumber;
         this.angleOffset = moduleConstants.angleOffset;
         //SmartDashboard.putString("Mod: " + moduleNumber, angleOffset.toString());
         
@@ -126,10 +122,7 @@ public class SwerveModule {
         mNeoAngleEncoder.setPosition(RevConfigs.CANCoderAngleToNeoEncoder(absolutePosition));
         //SmartDashboard.putNumber("absolutePosition degress", mNeoAngleEncoder.getPosition()*360);
     }
-    /**
-     * @return returns wheel veloity and angle
-     */
-    
+
     public SwerveModuleState getState(){
         return new SwerveModuleState(
             Conversions.RPSToMPS(mDriveMotor.getVelocity().getValue(), Constants.SwerveConstants.wheelCircumference), 
@@ -137,9 +130,6 @@ public class SwerveModule {
         );
     }
 
-    /**
-     * @return The position and the angle of the wheels
-     */
     public SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
             Conversions.rotationsToMeters(mDriveMotor.getPosition().getValue(), Constants.SwerveConstants.wheelCircumference), 
