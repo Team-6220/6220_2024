@@ -33,6 +33,8 @@ import frc.lib.util.RumbleManager;
 import frc.lib.util.ShooterConfiguration;
 import frc.lib.util.TriggerButton;
 import frc.lib.util.TunableNumber;
+import frc.robot.AutoCmd.ShootAndGetOut;
+import frc.robot.AutoCmd.justGetOut;
 // import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmd;
 // import frc.robot.AutoCmd.OpenSideTwoNotesSeqCmdRed;
 // import frc.robot.AutoCmd.ShootAndPickUpFarNoteTesting;
@@ -56,7 +58,9 @@ import frc.robot.commands.ManuelEjectNote;
 import frc.robot.commands.ManuelMoveNoteBack;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.ShootingTestCommand;
+import frc.robot.commands.SimpleShootAmpSide;
 import frc.robot.commands.SimpleShootCmd;
+import frc.robot.commands.SimpleShootSourceSide;
 import frc.robot.commands.SpeakerCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.Tuning_Arm;
@@ -82,26 +86,28 @@ public class RobotContainer {
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   //private final JoystickButton intakeTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
   //private final JoystickButton ampTemporary = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
+  // private final JoystickButton speakerTemporary = new JoystickButton(driver, XboxController.Button.kA.value);
   private final JoystickButton zeroOdometry = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton override = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton manuelShot = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton noNote = new JoystickButton(driver, 8);
-
+  private final JoystickButton ampSideManuelShot = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton sourceSideManuelShot = new JoystickButton(driver, XboxController.Button.kB.value);
+  
   private final Trigger fireRightTrigger = new TriggerButton(driver, XboxController.Axis.kRightTrigger);
   private final Trigger robotControlLeftTrigger = new TriggerButton(driver, XboxController.Axis.kLeftTrigger);
   
   /* Operator Buttons */
-  private final Trigger intake = new Trigger(()->operator.getRawButton(5));
   private final Trigger amp = new Trigger(()->operator.getRawButton(2));
-  private final Trigger trueEject = new Trigger(()->operator.getRawButton(9));
-  private final Trigger climb = new Trigger(()->operator.getRawButton(4));
-  private final Trigger ejectNote = new Trigger(() -> operator.getRawButton(12));
+  private final Trigger climbTrigger = new Trigger(()->operator.getRawButton(4));
+  private final Trigger intake = new Trigger(()->operator.getRawButton(5));
+  private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7)); 
   private final Trigger increaseArmOffset = new Trigger(() -> operator.getRawButton(8));
-  private final Trigger decreaseArmOffset = new Trigger(() -> operator.getRawButton(7));
+  private final Trigger trueEject = new Trigger(()->operator.getRawButton(9));
   // private final Trigger increaseIntakeMode = new Trigger(() -> operator.getRawButton(6));
   // private final Trigger decreaseIntakeMode = new Trigger(() -> operator.getRawButton(3));
-  private final Trigger manuelIntake = new Trigger(() -> operator.getRawButton(11));
+  private final Trigger noNote = new Trigger(()->operator.getRawButton(10));
+  private final Trigger moveNoteToShooter = new Trigger(() -> operator.getRawButton(11));
+  private final Trigger moveNoteAgainstShooter = new Trigger(() -> operator.getRawButton(12));
   // private final Trigger testing = new Trigger(()-> operator.getRawButton(10));
 
   /* Subsystems */
@@ -171,9 +177,12 @@ public class RobotContainer {
     // autoChooser.addOption("Shoot and pick up far note testing", new ShootAndPickUpFarNoteTesting(s_Swerve));
     // autoChooser.addOption("Shoot and Two middle", new ShootAndTwoMiddle(s_Swerve));
     autoChooser.addOption("shoot only", new SpeakerCommand(s_Swerve));
+    autoChooser.addOption("source side shoot", new SimpleShootSourceSide());
+    autoChooser.addOption("amp side shoot", new SimpleShootAmpSide());
     // autoChooser.addOption("At Code Orange", new test(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
-    // autoChooser.addOption("testtest", new test());
+    autoChooser.addOption("Shot And Get Out", new ShootAndGetOut(s_Swerve));
+    autoChooser.addOption("just get out", new justGetOut(s_Swerve));
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");    
     
@@ -206,14 +215,18 @@ public class RobotContainer {
 
     manuelShot.whileTrue(new SimpleShootCmd());
 
+    ampSideManuelShot.whileTrue(new SimpleShootAmpSide());
+
+    sourceSideManuelShot.whileTrue(new SimpleShootSourceSide());
+
     // amp.whileTrue(ampScoringTesting());
 
     // amp.whileTrue(noteTesting());
     // increaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount++));
     // decreaseIntakeMode.onTrue(new InstantCommand(() -> IntakeConstants.backupModeCount --));
     trueEject.whileTrue(new ManuelEjectNote());
-    ejectNote.whileTrue(new ManuelMoveNoteBack());
-    manuelIntake.whileTrue(new ManueIntakeNote());
+    moveNoteAgainstShooter.whileTrue(new ManuelMoveNoteBack());
+    moveNoteToShooter.whileTrue(new ManueIntakeNote());
     zeroGyro.whileTrue(
       new InstantCommand(
         () -> RumbleManager.rumble(driver, 0.2)
@@ -229,7 +242,7 @@ public class RobotContainer {
       driver)
     );
     // speakerTemporary.whileTrue(new SimpleShootCmd());
-    climb.whileTrue(new ClimberTestCommand(operator));
+    climbTrigger.whileTrue(new ClimberTestCommand(operator));
 
     increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
     decreaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset --));

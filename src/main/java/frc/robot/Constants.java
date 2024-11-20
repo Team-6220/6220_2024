@@ -47,13 +47,7 @@ public final class Constants {
 
     public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
 
-    public static boolean isRed = true;//FIXME: MAKE AUTO UPDATE ISRED
-
-    public static void updateAllianceColor(){
-        // Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
-        // Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
-        // Constants.isRed = true;
-    }
+    public static String isRed = "N/A";//FIXME: MAKE AUTO UPDATE ISRED
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
@@ -112,7 +106,7 @@ public final class Constants {
             inputs[1] = MathUtil.applyDeadband(inputs[1], OIConstants.kDeadband);
             inputs[2] = MathUtil.applyDeadband(inputs[2], OIConstants.kDeadband);
 
-            int invert =  (Constants.isRed) ? -1 : 1; 
+            int invert =  (Constants.isRed.equals("red")) ? -1 : 1; 
 
             inputs[0] *= invert;
             inputs[1] *= invert;
@@ -580,7 +574,7 @@ public final class Constants {
         // public static final Pose2d AMP_POSE2D = isRed ? new Pose2d(14.65, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians())) : new Pose2d(1.9, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         public static final Pose2d AMP_POSE2D = new Pose2d(AlienceColorCoordinateFlip.flip(2.0), 7.67, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         // public static final double maxXDistance = isRed ? 8.81 : 7.75;
-        public static final double maxXDistance = isRed ? 8.6 : 8; // maximum x distance during auto so that it doesn't cross the middle of the field
+        public static final double maxXDistance = isRed.equals("red") ? 8.6 : 8; // maximum x distance during auto so that it doesn't cross the middle of the field
 
         
         /* Constraint for the motion profilied robot angle controller */
