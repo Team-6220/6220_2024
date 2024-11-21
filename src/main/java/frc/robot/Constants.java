@@ -47,13 +47,7 @@ public final class Constants {
 
     public static Optional<DriverStation.Alliance> ALLIANCE_COLOR = DriverStation.getAlliance();
 
-    public static boolean isRed = false;
-
-    public static void updateAllianceColor(){
-        Constants.ALLIANCE_COLOR = DriverStation.getAlliance();
-        Constants.isRed = ALLIANCE_COLOR.isPresent() && ALLIANCE_COLOR.get().equals(Alliance.Red);
-        Constants.isRed = false;
-    }
+    public static String isRed = "N/A";//FIXME: MAKE AUTO UPDATE ISRED
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
@@ -112,7 +106,7 @@ public final class Constants {
             inputs[1] = MathUtil.applyDeadband(inputs[1], OIConstants.kDeadband);
             inputs[2] = MathUtil.applyDeadband(inputs[2], OIConstants.kDeadband);
 
-            int invert =  (Constants.isRed) ? -1 : 1; 
+            int invert =  (Constants.isRed.equals("red")) ? -1 : 1; 
 
             inputs[0] *= invert;
             inputs[1] *= invert;
@@ -323,6 +317,14 @@ public final class Constants {
 
     public static final class VisionConstants{
 
+        public static final double fieldBorderMargin = 0.25;
+        public static final double zMargin = 0.5;
+        public static final double xyStdDevCoefficient = 0.02;
+        public static final double thetaStdDevCoefficient = 0.04;
+        public static final double ambiguityThreshold = 0.15;
+
+        public static final Translation2d fieldSize = new Translation2d(16.54, 8.21);
+
         public static final String LIMELIGHT3_NAME_STRING = "limelight";
         public static final String LIMELIGHT2_NAME_STRING = "Limelight_2";
 
@@ -352,7 +354,7 @@ public final class Constants {
         public static final double rightArduCamPitchOffsetRad = Rotation2d.fromDegrees(35).getRadians();
 
         /**Trust value of the vision */
-        public static final double visionStdDev = 0.2;
+        public static final double visionStdDev = 0.5;
 
         public static void setTagHeights(){
             tagHeights.put(1, 48.125);
@@ -572,7 +574,7 @@ public final class Constants {
         // public static final Pose2d AMP_POSE2D = isRed ? new Pose2d(14.65, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians())) : new Pose2d(1.9, 7.63, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         public static final Pose2d AMP_POSE2D = new Pose2d(AlienceColorCoordinateFlip.flip(2.0), 7.67, new Rotation2d(Rotation2d.fromDegrees(90).getRadians()));
         // public static final double maxXDistance = isRed ? 8.81 : 7.75;
-        public static final double maxXDistance = isRed ? 8.6 : 8; // maximum x distance during auto so that it doesn't cross the middle of the field
+        public static final double maxXDistance = isRed.equals("red") ? 8.6 : 8; // maximum x distance during auto so that it doesn't cross the middle of the field
 
         
         /* Constraint for the motion profilied robot angle controller */

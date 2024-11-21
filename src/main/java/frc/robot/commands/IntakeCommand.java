@@ -73,54 +73,55 @@ public class IntakeCommand extends Command{
         addRequirements(this.swerve, arm, intake, vis);
     }
 
-    // public IntakeCommand(Swerve swerve) {
-    //     isAuto = true;
-    //     isParallelingWithAutobuilder = false;
-    //     swerve.setIsAuto(true);
-    //     timeWithoutTarget = 0;
-    //     this.swerve = swerve;
-    //     this.intake = IntakeSubsystem.getInstance();
-    //     this.arm = ArmSubsystem.getInstance();
-    //     this.vis = PhotonVisionSubsystem.getInstance();
-    //     this.s_Blinkin = blinkin.getInstance();
-    //     this.autoControl = ()-> true;
-    //     this.driver = null;
-    //     shooter = ShooterSubsystem.getInstance();
-    //     limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
-    //     limelightPidController.setTolerance(turnTolerance.get());
-    //     limelightPidController.setIZone(.5);
-    //     addRequirements(this.swerve, arm, intake, vis);
-    // }
+    public IntakeCommand(Swerve swerve) {
+        isAuto = true;
+        isParallelingWithAutobuilder = false;
+        swerve.setIsAuto(true);
+        timeWithoutTarget = 0;
+        this.swerve = swerve;
+        this.intake = IntakeSubsystem.getInstance();
+        this.arm = ArmSubsystem.getInstance();
+        this.vis = PhotonVisionSubsystem.getInstance();
+        this.s_Blinkin = blinkin.getInstance();
+        this.autoControl = ()-> true;
+        this.driver = null;
+        shooter = ShooterSubsystem.getInstance();
+        limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
+        limelightPidController.setTolerance(turnTolerance.get());
+        limelightPidController.setIZone(.5);
+        addRequirements(this.swerve, arm, intake, vis);
+    }
 
-    // public IntakeCommand(Swerve swerve, boolean isParallelingWithAutobuilder)
-    // {
-    //     this.isParallelingWithAutobuilder = isParallelingWithAutobuilder;
-    //     shooter = ShooterSubsystem.getInstance();
-    //     isAuto = true;
-    //     swerve.setIsAuto(true);
-    //     timeWithoutTarget = 0;
-    //     this.swerve = swerve;
-    //     this.intake = IntakeSubsystem.getInstance();
-    //     this.arm = ArmSubsystem.getInstance();
-    //     this.vis = PhotonVisionSubsystem.getInstance();
-    //     this.s_Blinkin = blinkin.getInstance();
-    //     this.autoControl = ()-> true;
-    //     this.driver = null;
-    //     limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
-    //     limelightPidController.setTolerance(turnTolerance.get());
-    //     limelightPidController.setIZone(.5);
-    //     addRequirements(arm, intake, vis);
-    // }
+    public IntakeCommand(Swerve swerve, boolean isParallelingWithAutobuilder)
+    {
+        this.isParallelingWithAutobuilder = isParallelingWithAutobuilder;
+        shooter = ShooterSubsystem.getInstance();
+        isAuto = true;
+        swerve.setIsAuto(true);
+        timeWithoutTarget = 0;
+        this.swerve = swerve;
+        this.intake = IntakeSubsystem.getInstance();
+        this.arm = ArmSubsystem.getInstance();
+        this.vis = PhotonVisionSubsystem.getInstance();
+        this.s_Blinkin = blinkin.getInstance();
+        this.autoControl = ()-> true;
+        this.driver = null;
+        limelightPidController = new PIDController(turnkP.get(),turnkI.get(),turnkD.get());
+        limelightPidController.setTolerance(turnTolerance.get());
+        limelightPidController.setIZone(.5);
+        addRequirements(arm, intake, vis);
+    }
 
     @Override
     public void initialize() {
         timeWithoutTarget = 0;
+        intake.reset();
     }
 
     @Override
     public void execute(){
         intake.feedIntake();
-        shooter.manuelIntakeAntiShootOut();
+        // shooter.manuelIntakeAntiShootOut();
         arm.driveToGoal(ArmConstants.intakeSetpoint);
         double[] driverInputs;
         double rotationVal = 0, translation = 0, strafeVal = 0;
@@ -212,6 +213,6 @@ public class IntakeCommand extends Command{
         arm.stop();
         intake.stop();
         swerve.stopDriving();
-        intake.manuelIntakedNotesEndMethod();
+        // intake.manuelIntakedNotesEndMethod();//This line disables auto set intake...
     }
 }

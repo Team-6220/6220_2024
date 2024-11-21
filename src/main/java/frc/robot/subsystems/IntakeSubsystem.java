@@ -9,6 +9,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import com.playingwithfusion.TimeOfFlight;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -17,16 +19,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.TunableNumber;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.IntakeIdleCommand;
-
+import com.playingwithfusion.*;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem INSTANCE = null;
 
     private final CANSparkMax intakeMotor;
     private final RelativeEncoder encoder;
 
-    private final DigitalInput frontBreakBeam;
-    private final DigitalInput backBreakBeam;
-
+    //private final DigitalInput frontBreakBeam;
+    //private final DigitalInput backBreakBeam;
+    private final TimeOfFlight frontToF = new TimeOfFlight(1);
+    private final TimeOfFlight backToF = new TimeOfFlight(0);
     private final PIDController m_Controller;
     private final PIDController m_VelocityController;
     private SimpleMotorFeedforward m_Feedforward; 
@@ -51,12 +55,12 @@ public class IntakeSubsystem extends SubsystemBase{
     private final TunableNumber KpVel = new TunableNumber("IntakeKpVel", IntakeConstants.velocityPIDConstants[0]);
 
     private IntakeSubsystem() {
+        frontToF.setRangingMode(RangingMode.Short, 24);
+        backToF.setRangingMode(RangingMode.Short, 24);
         intakeMotor  = new CANSparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
         intakeMotor.setInverted(IntakeConstants.intakeMotorInverted);
-
-        frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
-        backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
-
+        // frontBreakBeam = new DigitalInput(IntakeConstants.frontBreakBeamPort);
+        // backBreakBeam = new DigitalInput(IntakeConstants.backBreakBeamPort);
         encoder = intakeMotor.getEncoder();
         m_Controller = new PIDController(Kp.get(), Ki.get(), IntakeConstants.kD);
         m_VelocityController = new PIDController(IntakeConstants.velocityPIDConstants[0], IntakeConstants.velocityPIDConstants[1], IntakeConstants.velocityPIDConstants[2]);
@@ -123,10 +127,11 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public boolean getFrontBeam() {
-        return !frontBreakBeam.get();
+
+        return frontToF.getRange()<85;
     }
     public boolean getBackBeam() {
-        return !backBreakBeam.get();
+        return backToF.getRange()<135;
     }
 
     public void setHasNote() {
@@ -135,11 +140,11 @@ public class IntakeSubsystem extends SubsystemBase{
         encoder.setPosition(-IntakeConstants.distanceBetweenBreakBeamsInEncoderRotations);
     }
 
-    public void manuelIntakedNotesEndMethod()
-    {
-        noteAtBack = true;
-        noteSecure = true;
-    }
+    // public void manuelIntakedNotesEndMethod()
+    // {
+    //     noteAtBack = true;
+    //     noteSecure = true;
+    // }
 
     public void manuelShootNotesEndMethod()
     {
@@ -151,12 +156,14 @@ public class IntakeSubsystem extends SubsystemBase{
     public void driveNoteToSetpoint() {
         double output = 0;
         if(!noteAtBack && getBackBeam()) {
+            // System.out.println("toggled on NOTE AT BACK");
             noteAtBack = true;
             encoder.setPosition(0);
         }
         if(noteAtBack) {
             if(noteSecure) {
                 intakeMotor.set(0);
+                // System.out.println("NOTE SECURE");
                 return;
             } else {
                 if(hasExited) {
@@ -173,10 +180,13 @@ public class IntakeSubsystem extends SubsystemBase{
                 noteSecure = true;
             }
         } else {
+            // System.out.println("there supposed to be output");
             output = m_Feedforward.calculate(intakeSpeed.get()) + m_VelocityController.calculate(encoder.getVelocity(), intakeSpeed.get());
         }
+        // System.out.println("drivenotetosetpoint 1st");
         
         intakeMotor.set(output);
+        // System.out.println("driveToSetpoint working + output" + output);
 
     }
 
@@ -206,27 +216,36 @@ public class IntakeSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        // if(getFrontBeam())
-        // {
-        //     // System.out.println("Note in!");
-        //     counterForFrontIntake ++;
-        // }
-        // else
-        // {
-        //     counterForFrontIntake = 0;
-        // }
-        // if(!noteInIntake && counterForFrontIntake > 5) {
-        //     newNoteDetected();
-        // }
-        // if(noteInIntake && !firing) {
-        //     driveNoteToSetpoint();
+        
+
+        SmartDashboard.putNumber("Intake front beam", backToF.getRange());
+        if(!noteInIntake && getFrontBeam()) {
+            newNoteDetected();
+            // System.out.println("new note detected");
+        }
+        // if(IntakeConstants.backupModeCount <= 1) {
+            if(noteInIntake && !firing) {
+                driveNoteToSetpoint();
+
+
+                // System.out.println("here lies the note");
+            }
+        // } 
+        // else if(IntakeConstants.backupModeCount <= 5) {
+        //     if(noteInIntake && !firing) {
+        //         driveWithBackup();
+        //     }
         // }
         
-        SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
-        SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
-        SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
-        SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
-        SmartDashboard.putNumber("Intake Motor Current Draw", intakeMotor.getOutputCurrent());
+        //SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
+        //SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
+
+        // SmartDashboard.putBoolean("FrontTOF", getFrontBeam());
+        // SmartDashboard.putBoolean("Back TOF", getBackBeam());
+        // SmartDashboard.putBoolean("note at back", noteAtBack);
+        // SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
+        // SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
+        // SmartDashboard.putNumber("Intake Motor Current Draw", intakeMotor.getOutputCurrent());
         if(Kp.hasChanged()
         || Ki.hasChanged())
         {

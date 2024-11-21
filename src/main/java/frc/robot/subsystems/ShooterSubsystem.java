@@ -148,7 +148,7 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public void manuelIntakeAntiShootOut()
     {
-        spinManually(-0.2);
+        spinManually(-0.05);
     }
 
     public void stop(){
