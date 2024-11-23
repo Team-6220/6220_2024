@@ -146,8 +146,8 @@ public class RobotContainer {
     // autoChooser.addOption("shoot only", new SpeakerCommand(s_Swerve));
     // autoChooser.addOption("At Code Orange", new test(s_Swerve));
     // autoChooser.addOption("AA intake Test", intakeTest());
-    autoChooser.addOption("Shot And Get Out", new ShootAndGetOut(s_Swerve));
-    autoChooser.addOption("just get out", new justGetOut(s_Swerve));
+    // autoChooser.addOption("Shot And Get Out", new ShootAndGetOut(s_Swerve));
+    // autoChooser.addOption("just get out", new justGetOut(s_Swerve));
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");    
     
@@ -180,9 +180,9 @@ public class RobotContainer {
 
     // manuelShot.whileTrue(new SimpleShootCmd());
 
-    ampSideManuelShot.whileTrue(new SimpleShootAmpSide());
+    // ampSideManuelShot.whileTrue(new SimpleShootAmpSide());
 
-    sourceSideManuelShot.whileTrue(new SimpleShootSourceSide());
+    // sourceSideManuelShot.whileTrue(new SimpleShootSourceSide());
 
     // amp.whileTrue(ampScoringTesting());
 
@@ -202,16 +202,16 @@ public class RobotContainer {
     //   driver,  
     //   () -> robotControlLeftTrigger.getAsBoolean()));
 
-    fireRightTrigger.whileTrue(new SpeakerCommand(
-      s_Swerve, 
-      driver)
-    );
+    // fireRightTrigger.whileTrue(new SpeakerCommand(
+    //   s_Swerve, 
+    //   driver)
+    // );
     // speakerTemporary.whileTrue(new SimpleShootCmd());
     // climb.whileTrue(new ClimberTestCommand(operator));
 
     // increaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset ++));
     // decreaseArmOffset.onTrue(new InstantCommand(() -> ArmConstants.armDegreesOffset --));
-    SmartDashboard.putNumber("Number offset", ArmConstants.armDegreesOffset);
+    // SmartDashboard.putNumber("Number offset", ArmConstants.armDegreesOffset);
     // speakerTemporary.whileTrue(new ShootingTestCommand());
   }
 
