@@ -1,3 +1,6 @@
+/**
+ * Swerve drive command used for teleop period.
+ */
 package frc.robot.commands;
 
 // import frc.robot.Constants.SwerveConstants;
@@ -30,6 +33,7 @@ public class TeleopSwerve extends Command {
     @Override
     public void initialize() {
         s_Swerve.setIsAuto(false);
+        // Initilize so that the swerve doesn't become grumpy
         s_Swerve.resetModulesToAbsolute();
     }
 

@@ -59,13 +59,13 @@ public class Swerve extends SubsystemBase {
      * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
      * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
      */
-    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
+    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.05);
     
     /**
      * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
      * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
      */
-    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
+    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, Double.MAX_VALUE);
 
 
     public SwerveModule[] mSwerveMods;
@@ -101,19 +101,22 @@ public class Swerve extends SubsystemBase {
     private boolean autoIsOverShoot = false, isAuto = false;
 
     
-    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", 1);
-    //Instance Variaable array
+    public final TunableNumber visionMeasurementStdDevConstant = new TunableNumber("visionStdDev Constant", VisionConstants.visionStdDev);
+
     private SwerveModulePosition[] positions = {
         new SwerveModulePosition(),
         new SwerveModulePosition(),
         new SwerveModulePosition(),
         new SwerveModulePosition()
     };
-
+    
     private final SwerveDrivePoseEstimator poseEstimator;
     //private final SwerveDriveOdometry odometer;
 
     //default constructor
+    /**
+     * initializes the swerve drive and sets up the variables and constants
+     */
     public Swerve() {
         gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
 
@@ -138,11 +141,21 @@ public class Swerve extends SubsystemBase {
 
         // Set up custom logging to add the current path to a field 2d widget
         PathPlannerLogging.setLogActivePathCallback((poses) -> field2d.getObject("path").setPoses(poses));
-        Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
+        // Shuffleboard.getTab("Field Pose 2d tab (map)").add("Field 2d", field2d);
         // SmartDashboard.putData("Field", field2d);
         createShuffleOutputs();
     }
 
+    /**
+     * @param translation
+     * the 2d position on where the robot is
+     * @param rotation
+     * the rotation of the robot
+     * @param fieldRelative
+     * is the robot driving using the field's directions or the robot's directions?
+     * @param isOpenLoop
+     * open loop: takes input directly from controller without feedback from the output, close loop vice versa
+     */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
             SwerveConstants.swerveKinematics.toSwerveModuleStates(
@@ -159,13 +172,16 @@ public class Swerve extends SubsystemBase {
                                 );
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
-
+        //set all the modules
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
             //SmartDashboard.putString("Mod " + mod.moduleNumber +" Swerve Module State", swerveModuleStates[mod.moduleNumber].toString());
         }
-    }
+            }
 
+    /**
+     * passes stop driving to all modules
+     */
     public void stopDriving()
     {
         for(SwerveModule mod : mSwerveMods)
@@ -173,6 +189,9 @@ public class Swerve extends SubsystemBase {
             mod.stopDriving();
         }
     }
+    /**
+     * swerve auto init
+     */
     public void configureAutoBuilder() {
         AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
@@ -201,6 +220,11 @@ public class Swerve extends SubsystemBase {
         );
     }
     
+
+    /**
+     * @param robotRelativeSpeeds
+     * the speed in m/s
+     */
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     
@@ -237,7 +261,7 @@ public class Swerve extends SubsystemBase {
     public double getAmpX()
     {
         //Pose2d currPose = getPose();
-        Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        Pose2d ampPose = Constants.isRed.equals("red") ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
         double xDistance = ampPose.getX(); // - currPose.getX() // I don't think we need this
         SmartDashboard.putNumber("forward backward", xDistance);
         return xDistance;
@@ -250,15 +274,19 @@ public class Swerve extends SubsystemBase {
     public double getAmpY()
     {
         Pose2d currPose = getPose();
-        Pose2d ampPose = Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        Pose2d ampPose = Constants.isRed.equals("red") ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
         double yDistance = ampPose.getY() ; //- currPose.getY() // I don't think we need it
         SmartDashboard.putNumber("left and right", yDistance);
         return yDistance;
     }
 
+    /**
+     * use for auto
+     * @return The amp position based on team color
+     */
     public Pose2d getAmpPose()
     {
-        return Constants.isRed ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
+        return Constants.isRed.equals("red") ? VisionConstants.AMP_POSE2D_RED : VisionConstants.AMP_POSE2D_BLUE;
     }
 
     /* Used by SwerveControllerCommand in Auto */
@@ -270,6 +298,9 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * @return list of the states of the modules
+     */
     public SwerveModuleState[] getModuleStates(){
         SwerveModuleState[] states = new SwerveModuleState[4];
         for(SwerveModule mod : mSwerveMods){
@@ -278,6 +309,9 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
+    /**
+     * @return positions of the modules
+     */
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for(SwerveModule mod : mSwerveMods){
@@ -299,12 +333,15 @@ public class Swerve extends SubsystemBase {
         return getPose().getRotation();
     }
 
+    /**
+     * @return the direction to the speaker
+     */
     public double getHeadingToSpeaker(){
         
         Pose2d currPose = getPose();
-        Pose2d speakerPose = Constants.isRed ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
+        Pose2d speakerPose = Constants.isRed.equals("red") ? VisionConstants.SPEAKER_POSE2D_RED : VisionConstants.SPEAKER_POSE2D_BLUE;
         double angle = Math.toDegrees(Math.atan2(speakerPose.getY() - currPose.getY(), speakerPose.getX() - currPose.getX()));
-        angle += (Constants.isRed ? 0 : -180);
+        angle += (Constants.isRed.equals("red") ? 0 : -180);
         return angle;
     }
 
@@ -318,7 +355,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroHeading(){
-        double offset = Constants.isRed ? 0 : Math.PI;
+        double offset = Constants.isRed.equals("red") ? 0 : Math.PI;
         poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d(offset)));
     }
 
@@ -330,6 +367,9 @@ public class Swerve extends SubsystemBase {
         return isAutoTurning;
     }
 
+    /**
+     * @return is it facing toward the target
+     */
     public boolean isFacingTurnTarget() {
         return turnPidController.atGoal();
     }
@@ -357,6 +397,9 @@ public class Swerve extends SubsystemBase {
         turnPidController.setGoal(goal);
     }
 
+    /**
+     * @return gets the angular velocity of turning
+     */
     public double getTurnPidSpeed() {
 
         turnPidController.setGoal(autoTurnHeading);
@@ -379,6 +422,12 @@ public class Swerve extends SubsystemBase {
         return speed;
     }
 
+
+    /**
+     * @param timestamp
+     * the time
+     * @return the heading
+     */
     public double getHeadingByTimestamp(double timestamp){
         double timea = 0, timeb = 0;
         if(timestamp > gyro_timestamps.getFirst()){
@@ -426,7 +475,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
-        SmartDashboard.putBoolean("is Red", isRed);
+        SmartDashboard.putBoolean("is Red", isRed.equals("red"));
         Double timestamp = Timer.getFPGATimestamp();
         // gyro_headings.put(timestamp, getHeading());
         // gyro_timestamps.addFirst(timestamp);
@@ -448,9 +497,11 @@ public class Swerve extends SubsystemBase {
         poseEstimator.update(getGyroYaw(), getModulePositions());
         
         field2d.setRobotPose(getPose());
+
+        // SmartDashboard.putData("fieldSwerve",field2d);
         
 
-        if (isAuto && ((Constants.isRed && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
+        if (isAuto && ((Constants.isRed.equals("red") && field2d.getRobotPose().getX() < AutoConstants.maxXDistance) || (!Constants.isRed.equals("red") && field2d.getRobotPose().getX() > AutoConstants.maxXDistance)))
         {
             autoIsOverShoot = true;
         }
@@ -469,7 +520,7 @@ public class Swerve extends SubsystemBase {
             turnPidController.setConstraints(new TrapezoidProfile.Constraints(turnMaxVel.get(), turnMaxAccel.get()));
             turnPidController.reset(getHeading().getDegrees());
         }
-        //createShuffleOutputs();
+        
     }
 
     private void createShuffleOutputs() {
