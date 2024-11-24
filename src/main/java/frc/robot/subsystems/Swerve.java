@@ -57,13 +57,13 @@
 
 //     /**
 //      * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
-//      * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
+//      * matrix is in the form [x, y, theta], with units in meters and radians, then meters.
 //      */
 //     private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
     
 //     /**
 //      * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
-//      * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
+//      * less. This matrix is in the form [x, y, theta], with units in meters and radians.
 //      */
 //     private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(1.5, 1.5, 1.5);
 

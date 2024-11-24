@@ -112,7 +112,7 @@
 
 //             //Psudo code
 //             /*
-//              * 你從這出for循环，然后检查如果两个都有那就直接了当加平均值，如果只有一个就跟哪一个
+//              * 
 //              */
 //             if(estimatedRobotPose.isPresent()) {
 //                 double estimatedX = estimatedRobotPose.get().estimatedPose.getX();

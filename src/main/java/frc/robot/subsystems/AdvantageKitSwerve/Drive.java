@@ -40,7 +40,7 @@ import frc.lib.util.LocalADStarAK;
 import frc.lib.util.AdvantageKitStuff.LoggedTunableNumber;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.AdvantageKitAprilTagVision.MyOwnLocalizationSubsystem;
+// import frc.robot.subsystems.AdvantageKitAprilTagVision.MyOwnLocalizationSubsystem;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -194,7 +194,7 @@ public class Drive extends SubsystemBase {
 
     // Apply odometry update
     poseEstimator.update(rawGyroRotation, modulePositions);
-    MyOwnLocalizationSubsystem.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
+    // MyOwnLocalizationSubsystem.updateCamerasPoseEstimation(this, poseEstimator, visionMeasurementStdDevConstant.get());
   }
 
   /**

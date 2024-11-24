@@ -1,7 +1,7 @@
-package frc.robot.subsystems.AdvantageKitAprilTagVision;
+// package frc.robot.subsystems.AdvantageKitAprilTagVision;
 
-public record AprilTagPoseEstimateExtraInfoForDebug
-(
-    double avgTagDistance,
-    int[] tagIDs 
-){}
+// public record AprilTagPoseEstimateExtraInfoForDebug
+// (
+//     double avgTagDistance,
+//     int[] tagIDs 
+// ){}

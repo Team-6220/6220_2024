@@ -67,7 +67,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 // import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.blinkin;
-import frc.robot.subsystems.AdvantageKitAprilTagVision.MyOwnLocalizationSubsystem;
+// import frc.robot.subsystems.AdvantageKitAprilTagVision.MyOwnLocalizationSubsystem;
 import frc.robot.subsystems.AdvantageKitSwerve.Drive;
 import frc.robot.subsystems.AdvantageKitSwerve.GyroIO;
 import frc.robot.subsystems.AdvantageKitSwerve.GyroIONavX;
@@ -126,7 +126,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     
-    MyOwnLocalizationSubsystem.initilizeSubsystem();
+    // MyOwnLocalizationSubsystem.initilizeSubsystem();
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
