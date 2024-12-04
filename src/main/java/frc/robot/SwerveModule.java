@@ -18,7 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.math.Conversions;
 import frc.lib.util.SwerveModuleConstants;
-// import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 // import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
@@ -79,6 +79,10 @@ public class SwerveModule {
         mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
         mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig); //motor inverted, current limits, etc. editable in constants.java. CTREConfigs.java is just a holder to organize the values
         mDriveMotor.getConfigurator().setPosition(0.0);
+        if(moduleNumber == 0)
+        {
+            mDriveMotor.setInverted(true);
+        }
         // mDriveMotor.setNeutralMode(SwerveConstants.driveNeutralMode);
     }
 
@@ -86,7 +90,7 @@ public class SwerveModule {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
         mAngleController.setReference(RevConfigs.CANCoderAngleToNeoEncoder(desiredState.angle.getRotations()), ControlType.kPosition);
         overallDesiredModuleState = desiredState.angle.getDegrees();
-        // SmartDashboard.putNumber("Desired position", (desiredState.angle.getDegrees()));
+        SmartDashboard.putNumber("Desired position mod " +moduleNumber , (desiredState.angle.getDegrees()));
         setSpeed(desiredState, isOpenLoop);
     }
 
@@ -118,9 +122,10 @@ public class SwerveModule {
     //** Points the module forward */
     public void resetToAbsolute(){
         double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
-        //SmartDashboard.putNumber("absolutePosition", absolutePosition);
+        SmartDashboard.putNumber("absolutePosition mod reset to absolute " + moduleNumber, absolutePosition);
+        System.out.println("reset to absolute mod" + moduleNumber +" cancoder rotations" + getCANcoder().getRotations() + "angleoffset.getrotations " + angleOffset.getRotations() +"absoluteposition + " + absolutePosition);
         mNeoAngleEncoder.setPosition(RevConfigs.CANCoderAngleToNeoEncoder(absolutePosition));
-        //SmartDashboard.putNumber("absolutePosition degress", mNeoAngleEncoder.getPosition()*360);
+        // SmartDashboard.putNumber("neo position degress mod " + moduleNumber, mNeoAngleEncoder.getPosition()*360);
     }
 
     public SwerveModuleState getState(){

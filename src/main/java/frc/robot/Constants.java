@@ -484,7 +484,7 @@ public final class Constants {
         public static final double driveKA = 0.27;
 
 
-        //Turning Pid Constants
+        //Turning Pid Constants for auto
         public static final double turnKP = 5;
         public static final double turnKD = 0;
         public static final double turnKI = 1.7;
@@ -500,7 +500,7 @@ public final class Constants {
         public static final double maxAngularVelocity = maxSpeed / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
 
         /* Neutral Modes */
-        public static final IdleMode angleNeutralMode = IdleMode.kBrake;
+        public static final IdleMode angleNeutralMode = IdleMode.kCoast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
        /* Module Specific Constants */
@@ -528,8 +528,8 @@ public final class Constants {
         public static final class Mod2 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 9;
-            public static final int canCoderID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-84.9023);
+            public static final int canCoderID = 21;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(61.34);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -538,7 +538,7 @@ public final class Constants {
         public static final class Mod3 { //FIXME: This must be tuned to specific robot
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 8;
-            public static final int canCoderID = 0;
+            public static final int canCoderID = 20;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-40.78125);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
