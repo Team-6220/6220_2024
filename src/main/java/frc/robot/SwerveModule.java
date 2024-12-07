@@ -48,7 +48,7 @@ public class SwerveModule {
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
         this.moduleNumber = moduleNumber;
         this.angleOffset = moduleConstants.angleOffset;
-        //SmartDashboard.putString("Mod: " + moduleNumber, angleOffset.toString());
+        SmartDashboard.putString("Mod: " + moduleNumber, angleOffset.toString());
         
         /* Angle Encoder Config */
         angleEncoder = new CANcoder(moduleConstants.cancoderID);
@@ -86,7 +86,7 @@ public class SwerveModule {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
         mAngleController.setReference(RevConfigs.CANCoderAngleToNeoEncoder(desiredState.angle.getRotations()), ControlType.kPosition);
         overallDesiredModuleState = desiredState.angle.getDegrees();
-        // SmartDashboard.putNumber("Desired position", (desiredState.angle.getDegrees()));
+        SmartDashboard.putNumber("Desired position", (desiredState.angle.getDegrees()));
         setSpeed(desiredState, isOpenLoop);
     }
 
@@ -118,9 +118,9 @@ public class SwerveModule {
     //** Points the module forward */
     public void resetToAbsolute(){
         double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
-        //SmartDashboard.putNumber("absolutePosition", absolutePosition);
+        SmartDashboard.putNumber("absolutePosition", absolutePosition);
         mNeoAngleEncoder.setPosition(RevConfigs.CANCoderAngleToNeoEncoder(absolutePosition));
-        //SmartDashboard.putNumber("absolutePosition degress", mNeoAngleEncoder.getPosition()*360);
+        SmartDashboard.putNumber("absolutePosition degress", mNeoAngleEncoder.getPosition()*360);
     }
 
     public SwerveModuleState getState(){

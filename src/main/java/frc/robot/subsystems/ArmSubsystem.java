@@ -202,11 +202,11 @@ public class ArmSubsystem extends SubsystemBase{
             m_Controller.setConstraints(m_Constraints);
         }
         SmartDashboard.putNumber("Arm Angle", getArmPosition());
-        //SmartDashboard.putNumber("Controller Setpoint", m_Controller.getSetpoint().position);
-        //SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
-        //SmartDashboard.putNumber("PID Controller Output", PIDOutput);
-        //SmartDashboard.putNumber("Feed Forward Output", feedForwardOutput);
-        //System.out.println(getArmPosition());
+        SmartDashboard.putNumber("Controller Setpoint", m_Controller.getSetpoint().position);
+        SmartDashboard.putNumber("Controller Error", m_Controller.getPositionError());
+        SmartDashboard.putNumber("PID Controller Output", PIDOutput);
+        SmartDashboard.putNumber("Feed Forward Output", feedForwardOutput);
+        System.out.println(getArmPosition());
         SmartDashboard.putBoolean("arm at goal", isAtGoal());
     }
 
