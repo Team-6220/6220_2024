@@ -129,7 +129,7 @@ public class RobotContainer {
 
     // s_IntakeSubsystem.reset();
 
-    PhotonvisionCalculations.initPhoton();
+    Localization_V2.initPhoton();
 
     // NamedCommands.registerCommand("shoot", new SpeakerCommand(s_Swerve));
     // NamedCommands.registerCommand("pickup", Commands.race(new IntakeCommand(s_Swerve), Commands.waitSeconds(1.5)).andThen(
