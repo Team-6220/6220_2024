@@ -233,14 +233,48 @@
 //             m_Controller.setPID(Kp.get(),Ki.get(),IntakeConstants.kD);
 //         }
 
-//         if(Ks.hasChanged()
-//         || Kv.hasChanged()) {
-//             m_Feedforward = new SimpleMotorFeedforward(Ks.get(), Kv.get());
-//         }
-//         if(KpVel.hasChanged()) {
-//             m_VelocityController.setPID(KpVel.get(), 0 ,0);
-//         }
-//     }
+        // SmartDashboard.putNumber("Intake front beam", backToF.getRange());
+        // if(!noteInIntake && getFrontBeam()) {
+        //     newNoteDetected();
+            // System.out.println("new note detected");
+        // }
+        // if(IntakeConstants.backupModeCount <= 1) {
+            // if(noteInIntake && !firing) {
+                // driveNoteToSetpoint();
+
+
+                // System.out.println("here lies the note");
+            // }
+        // } 
+        // else if(IntakeConstants.backupModeCount <= 5) {
+        //     if(noteInIntake && !firing) {
+        //         driveWithBackup();
+        //     }
+        // }
+        
+        // SmartDashboard.putBoolean("Beam Front", frontBreakBeam.get());
+        // SmartDashboard.putBoolean("Beam Back", backBreakBeam.get());
+
+    //     SmartDashboard.putBoolean("FrontTOF", getFrontBeam());
+    //     SmartDashboard.putBoolean("Back TOF", getBackBeam());
+    //     SmartDashboard.putBoolean("note at back", noteAtBack);
+    //     SmartDashboard.putNumber("IntakePosition", encoder.getPosition());
+    //     SmartDashboard.putNumber("Intake RPM", encoder.getVelocity());
+    //     SmartDashboard.putNumber("Intake Motor Current Draw", intakeMotor.getOutputCurrent());
+    //     if(Kp.hasChanged()
+    //     || Ki.hasChanged())
+    //     {
+    //         m_Controller.setPID(Kp.get(),Ki.get(),IntakeConstants.kD);
+    //     }
+
+    //     if(Ks.hasChanged()
+    //     || Kv.hasChanged()) {
+    //         m_Feedforward = new SimpleMotorFeedforward(Ks.get(), Kv.get());
+    //     }
+    //     if(KpVel.hasChanged()) {
+    //         m_VelocityController.setPID(KpVel.get(), 0 ,0);
+    //     }
+    // }
 
     
 

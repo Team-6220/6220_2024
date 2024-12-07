@@ -48,7 +48,7 @@ public class SwerveModule {
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
         this.moduleNumber = moduleNumber;
         this.angleOffset = moduleConstants.angleOffset;
-        //SmartDashboard.putString("Mod: " + moduleNumber, angleOffset.toString());
+        SmartDashboard.putString("Mod: " + moduleNumber, angleOffset.toString());
         
         /* Angle Encoder Config */
         angleEncoder = new CANcoder(moduleConstants.cancoderID);
@@ -123,9 +123,8 @@ public class SwerveModule {
     public void resetToAbsolute(){
         double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
         SmartDashboard.putNumber("absolutePosition mod reset to absolute " + moduleNumber, absolutePosition);
-        System.out.println("reset to absolute mod" + moduleNumber +" cancoder rotations" + getCANcoder().getRotations() + "angleoffset.getrotations " + angleOffset.getRotations() +"absoluteposition + " + absolutePosition);
-        mNeoAngleEncoder.setPosition(RevConfigs.CANCoderAngleToNeoEncoder(absolutePosition));
-        // SmartDashboard.putNumber("neo position degress mod " + moduleNumber, mNeoAngleEncoder.getPosition()*360);
+        System.out.println("reset to absolute mod " + moduleNumber +" cancoder rotations:" + getCANcoder().getRotations() + "angleoffset.getrotations: " + angleOffset.getRotations() +"absoluteposition: " + absolutePosition, " New angle encoder:" + mNeoAngleEncoder.getPosition());
+        mNeoAngleEncoder.setPosition(RevConfigs.CANCoderAngleToNeoEncoder(absolutePosition));     
     }
 
     public SwerveModuleState getState(){
