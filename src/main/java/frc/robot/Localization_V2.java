@@ -62,7 +62,7 @@ public class Localization_V2 {
     // public static Transform3d camToCenterRobotZero = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));//Cam mounted facing forward, half a meter forward of center, half a meter up from center. //TODO: need change
     // public static Transform3d camToCenterRobotOne = new Transform3d(new Translation3d(0.5,0.0,0.5), new Rotation3d(0,0,0));
     // public static PhotonPoseEstimator photonPoseEstimatorOne  = new PhotonPoseEstimator(aprilFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameras[1], VisionConstants.camToCenterRobotOne);
-    public static Field2d theField = new Field2d();
+    public static Field2d theFieldCam0 = new Field2d(), theFieldCam1 = new Field2d();
     public static PhotonPoseEstimator[] photonPoseEstimators  = 
     {
         new PhotonPoseEstimator(aprilFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameras[0], VisionConstants.camerasToCenter[0]),
@@ -113,23 +113,53 @@ public class Localization_V2 {
         for(int i = 0; i < cameras.length; i ++)
         {
             Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimators[i].update();
-            final int index = i; //for lambda.
-            estimatedRobotPose.ifPresentOrElse(
-                estimate ->
+            if(estimatedRobotPose.isPresent())
+            {
+                EstimatedRobotPose temp = estimatedRobotPose.get();
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(camTrustValue, camTrustValue, Double.MAX_VALUE));
+                poseEstimator.addVisionMeasurement(temp.estimatedPose.toPose2d(), temp.timestampSeconds);
+
+                // Field2d localTempField2d = new Field2d();
+                if(i == 0)
                 {
-                    poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(camTrustValue, camTrustValue, Double.MAX_VALUE));
-                    poseEstimator.addVisionMeasurement(estimate.estimatedPose.toPose2d(), estimate.timestampSeconds);
-                    Field2d localTempField2d = new Field2d();
-                    localTempField2d.setRobotPose(estimate.estimatedPose.toPose2d());
-                    SmartDashboard.putData("Vision Estimated Pose for camera " +  index, localTempField2d);
+                    theFieldCam0.setRobotPose(temp.estimatedPose.toPose2d());
                 }
-                ,
-                ()->
+                else if (i == 1)
                 {
-                    Field2d localTempField2d = new Field2d();
-                    SmartDashboard.putData("Vision Estimated Pose for camera " +  index, localTempField2d);
+                    theFieldCam1.setRobotPose(temp.estimatedPose.toPose2d());
                 }
-            );
+                // SmartDashboard.putString("Vision Estimated Pose for camera " +  i, localTempField2d.toString());
+            }
+            else
+            {
+                if(i == 0)
+                {
+                    theFieldCam0.setRobotPose(new Pose2d());
+                }
+                else if (i == 1)
+                {
+                    theFieldCam1.setRobotPose(new Pose2d());
+                }
+            }
+            // final int index = i; //for lambda.
+            // estimatedRobotPose.ifPresentOrElse(
+            //     estimate ->
+            //     {
+            //         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(camTrustValue, camTrustValue, Double.MAX_VALUE));
+            //         poseEstimator.addVisionMeasurement(estimate.estimatedPose.toPose2d(), estimate.timestampSeconds);
+            //         Field2d localTempField2d = new Field2d();
+            //         localTempField2d.setRobotPose(estimate.estimatedPose.toPose2d());
+            //         // SmartDashboard.putData("Vision Estimated Pose for camera " +  index, localTempField2d);
+            //     }
+            //     ,
+            //     ()->
+            //     {
+            //         Field2d localTempField2d = new Field2d();
+            //         // SmartDashboard.putData("Vision Estimated Pose for camera " +  index, localTempField2d);
+            //     }
+            // );
+            SmartDashboard.putData("Cam0 Vision Feedback", theFieldCam0);
+            SmartDashboard.putData("Cam1 Vision feedback", theFieldCam1);
         }
     }
 

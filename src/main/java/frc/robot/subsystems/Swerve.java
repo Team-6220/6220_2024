@@ -524,7 +524,8 @@ public class Swerve extends SubsystemBase {
 
     private void createShuffleOutputs() {
         String title = "Swerve";
-        Shuffleboard.getTab(title).addString("Robot Pose", () -> getPose().toString());
+        // Shuffleboard.getTab(title).addString("Robot Pose", () -> getPose().toString());
+        Shuffleboard.getTab(title).add(field2d);
         //SmartDashboard.putString("getRobotPoseField 2d", field2d.getRobotPose().toString());
  
         for(SwerveModule mod : mSwerveMods){
